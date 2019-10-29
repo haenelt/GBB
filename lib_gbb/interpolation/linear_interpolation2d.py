@@ -2,11 +2,9 @@ def linear_interpolation2d(x, y, x_s, y_s, f_s):
     # bilinear interpolation
     import numpy as np
     
-    #x_s = np.array([12, 24])
-    #y_s = np.array([3, 10])
-    #f_s = np.array([[2, 5],[10, 20]])
-    #x = 15
-    #y = 10
+    x_s = np.array(x_s)
+    y_s = np.array(y_s)
+    f_s = np.array(f_s)
     
     Delta_x = x_s[1] - x_s[0]
     Delta_y = y_s[1] - y_s[0]
