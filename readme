@@ -1,0 +1,7 @@
+# shift vertex
+# update neighbouring vertices
+# iterate
+
+# select valid shift: should not be end-point
+# decide if min or max should be taken or always max(abs)
+# decide exit point

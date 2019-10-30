@@ -1,7 +1,0 @@
-# get gradient in phase-encoding direction
-# mask veins + smooth image
-# fill vein holes with smoothed image intensities
-# select randomly one vertex
-# shift
-# update neighbouring vertices
-# iterate

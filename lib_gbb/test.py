@@ -1,33 +1,47 @@
 from lib_gbb.utils import map_cmap
 
-input_surf = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer10_def"
-input_ref = "/home/raid2/haenelt/projects/GBB/test_data/mean_data.nii"
+input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 hemi = "lh"
-path_output = "/data/pt_01880/test"
+path_output = "/home/daniel/Schreibtisch/test"
 
 map_cmap(input_surf, input_ref, hemi, path_output)
+
+#%%
+from lib_gbb.utils import get_gradient
+
+input_vol = "/home/daniel/projects/GBB/test_data/mean_data.nii"
+input_vein = "/home/daniel/projects/GBB/test_data/vein.nii" 
+path_output = "/home/daniel/projects/GBB/test_data"
+
+get_gradient(input_vol, path_output, input_vein=input_vein)
 
 #%%
 
 # get line
 import numpy as np
 import nibabel as nb
+import random
 from nibabel.freesurfer.io import read_geometry
-from lib_gbb.interpolation import linear_interpolation2d
+from scipy.interpolate import splev, splrep
+from lib_gbb.interpolation import linear_interpolation2d, nn_interpolation2d
 import matplotlib.pyplot as plt
     
-input_geometry = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer10_def"
-input_vol = "/home/raid2/haenelt/projects/GBB/test_data/mean_data.nii"
-input_vtx2vox = "/data/pt_01880/test/vtx2vox.txt"
-n_vertex = 5755
-line_size = 1 # in mm
+input_geometry = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_vol = "/home/daniel/projects/GBB/test_data/mean_data.nii"
+input_gradient = "/home/daniel/projects/GBB/test_data/gradient.nii"
+input_vtx2vox = "/home/daniel/Schreibtisch/test/vtx2vox.txt"
+line_size = 2 # in mm
 step_size = 0.5 # in mm
 direction = 1
 interpolation = "linear"
     
 surf = read_geometry(input_geometry)
 vol = nb.load(input_vol).get_fdata()
-    
+gradient = nb.load(input_gradient).get_fdata()
+ 
+n_coords = np.arange(0,len(surf[0]),1)
+n_vertex = random.choice(n_coords) 
 vtx_coords = surf[0][n_vertex]
 vox_coords = np.loadtxt(input_vtx2vox)[n_vertex,:]
 
@@ -41,63 +55,30 @@ line_coords = line_coords[line_coords < np.shape(vol)[direction]] -1
 vox_coords_all = np.loadtxt(input_vtx2vox).astype(int)
 mean_white = np.median(vol[vox_coords_all[:,0],vox_coords_all[:,1],vox_coords_all[:,2]])
     
-#%%
-   
-if interpolation == "linear":
-    
-    res = []
-    for i in range(len(line_coords)):
+# get line
+line = []
+x = vox_coords[0]
+z = np.round(vox_coords[2]).astype(int)
+for i in range(len(line_coords)):
         
-        y = vox_coords[0]
-        x = line_coords[i]
-        x_s = [np.floor(x), np.ceil(x)]
-        y_s = [np.floor(y), np.ceil(y)]
-        f_s = [[vol[int(y_s[0]),int(x_s[0]),int(np.round(vox_coords[2]))],vol[int(y_s[1]),int(x_s[0]),int(np.round(vox_coords[2]))]],
-                    [vol[int(y_s[0]),int(x_s[1]),int(np.round(vox_coords[2]))],vol[int(y_s[1]),int(x_s[1]),int(np.round(vox_coords[2]))]]]
-        
-        res.append(linear_interpolation2d(x, y, x_s, y_s, f_s))
-
-elif interpolation == "nearest":
-    
-    res = []
-    res_y = []
-    for i in range(len(line_coords)):
-        
-        x = int(vox_coords[0])
-        y = int(line_coords[i])
-        f_s = vol[x,y,np.round(vox_coords[2]).astype(int)]
-        
-        res.append(f_s)
-        res_y.append(y)
-
-else:
-    print("choose a valid interpolation method!")
-
-
-plt.plot(line_coords,res)
-
-#%%
-
-
-from scipy.interpolate import spline
-
-test = [0]
-for i in range(len(res) - 1):
-    test.append(res[i+1] - res[i])
-
-
+    y = line_coords[i]
+    if interpolation == "linear":
+        line.append(linear_interpolation2d(x, y, gradient[:,:,z]))
+    elif interpolation == "nearest":
+        line.append(nn_interpolation2d(x, y, gradient[:,:,z]))
+    else:
+        print("choose a valid interpolation method!")        
 
 line_coords_new = np.linspace(line_coords.min(),line_coords.max(),1000) #300 represents number of points to make between T.min and T.max
-test_smooth = spline(line_coords,test,line_coords_new)
-
-plt.plot(line_coords_new,test_smooth)
-
-#%%
+line_spl = splrep(line_coords, line)
+line_smooth = splev(line_coords_new, line_spl)
+plt.plot(line_coords, line, 'o', line_coords_new, line_smooth)
+plt.show()
 
 # decide if in gm or wm
 if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white: 
-    test_loc = line_coords_new[int(np.where(test_smooth==np.min(test_smooth))[0][0])] # in gm
+    test_loc = line_coords_new[int(np.where(line_smooth==np.min(line_smooth))[0][0])] # in gm
 else:
-    test_loc = line_coords_new[int(np.where(test_smooth==np.max(test_smooth))[0][0])] # in wm
+    test_loc = line_coords_new[int(np.where(line_smooth==np.max(line_smooth))[0][0])] # in wm
 
 print(test_loc)
