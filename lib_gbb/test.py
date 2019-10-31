@@ -32,7 +32,8 @@ input_vol = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 input_gradient = "/home/daniel/projects/GBB/test_data/gradient.nii"
 input_vtx2vox = "/home/daniel/Schreibtisch/test/vtx2vox.txt"
 line_size = 2 # in mm
-step_size = 0.5 # in mm
+step_size = 0.4 # in mm
+trans_white = 100
 edge_threshold = 5
 direction = 1
 interpolation = "linear"
@@ -77,15 +78,37 @@ plt.plot(line_coords, line, 'o', line_coords_new, line_smooth)
 plt.show()
 
 # decide if in gm or wm
-#if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white: 
+#if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white + trans_white: 
 #    loc_new = int(np.where(line_smooth==np.min(line_smooth))[0][0]) # in gm
-#else:
+#elif vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] < mean_white - trans_white: 
 #    loc_new = int(np.where(line_smooth==np.max(line_smooth))[0][0]) # in wm
-loc_new = int(np.where(np.abs(line_smooth)==np.max(np.abs(line_smooth)))[0][0])
+#else:
+#    loc_new = int(np.where(np.abs(line_smooth)==np.max(np.abs(line_smooth)))[0][0])
 
-if loc_new < edge_threshold or loc_new > len(line_coords_new) - edge_threshold:
-    line_coords_res = []
-else:
-    line_coords_res = line_coords_new[loc_new]
+# remove edges
+#if loc_new < edge_threshold or loc_new > len(line_coords_new) - edge_threshold:
+#    line_coords_res = []
+#else:
+#    line_coords_res = line_coords_new[loc_new]
 
+exit_loop = 0
+i = 0
+loc_new = []
+while exit_loop == 0:
+    if line_smooth[i+1] > 0 and line_smooth[i] < 0:
+        loc_new = i
+        break
+    elif line_smooth[i+1] < 0 and line_smooth[i] > 0:
+        loc_new = i
+        break
+    elif line_smooth[i] == 0:
+        loc_new = i
+        break
+    
+    if i >= len(line_smooth) - 2:
+        exit_loop = 1
+    else:
+        i += 1
+
+line_coords_res = line_coords_new[loc_new]
 print(line_coords_res)

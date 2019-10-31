@@ -1,7 +1,7 @@
 def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_dir=1, kernel_size=3):
     """
-    This function computes the gradient in one direction (phase-encoding direction) of a mean bold
-    image. Optionally, a vein mask can be applied.
+    This function computes the second order gradient in one direction (phase-encoding direction) of 
+    a mean bold image. Optionally, a vein mask can be applied.
     Inputs:
         *input_vol: filename of input nifti.
         *path_output: path where output is written.
@@ -12,7 +12,7 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
         
     created by Daniel Haenelt
     Date created: 30-10-2019     
-    Last modified: 30-10-2019
+    Last modified: 31-10-2019
     """
     import os
     import numpy as np
@@ -41,8 +41,10 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
     for i in range(np.shape(vol_array)[2]):
         if grad_dir == 0:
             res[:,:,i] = cv2.Sobel(vol_array[:,:,i],cv2.CV_64F,0,1,kernel_size)
+            res[:,:,i] = cv2.Sobel(res[:,:,i],cv2.CV_64F,0,1,kernel_size)
         elif grad_dir == 1:
             res[:,:,i] = cv2.Sobel(vol_array[:,:,i],cv2.CV_64F,1,0,kernel_size)
+            res[:,:,i] = cv2.Sobel(res[:,:,i],cv2.CV_64F,1,0,kernel_size)
         else:
             print("invalid gradient direction!")
     
