@@ -33,6 +33,7 @@ input_gradient = "/home/daniel/projects/GBB/test_data/gradient.nii"
 input_vtx2vox = "/home/daniel/Schreibtisch/test/vtx2vox.txt"
 line_size = 2 # in mm
 step_size = 0.5 # in mm
+edge_threshold = 5
 direction = 1
 interpolation = "linear"
     
@@ -54,7 +55,7 @@ line_coords = line_coords[line_coords < np.shape(vol)[direction]] -1
 # get mean white matter response
 vox_coords_all = np.loadtxt(input_vtx2vox).astype(int)
 mean_white = np.median(vol[vox_coords_all[:,0],vox_coords_all[:,1],vox_coords_all[:,2]])
-    
+
 # get line
 line = []
 x = vox_coords[0]
@@ -76,9 +77,15 @@ plt.plot(line_coords, line, 'o', line_coords_new, line_smooth)
 plt.show()
 
 # decide if in gm or wm
-if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white: 
-    test_loc = line_coords_new[int(np.where(line_smooth==np.min(line_smooth))[0][0])] # in gm
-else:
-    test_loc = line_coords_new[int(np.where(line_smooth==np.max(line_smooth))[0][0])] # in wm
+#if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white: 
+#    loc_new = int(np.where(line_smooth==np.min(line_smooth))[0][0]) # in gm
+#else:
+#    loc_new = int(np.where(line_smooth==np.max(line_smooth))[0][0]) # in wm
+loc_new = int(np.where(np.abs(line_smooth)==np.max(np.abs(line_smooth)))[0][0])
 
-print(test_loc)
+if loc_new < edge_threshold or loc_new > len(line_coords_new) - edge_threshold:
+    line_coords_res = []
+else:
+    line_coords_res = line_coords_new[loc_new]
+
+print(line_coords_res)

@@ -1,7 +1,10 @@
+to do:
 # shift vertex
 # update neighbouring vertices
 # iterate
 
-# select valid shift: should not be end-point
-# decide if min or max should be taken or always max(abs)
-# decide exit point
+might be changed:
+# valid shift not end point of gradient line?
+# take always max or decide between min and max depending on location/intensity?
+# set gradient threshold?
+# when to exit loop?
