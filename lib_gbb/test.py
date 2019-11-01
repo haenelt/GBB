@@ -23,9 +23,7 @@ import numpy as np
 import nibabel as nb
 import random
 from nibabel.freesurfer.io import read_geometry
-from scipy.interpolate import splev, splrep
-from lib_gbb.interpolation import linear_interpolation2d, nn_interpolation2d
-import matplotlib.pyplot as plt
+from lib_gbb.utils import get_line
     
 input_geometry = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
 input_vol = "/home/daniel/projects/GBB/test_data/mean_data.nii"
@@ -47,68 +45,37 @@ n_vertex = random.choice(n_coords)
 vtx_coords = surf[0][n_vertex]
 vox_coords = np.loadtxt(input_vtx2vox)[n_vertex,:]
 
-line_coords = np.arange(vox_coords[direction] - line_size, vox_coords[direction] + line_size, step_size) + 1
-
-# exclude coordinates at the edges
-line_coords = line_coords[line_coords > 0]
-line_coords = line_coords[line_coords < np.shape(vol)[direction]] -1 
-
 # get mean white matter response
 vox_coords_all = np.loadtxt(input_vtx2vox).astype(int)
 mean_white = np.median(vol[vox_coords_all[:,0],vox_coords_all[:,1],vox_coords_all[:,2]])
 
-# get line
-line = []
-x = vox_coords[0]
-z = np.round(vox_coords[2]).astype(int)
-for i in range(len(line_coords)):
-        
-    y = line_coords[i]
-    if interpolation == "linear":
-        line.append(linear_interpolation2d(x, y, gradient[:,:,z]))
-    elif interpolation == "nearest":
-        line.append(nn_interpolation2d(x, y, gradient[:,:,z]))
-    else:
-        print("choose a valid interpolation method!")        
-
-line_coords_new = np.linspace(line_coords.min(),line_coords.max(),1000) #300 represents number of points to make between T.min and T.max
-line_spl = splrep(line_coords, line)
-line_smooth = splev(line_coords_new, line_spl)
-plt.plot(line_coords, line, 'o', line_coords_new, line_smooth)
-plt.show()
-
-# decide if in gm or wm
-#if vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] > mean_white + trans_white: 
-#    loc_new = int(np.where(line_smooth==np.min(line_smooth))[0][0]) # in gm
-#elif vol[int(vox_coords[0]),int(vox_coords[1]),int(vox_coords[2])] < mean_white - trans_white: 
-#    loc_new = int(np.where(line_smooth==np.max(line_smooth))[0][0]) # in wm
-#else:
-#    loc_new = int(np.where(np.abs(line_smooth)==np.max(np.abs(line_smooth)))[0][0])
-
-# remove edges
-#if loc_new < edge_threshold or loc_new > len(line_coords_new) - edge_threshold:
-#    line_coords_res = []
-#else:
-#    line_coords_res = line_coords_new[loc_new]
+# here is the get line function
+line_coords, line_values = get_line(vox_coords, 
+                                    gradient, 
+                                    direction, 
+                                    line_size, 
+                                    step_size, 
+                                    interpolation="linear", 
+                                    show_plot=True)
 
 exit_loop = 0
 i = 0
 loc_new = []
 while exit_loop == 0:
-    if line_smooth[i+1] > 0 and line_smooth[i] < 0:
+    if line_values[i+1] > 0 and line_values[i] < 0:
         loc_new = i
         break
-    elif line_smooth[i+1] < 0 and line_smooth[i] > 0:
+    elif line_values[i+1] < 0 and line_values[i] > 0:
         loc_new = i
         break
-    elif line_smooth[i] == 0:
+    elif line_values[i] == 0:
         loc_new = i
         break
     
-    if i >= len(line_smooth) - 2:
+    if i >= len(line_values) - 2:
         exit_loop = 1
     else:
         i += 1
 
-line_coords_res = line_coords_new[loc_new]
+line_coords_res = line_coords[loc_new]
 print(line_coords_res)
