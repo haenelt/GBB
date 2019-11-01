@@ -1,4 +1,4 @@
-def update_mesh(input_surf, vtx_n, n_iter, vtx_shift, dir=2, sigmoid_range=5, write_output=False):
+def update_mesh(input_surf, vtx_n, vtx_shift, n_iter=2, dir=2, sigmoid_range=5, write_output=False):
     """
     This function applies a shift to a vertex in a specified direction and updates vertex positions
     in the local neighbourhood. The neighbourhood is shifted in dependence of its euclidean distance
@@ -7,8 +7,8 @@ def update_mesh(input_surf, vtx_n, n_iter, vtx_shift, dir=2, sigmoid_range=5, wr
     Inputs:
         *input_surf: filename of surface mesh.
         *vtx_n: vertex number of shifted vertex.
-        *n_iter: number of iterations to collect neighbourhood vertices.
         *vtx_shift: vertex shift in mm.
+        *n_iter: number of iterations to collect neighbourhood vertices.
         *dir: direction of vertex shift.
         *sigmoid_range: strength of sigmoid filter.
         *write_output: write updated surface mesh (optional).
@@ -22,9 +22,9 @@ def update_mesh(input_surf, vtx_n, n_iter, vtx_shift, dir=2, sigmoid_range=5, wr
     import os
     import numpy as np
     import math
+    import datetime
     from nibabel.freesurfer.io import read_geometry, write_geometry
     from numpy.linalg import norm
-    from datetime.datetime import now
 
     def sigmoid(x):
         return 1 / (1 + math.exp(-x))
@@ -70,6 +70,6 @@ def update_mesh(input_surf, vtx_n, n_iter, vtx_shift, dir=2, sigmoid_range=5, wr
 
     # write updated mesh
     if write_output:
-        write_geometry(os.path.join(os.getcwd(),"upate_mesh"+now().strftime("%Y%m%d%H%M%S")),vtx_res,fac)
+        write_geometry(os.path.join(os.getcwd(),"upate_mesh_"+datetime.datetime.now().strftime("%Y%m%d%H%M%S")),vtx_res,fac)
     
     return vtx_res
