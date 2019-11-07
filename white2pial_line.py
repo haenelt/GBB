@@ -3,7 +3,7 @@ White2Pial lines
 
 The purpose of the following script is to generate lines between corresponding vertices at the white
 and pial surface to visualize the shift between matched vertices caused by realigning surfaces 
-independently.
+independently. You can either construct prisms, triangles or lines.
 
 created by Daniel Haenelt
 Date created: 07-11-2019
@@ -18,6 +18,7 @@ input_pial = "/home/daniel/Schreibtisch/p4/lh.pial"
 path_output = "/home/daniel/Schreibtisch/"
 hemi = "lh"
 basename_output = "bla"
+shape = "line" # line, triangle or prism
 step_size = 100
 
 """ do not edit below """
@@ -29,16 +30,23 @@ vtx_pial, fac_pial = read_geometry(input_pial)
 # array containing a list of considered vertices
 t = np.arange(0,len(vtx_white),step_size)
 
-# faces of a triangulated prism
-fac_new = [[0, 1, 2],
-           [3, 4, 5],
-           [0, 1, 4],
-           [0, 3, 4],
-           [1, 2, 5],
-           [1, 4, 5],
-           [0, 2, 5],
-           [0, 3, 5]]
-fac_iter = 6
+# initialise faces for specific shape
+if shape is "prism":
+    fac_new = [[0, 1, 2],
+               [3, 4, 5],
+               [0, 1, 4],
+               [0, 3, 4],
+               [1, 2, 5],
+               [1, 4, 5],
+               [0, 2, 5],
+               [0, 3, 5]]
+    fac_iter = 6
+elif shape is "triangle":
+    fac_new = [[0,1,2]]
+    fac_iter = 3
+elif shape is "line":
+    fac_new = [[0,1,0]]
+    fac_iter = 2
 
 vtx_res = []
 fac_res = []
@@ -51,15 +59,25 @@ for i in range(len(t)):
     neighbour = neighbour[neighbour != t[i]]
     neighbour = neighbour[:2]
     
-    # get all vertex points for prism on white and pial surface
-    A = list(vtx_white[t[i]])
-    B = list(vtx_white[neighbour[0]])
-    C = list(vtx_white[neighbour[1]])
-    D = list(vtx_pial[t[i]])
-    E = list(vtx_pial[neighbour[0]])
-    F = list(vtx_pial[neighbour[1]])
-    vtx_new = [A,B,C,D,E,F]
-       
+    # get all vertex points for specific shape
+    if shape is "prism":
+        A = list(vtx_white[t[i]])
+        B = list(vtx_white[neighbour[0]])
+        C = list(vtx_white[neighbour[1]])
+        D = list(vtx_pial[t[i]])
+        E = list(vtx_pial[neighbour[0]])
+        F = list(vtx_pial[neighbour[1]])
+        vtx_new = [A,B,C,D,E,F]
+    elif shape is "triangle":
+        A = list(vtx_white[t[i]])
+        B = list(vtx_white[neighbour[0]])
+        C = list(vtx_pial[t[i]])
+        vtx_new = [A,B,C]
+    elif shape is "line":
+        A = list(vtx_white[t[i]])
+        B = list(vtx_pial[t[i]])
+        vtx_new = [A,B]
+
     # update faces
     if i > 0:
         for j in range(len(fac_new)):
