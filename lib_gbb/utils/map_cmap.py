@@ -13,7 +13,7 @@ def map_cmap(input_surf, input_ref, hemi, path_output, write_txt=True, cleanup=T
     
     created by Daniel Haenelt
     Date created: 30-10-2019
-    Last modified: 30-10-2019
+    Last modified: 12-11-2019
     """
     import os
     import shutil as sh
@@ -59,11 +59,13 @@ def map_cmap(input_surf, input_ref, hemi, path_output, write_txt=True, cleanup=T
     # read surface geometry
     vtx, _ = read_geometry(input_surf)
 
-    # generate cmap
-    generate_coordinate_mapping(input_ref, 0, path_mri, suffix="ref", time=False)
-
-    # read cmap and save single dimensions
-    cmap_img = nb.load(os.path.join(path_mri,"cmap_ref.nii"))
+    # generate cmap and save single dimensions
+    cmap_img = generate_coordinate_mapping(input_ref, 
+                                           0, 
+                                           path_output = "", 
+                                           suffix = "", 
+                                           time = False, 
+                                           write_output = False)
     cmap_img.header["dim"][0] = 3
     cmap_img.header["dim"][4] = 1
     cmap_array = cmap_img.get_fdata()
