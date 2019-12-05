@@ -23,7 +23,7 @@ hemi = os.path.splitext(os.path.basename(input_geometry))[0]
 map_cmap(input_geometry, input_ref, hemi, path_output)
 
 # get gradient (second order) of input volume
-get_gradient(input_ref, path_output, input_vein)
+get_gradient(input_ref, path_output, input_vein, sigma_gaussian=1)
 
 # load data  
 surf = read_geometry(input_geometry)

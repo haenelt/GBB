@@ -1,4 +1,4 @@
-def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_dir=1, kernel_size=3):
+def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=0, sigma_vein=3, grad_dir=1, kernel_size=3):
     """
     This function computes the second order gradient in one direction (phase-encoding direction) of 
     a mean bold image. Optionally, a vein mask can be applied.
@@ -6,13 +6,14 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
         *input_vol: filename of input nifti.
         *path_output: path where output is written.
         *input_vein: binary vein mask (1: veins, 0: background).
-        *sigma_gaussian: gaussian blurring kernel for vein masking.
+        *sigma_gaussian: gaussian blurring kernel of gradient map (optional). 
+        *sigma_vein: gaussian blurring kernel for vein masking.
         *grad_dir: direction of gradient calculation.
         *kernel_size: kernel size for gradient calculation.
         
     created by Daniel Haenelt
     Date created: 30-10-2019     
-    Last modified: 31-10-2019
+    Last modified: 04-12-2019
     """
     import os
     import numpy as np
@@ -28,7 +29,7 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
     if input_vein:
         vein_array = np.round(nb.load(input_vein).get_fdata()).astype(int)
         vol_array_blurred = gaussian_filter(vol_array, 
-                                            sigma_gaussian, 
+                                            sigma_vein, 
                                             order = 0, 
                                             output = None, 
                                             mode = 'reflect', 
@@ -36,6 +37,10 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
                                             truncate = 4.0)
         
         vol_array[vein_array == 1] = vol_array_blurred[vein_array == 1]
+    
+        # write referemce image with masked veins    
+        output = nb.Nifti1Image(vol_array,vol.affine,vol.header)
+        nb.save(output,os.path.join(path_output,"mean_data_devein.nii"))
 
     res = np.zeros_like(vol_array)
     for i in range(np.shape(vol_array)[2]):
@@ -47,10 +52,17 @@ def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=3, grad_d
             res[:,:,i] = cv2.Sobel(res[:,:,i],cv2.CV_64F,1,0,kernel_size)
         else:
             print("invalid gradient direction!")
+        
+    # gaussian blurring (optional)
+    if sigma_gaussian:
+        res = gaussian_filter(res, 
+                              sigma_gaussian, 
+                              order = 0, 
+                              output = None, 
+                              mode = 'reflect', 
+                              cval = 0.0, 
+                              truncate = 4.0)
     
     # write gradient image
     output = nb.Nifti1Image(res,vol.affine,vol.header)
     nb.save(output,os.path.join(path_output,"gradient.nii"))
-    
-    output = nb.Nifti1Image(vol_array,vol.affine,vol.header)
-    nb.save(output,os.path.join(path_output,"mean_data_blurred.nii"))
