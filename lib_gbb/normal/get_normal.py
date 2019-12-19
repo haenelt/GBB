@@ -1,4 +1,4 @@
-def get_normal_surf(vtx, fac):
+def get_normal(vtx, fac):
     """
     This function computes the surfaces normals per vertex from an input surface mesh. The code is 
     taken from https://sites.google.com/site/dlampetest/python/calculating-normals-of-a-triangle-
@@ -11,7 +11,7 @@ def get_normal_surf(vtx, fac):
         
     created by Daniel Haenelt
     Date created: 13-12-2019
-    Last modified: 13-12-2019
+    Last modified: 18-12-2019
     """
     import numpy as np
 

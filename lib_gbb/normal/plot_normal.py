@@ -13,13 +13,13 @@ def plot_normal(input_surf, step_size=100, shape="line"):
     """
     import numpy as np
     from nibabel.freesurfer.io import read_geometry, write_geometry
-    from lib_gbb.normal import get_normal_surf
+    from lib_gbb.normal import get_normal
    
     # read geometry
     vtx, fac, header = read_geometry(input_surf, read_metadata=True)
     
     # get surface normals
-    normal = get_normal_surf(input_surf)
+    normal = get_normal(vtx, fac)
     
     # array containing a list of considered vertices
     t = np.arange(0,len(vtx),step_size)
