@@ -30,6 +30,6 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
         r_dist[np.abs(r_dist) != 1] = 0
     else:
         r_dist[r_dist > 0] = 1
-        r_dist[r_dist != 1] = 0
+        r_dist[r_dist != 1] = -1
 
     return r_dist
