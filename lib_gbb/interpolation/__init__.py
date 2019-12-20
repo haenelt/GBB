@@ -1,2 +1,2 @@
-from .linear_interpolation2d import linear_interpolation2d
-from .nn_interpolation2d import nn_interpolation2d
+from .linear_interpolation3d import linear_interpolation3d
+from .nn_interpolation3d import nn_interpolation3d
