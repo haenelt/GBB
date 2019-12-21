@@ -1,11 +1,11 @@
 def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05):
     """
     This function gets the length of the vertex normal along one axis. The sign is used tp infer the
-    direction between white and pial surface.
+    direction between white and pial surface.    
     Inputs:
         *vtx_source: array of source vertices (white surface).
         *fac_source: array of source faces (white surface).
-        *diff_dir: axis for distance calculation (0,1,2).
+        *diff_dir: axis for distance calculation in ras.
         *diff_threshold: threshold to ignore vertices in parallel to the considered axis.
     Outputs:
         *r_dist: normalized directions to reference mesh (pial surface).
