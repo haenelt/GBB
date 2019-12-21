@@ -2,30 +2,27 @@ import os
 import numpy as np
 import nibabel as nb
 import random
-from lib_gbb.utils import map_cmap
 from lib_gbb.utils import get_gradient
 from nibabel.freesurfer.io import read_geometry
 from lib_gbb.utils import get_line
 from lib_gbb.utils import update_mesh
 
-input_geometry = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer10_def"
-input_ref = "/home/raid2/haenelt/projects/GBB/test_data/mean_data.nii"
-input_vein = "/home/raid2/haenelt/projects/GBB/test_data/vein.nii" 
-path_output = "/data/pt_01880/test"
+input_geometry = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
+input_vein = "/home/daniel/projects/GBB/test_data/vein.nii" 
+path_output = "/home/daniel/Schreibtisch"
 line_size = 2 # in mm
 step_size = 0.4 # in mm
 line_direction = 1 # line in F/H direction (phase-encoding direction)
 
 """ do not edit below """
 
-# get nearest voxel location for each vertex
-hemi = os.path.splitext(os.path.basename(input_geometry))[0]
-map_cmap(input_geometry, input_ref, hemi, path_output)
+#%%
 
 # get gradient (second order) of input volume
 get_gradient(input_ref, path_output, input_vein, sigma_gaussian=1)
 
-# load data  
+# load data
 surf = read_geometry(input_geometry)
 vol = nb.load(input_ref).get_fdata()
 gradient = nb.load(os.path.join(path_output,"gradient.nii")).get_fdata()

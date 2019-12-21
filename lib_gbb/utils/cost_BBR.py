@@ -1,4 +1,5 @@
-def cost_BBR(vtx, fac, vol_array, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.5, h=1, t2s=True):
+def cost_BBR(vtx, fac, vol_array, n, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.5, h=1, 
+             t2s=True):
     """
     This function the cost function defined in the original BBR paper (Fischl et al., 2009). 
     Vertices should be in freesurfer ras_tkr space. First, vertex coordinates on both sides of the
@@ -12,6 +13,7 @@ def cost_BBR(vtx, fac, vol_array, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.
         *vtx: array of vertices.
         *fac: array of faces.
         *vol_array: 3D array of image volume.
+        *n: normal direction.
         *ras2vox: transformation matrix to voxel space.
         *delta_size: offset from surface in mm.
         *delta_dir: axis for offset in the ras coordinate system (0,1,2). 
@@ -29,10 +31,6 @@ def cost_BBR(vtx, fac, vol_array, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.
     import numpy as np
     from nibabel.affines import apply_affine
     from lib_gbb.interpolation import linear_interpolation3d
-    from lib_gbb.normal import get_normal_direction
-   
-    # get normal for each vertex      
-    normal = get_normal_direction(vtx, fac, diff_dir=delta_dir, diff_threshold=0.05).astype(int)
 
     # get maximum vertex coordinates in voxel space
     vol_xmax = np.shape(vol_array)[0] - 1
@@ -46,12 +44,12 @@ def cost_BBR(vtx, fac, vol_array, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.
     vtx_down[:,delta_dir] -= delta_size
     
     # sort offset in two groups according to normal direction
-    gm_pts = np.asarray([vtx_up[i,:] if normal[i] < 0 else vtx_down[i,:] for i in range(len(vtx))])
-    wm_pts = np.asarray([vtx_up[i,:] if normal[i] > 0 else vtx_down[i,:] for i in range(len(vtx))])
+    gm_pts = np.asarray([vtx_up[i,:] if n[i] < 0 else vtx_down[i,:] for i in range(len(vtx))])
+    wm_pts = np.asarray([vtx_up[i,:] if n[i] > 0 else vtx_down[i,:] for i in range(len(vtx))])
     
     # remove vertices with normals below threshold (normals perpendicular to offset direction)
-    gm_pts = gm_pts[normal != 0, :]
-    wm_pts = wm_pts[normal != 0, :]
+    gm_pts = gm_pts[n != 0, :]
+    wm_pts = wm_pts[n != 0, :]
     
     # ras2vox transformation
     gm_pts = apply_affine(ras2vox, gm_pts)

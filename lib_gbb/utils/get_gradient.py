@@ -1,4 +1,5 @@
-def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=0, sigma_vein=3, grad_dir=1, kernel_size=3):
+def get_gradient(input_vol, path_output, input_vein="", sigma_gaussian=0, sigma_vein=3, grad_dir=1, 
+                 kernel_size=3):
     """
     This function computes the second order gradient in one direction (phase-encoding direction) of 
     a mean bold image. Optionally, a vein mask can be applied.
