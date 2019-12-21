@@ -1,13 +1,12 @@
-def get_gradient(input_vol, input_vein=None, sigma_gaussian=0, sigma_vein=3, grad_dir=1, 
-                 kernel_size=3, write_output=None):
+def get_gradient(input_vol, input_vein=None, sigma_gaussian=0, grad_dir=1, kernel_size=3, 
+                 write_output=None):
     """
     This function computes the second order gradient in one direction (phase-encoding direction) of 
     a mean bold image. Optionally, a vein mask can be applied.
     Inputs:
         *input_vol: filename of input nifti.
         *input_vein: binary vein mask (1: veins, 0: background).
-        *sigma_gaussian: gaussian blurring kernel of gradient map (optional). 
-        *sigma_vein: gaussian blurring kernel for vein masking.
+        *sigma_gaussian: gaussian blurring kernel of gradient map (optional).
         *grad_dir: direction of gradient calculation.
         *kernel_size: kernel size for gradient calculation.
         *write_output: write output image (boolean).
@@ -33,7 +32,7 @@ def get_gradient(input_vol, input_vein=None, sigma_gaussian=0, sigma_vein=3, gra
         vein = nb.load(input_vein)
         vein_array = np.round(vein.get_fdata()).astype(int)
         vol_array_blurred = gaussian_filter(vol_array, 
-                                            sigma_vein, 
+                                            3, 
                                             order = 0, 
                                             output = None, 
                                             mode = 'reflect', 
