@@ -52,7 +52,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vox2ras_tkr, ras2vox_tkr, vol_max, m
         pt_end[delta_dir] += mm_line
     else:
         return shift_curr
-        
+    
     line_curr = np.zeros((n_line,3), dtype=np.float)
     line_curr[:,delta_dir] = np.linspace(0,1,n_line)    
     line_curr = (pt_end-pt_start) * line_curr + pt_start
@@ -81,7 +81,6 @@ def get_shift(vtx, fac, n, ind, grad_array, vox2ras_tkr, ras2vox_tkr, vol_max, m
     # get point of zero crossing (move from wm to gm)
     i = 0
     while i < n_line - 1:
-        
         if grad_curr[i] > 0 and grad_curr[i+1] < 0 and t2s:
             zero_curr = apply_affine(vox2ras_tkr, line_curr[i,:])
             shift_curr = vtx_curr - zero_curr

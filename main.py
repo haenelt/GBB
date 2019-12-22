@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import nibabel as nb
+from nibabel.freesurfer.io import write_geometry
 from lib_gbb.utils import get_gradient
 from nibabel.freesurfer.io import read_geometry
 from lib_gbb.normal import get_normal_direction
@@ -8,6 +9,8 @@ from lib_gbb.utils.get_adjm import get_adjm
 from lib.surface.vox2ras import vox2ras
 from lib_gbb.utils.get_shift import get_shift
 from lib_gbb.utils.cost_BBR import cost_BBR
+from lib_gbb.neighbor.nn_3d import nn_3d
+from lib_gbb.utils.update_mesh import update_mesh
 
 input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
@@ -15,6 +18,11 @@ input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
 
 # parameters
 delta_dir = 2
+mm_line = 5 # in mm
+n_line = 1000
+show_plot = True
+t2s = True
+r_size = 10 # in mm
 
 """ do not edit below """
 
@@ -45,23 +53,37 @@ cost_array.append(cost_val)
 cost_check = np.roll(cost_check, 1)
 cost_check[0] = cost_val
 
-# choose vertex
-# get shift
-# update mesh
-
 #%%
-
 
 # get current vertex point
 n_coords = np.arange(0,len(vtx),1)
-n_vertex = random.choice(n_coords)
+n_vertex = 154121#random.choice(n_coords)
 
-#%%
+# get shift
+vtx_shift = get_shift(vtx, fac, n, n_vertex, grad_array, vox2ras_tkr, ras2vox_tkr, vol_max, mm_line, 
+                      n_line, delta_dir, t2s, show_plot=True)
 
-ind = 27000
-mm_line = 3 # in mm
-n_line = 1000
-show_plot = True
-vol_xmax = 100
-vol_ymax = 100
-vol_zmax = 100
+# get neighborhood
+nn_ind = nn_3d(vtx[n_vertex,:], vtx, r_size)
+
+#%% update mesh
+if shift_curr:
+    vtx = update_mesh(vtx,vtx_shift,n_vertex,nn_ind,l_rate=1.0)
+
+# exit criterion
+# mache loop
+# dynamic cost function plot
+# write out intermediate surfaces
+# parameter changes: r_size (neighborhood), scale factor (learning rate)
+# final output: (1) surface, (2) final shifts, (3) accuracy to GM/WM border (metric for each vertex convergence)
+# count iterations, count number of Nones
+
+
+
+
+
+
+
+
+
+
