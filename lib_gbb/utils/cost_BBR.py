@@ -1,4 +1,4 @@
-def cost_BBR(vtx, fac, vol_array, n, ras2vox, delta_size=2, delta_dir=2, Q0=0, M=0.5, h=1, 
+def cost_BBR(vtx, fac, vol_array, n, ras2vox, vol_max, delta_size=2, delta_dir=2, Q0=0, M=0.5, h=1, 
              t2s=True):
     """
     This function the cost function defined in the original BBR paper (Fischl et al., 2009). 
@@ -15,6 +15,7 @@ def cost_BBR(vtx, fac, vol_array, n, ras2vox, delta_size=2, delta_dir=2, Q0=0, M
         *vol_array: 3D array of image volume.
         *n: normal direction.
         *ras2vox: transformation matrix to voxel space.
+        *vol2max: array of maximum voxel coordinates in x-, y-, and z-direction. 
         *delta_size: offset from surface in mm.
         *delta_dir: axis for offset in the ras coordinate system (0,1,2). 
         *Q0: offset parameter in percent contrast measure.
@@ -31,11 +32,6 @@ def cost_BBR(vtx, fac, vol_array, n, ras2vox, delta_size=2, delta_dir=2, Q0=0, M
     import numpy as np
     from nibabel.affines import apply_affine
     from lib_gbb.interpolation import linear_interpolation3d
-
-    # get maximum vertex coordinates in voxel space
-    vol_xmax = np.shape(vol_array)[0] - 1
-    vol_ymax = np.shape(vol_array)[1] - 1
-    vol_zmax = np.shape(vol_array)[2] - 1
     
     # get shifted vertices
     vtx_up = vtx.copy()
@@ -57,12 +53,12 @@ def cost_BBR(vtx, fac, vol_array, n, ras2vox, delta_size=2, delta_dir=2, Q0=0, M
     
     # get location of outlier coordinates
     outlier = np.zeros(len(gm_pts), dtype=np.int8())
-    outlier[gm_pts[:,0] > vol_xmax] = 1
-    outlier[gm_pts[:,1] > vol_ymax] = 1
-    outlier[gm_pts[:,2] > vol_zmax] = 1
-    outlier[wm_pts[:,0] > vol_xmax] = 1
-    outlier[wm_pts[:,1] > vol_ymax] = 1
-    outlier[wm_pts[:,2] > vol_zmax] = 1
+    outlier[gm_pts[:,0] > vol_max[0] - 1] = 1
+    outlier[gm_pts[:,1] > vol_max[1] - 1] = 1
+    outlier[gm_pts[:,2] > vol_max[2] - 1] = 1
+    outlier[wm_pts[:,0] > vol_max[0] - 1] = 1
+    outlier[wm_pts[:,1] > vol_max[1] - 1] = 1
+    outlier[wm_pts[:,2] > vol_max[2] - 1] = 1
     outlier[gm_pts[:,0] < 0] = 1
     outlier[gm_pts[:,1] < 0] = 1
     outlier[gm_pts[:,2] < 0] = 1
