@@ -4,7 +4,7 @@ def plot_normal_direction(input_surf, diff_dir=2, diff_threshold=0.05):
     white surface vertex normals along one axis.
     Inputs:
         *input_surf: filename of source mesh (white surface).
-        *diff_dir: axis for distance calculation (0,1,2).
+        *diff_dir: axis for distance calculation in ras space.
         *diff_threshold: threshold to ignore vertices in parallel to the considered axis.
         
     created by Daniel Haenelt

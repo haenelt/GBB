@@ -1,7 +1,7 @@
 def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05):
     """
-    This function gets the length of the vertex normal along one axis. The sign is used tp infer the
-    direction between white and pial surface.    
+    This function gets the length of the vertex normal along one axis. The sign is used to infer the
+    direction between white and pial surface. Vertices are in ras space.
     Inputs:
         *vtx_source: array of source vertices (white surface).
         *fac_source: array of source faces (white surface).

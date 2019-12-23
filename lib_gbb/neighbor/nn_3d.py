@@ -2,7 +2,7 @@ def nn_3d(vtx0, vtx, r_size):
     """
     This function all nearest neighbors found within a sphere with a radius defined in ras
     coordinates. Note that the defined neighborhood does not have to be fully connected in this
-    case.
+    case. Vertex coordinates are in ras space.
     Inputs:
         *vtx0: vertex point.
         *vtx: array of vertices.
