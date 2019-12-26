@@ -6,6 +6,18 @@
 ## Prerequisites
 ## Comments
 
+
+## necessary packages
+os
+random
+numpy
+nibabel
+matplotlib
+one function from lib
+scipy
+sys
+cv2
+
 Algorithm
 - step 1: choose randomly vertex point on surface mesh
 - step 2: get gradient along one direction

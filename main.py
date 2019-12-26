@@ -13,8 +13,8 @@ import numpy as np
 import nibabel as nb
 import matplotlib.pyplot as plt
 from nibabel.freesurfer.io import write_geometry
-from lib_gbb.utils import get_gradient
 from nibabel.freesurfer.io import read_geometry
+from lib_gbb.utils import get_gradient
 from lib.surface.vox2ras import vox2ras
 from lib_gbb.normal import get_normal_direction
 from lib_gbb.utils.get_shift import get_shift
