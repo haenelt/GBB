@@ -20,7 +20,7 @@ def plot_normal_direction(input_surf, diff_dir=2, diff_threshold=0.05):
     vtx_source, fac_source = read_geometry(input_surf)
 
     # get directions 
-    r_dist = get_normal_direction(vtx_source, fac_source, diff_dir, diff_threshold)
+    r_dist, _ = get_normal_direction(vtx_source, fac_source, diff_dir, diff_threshold)
 
     # write output
     header = nb.freesurfer.mghformat.MGHHeader()

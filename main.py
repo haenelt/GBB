@@ -1,3 +1,12 @@
+"""
+GBB
+
+bla...
+
+created by Daniel Haenelt
+Date created: 26-12-2019
+Last modified: 26-12-2019
+"""
 import os
 import random
 import numpy as np
@@ -17,7 +26,7 @@ from lib_gbb.utils.write_shift import write_shift
 input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters12"
+path_output = "/home/daniel/Schreibtisch/parameters13"
 name_output = "lh.layer10_refined"
 
 # parameters
@@ -73,7 +82,7 @@ vtx_new = vtx_old.copy()
 vol_max = np.shape(vol_array)
 
 # get normals
-n = get_normal_direction(vtx_old, fac_old, line_dir)
+n, vtx_norm = get_normal_direction(vtx_old, fac_old, line_dir)
 
 # create textfile
 file = open(os.path.join(path_output,name_output+"_info.txt"),"w")
@@ -111,7 +120,7 @@ while i < max_iter:
     
     # get cost function
     if c_cost_count < n_cost_count:
-        c_cost_size += cost_BBR(vtx_new, fac_old, vol_array, n, ras2vox_tkr, vol_max, 2, line_dir)
+        c_cost_size += cost_BBR(vtx_new, fac_old, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
     
     # get shift
     vtx_shift = get_shift(vtx_new, fac_old, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 

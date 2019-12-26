@@ -9,6 +9,7 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
         *diff_threshold: threshold to ignore vertices in parallel to the considered axis.
     Outputs:
         *r_dist: normalized directions to reference mesh (pial surface).
+        *norm: normal per vertex.
         
     created by Daniel Haenelt
     Date created: 13-12-2019      
