@@ -28,4 +28,4 @@ x += 2
 ```
 
 ## References
-<a id="1">[1]</a> Greve DN, Fischl B, Accurate and robust brain image alignment using boundary-based registration, Neuroimage 48(1), 63--72 (2009).
+<a id="1">[1]</a> Greve DN, Fischl B, Accurate and robust brain image alignment using boundary-based registration, Neuroimage 48(1), 63-/-72 (2009).
