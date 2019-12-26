@@ -24,7 +24,31 @@ GBB | Gradient-Based Boundary
 
 ## Important parameters
 ```python
-x += 2
+input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
+input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
+path_output = "/home/daniel/Schreibtisch/parameters13"
+name_output = "lh.layer10_refined"
+
+# parameters
+t2s = True # underlying image contrast
+line_dir = 2 # line axis in ras convention
+line_length = 3 # line length in one direction in mm
+r_size = [5, 2.5, 1] # neighborhood radius in mm
+l_rate = [0.1, 0.1, 0.1] # learning rate
+max_iterations = [50000, 50000, 50000] # maximum iterations
+cost_threshold = [1e-8,1e-8,1e-8] # cost function threshold
+
+# gradient preparation
+sigma = 1
+kernel_size = 3
+
+# output
+show_line = False
+show_cost = True
+write_gradient = True
+write_intermediate = True
+write_step = 1000
 ```
 
 ## References

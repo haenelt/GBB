@@ -103,7 +103,7 @@ while i < max_iter:
     if i == 0:
         print("start coarse registration at iteration: "+str(i))
         file.write("start coarse registration at iteration: "+str(i)) 
-    elif i == max_iterations[step] or c_cost_check == n_cost_check:
+    elif i == max_iterations[0] or c_cost_check == n_cost_check:
         print("start medium registration at iteration: "+str(i))
         file.write("start medium registration at iteration: "+str(i))
         step = 1
