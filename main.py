@@ -35,8 +35,8 @@ line_dir = 2 # line axis in ras convention
 line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
-max_iterations = [100000, 100000, 100000] # maximum iterations
-cost_threshold = [1e-4,1e-4,1e-4] # cost function threshold
+max_iterations = [100000, 250000, 500000] # maximum iterations
+cost_threshold = [1e-3,1e-4,1e-5] # cost function threshold
 cleanup = True
 
 # gradient preparation
@@ -90,6 +90,11 @@ max_iter = np.sum(max_iterations)
 n_steps = len(r_size)
 vol_max = np.shape(vol_array)
 
+# cost function parameters
+n_cost_count = 50 # number of time points for cost array average
+n_cost_size = 1000 # step size between cost array points
+n_cost_check = 5 # number successive time points below threshold for convergent registration
+
 # do surface refinement
 i = 0
 counter = 0
@@ -98,16 +103,13 @@ cost_array = []
 c_cost_count = 0
 c_cost_size = 0
 c_cost_check = 0
-n_cost_count = 50
-n_cost_size = 1000
-n_cost_check = 5
 while i < max_iter:
     
     if i == max_iterations[step] or c_cost_check == n_cost_check:
-        print("start registration step "+str(step)+" at iteration "+str(i))
-        file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
         c_cost_check = 0
         step += 1
+        print("start registration step "+str(step)+" at iteration "+str(i))
+        file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
        
     if not np.mod(i,n_cost_size):
         c_cost_count = 0
@@ -155,6 +157,10 @@ while i < max_iter:
     if c_cost_check == n_cost_check and step == n_steps - 1:
         print("Registration converged!")
         file.write("Registration converged!\n")
+        break
+    elif i == max_iterations[step] and step == n_steps - 1:
+        print("Registration did not converge!")
+        file.write("Registration did not converge!\n")
         break
 
     # write intermediate surfaces
