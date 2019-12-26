@@ -1,7 +1,7 @@
 """
 GBB
 
-bla...
+This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
