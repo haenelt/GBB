@@ -23,10 +23,11 @@ from lib_gbb.neighbor.nn_3d import nn_3d
 from lib_gbb.utils.update_mesh import update_mesh
 from lib_gbb.utils.write_shift import write_shift
 
+# input files
 input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters14"
+path_output = "/home/daniel/Schreibtisch/parameters1"
 name_output = "lh.layer10_refined"
 
 # parameters
@@ -36,7 +37,7 @@ line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
 max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3,1e-4,1e-5] # cost function threshold
+cost_threshold = [1e-3,5e-4,1e-4] # cost function threshold
 cleanup = True
 
 # gradient preparation
@@ -100,14 +101,16 @@ i = 0
 counter = 0
 step = 0
 cost_array = []
+c_steps = 0
 c_cost_count = 0
 c_cost_size = 0
 c_cost_check = 0
 while i < max_iter:
     
-    if i == max_iterations[step] or c_cost_check == n_cost_check:
-        c_cost_check = 0
+    if i == max_iterations[step] + c_steps or c_cost_check == n_cost_check:
         step += 1
+        c_cost_check = 0
+        c_steps += i
         print("start registration step "+str(step)+" at iteration "+str(i))
         file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
        
