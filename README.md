@@ -26,11 +26,11 @@ GBB | Gradient-Based Boundary
 ## Explanation of input parameters
 ```python
 # input files
-input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters1"
-name_output = "lh.layer10_refined"
+path_output = "/home/daniel/Schreibtisch/parameters_test_test_test_test"
 
 # parameters
 t2s = True # underlying image contrast
@@ -39,17 +39,20 @@ line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
 max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3,5e-4,1e-4] # cost function threshold
+cost_threshold = [1e-3, 5e-4, 1e-4] # cost function threshold
 cleanup = True
 
 # gradient preparation
-sigma = 1 # gaussian filter
-kernel_size = 3 # kernel size used by gradient calculation
+g_sigma = 1 # gaussian filter
+g_kernel = 3 # kernel size used by gradient calculation
+
+# deforamtion field
+o_sigma = 1
 
 # output
 show_cost = True # show temporary cost function
 write_gradient = True # write gradient image
-write_step = 1000 # step size to write intermediate surfaces (if set > 0)
+write_step = 10000 # step size to write intermediate surfaces (if set > 0)
 ```
 
 - number of steps should be larger than number of vertices -> hard to achieve

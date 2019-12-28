@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 26-12-2019
+Last modified: 28-12-2019
 """
 import os
 import shutil
@@ -14,21 +14,23 @@ import nibabel as nb
 import matplotlib.pyplot as plt
 from nibabel.freesurfer.io import write_geometry
 from nibabel.freesurfer.io import read_geometry
-from lib_gbb.utils import get_gradient
 from lib.surface.vox2ras import vox2ras
-from lib_gbb.normal import get_normal_direction
+from lib_gbb.normal.get_normal_direction import get_normal_direction
+from lib_gbb.neighbor.nn_3d import nn_3d
+from lib_gbb.utils.get_gradient import get_gradient
 from lib_gbb.utils.get_shift import get_shift
 from lib_gbb.utils.cost_BBR import cost_BBR
-from lib_gbb.neighbor.nn_3d import nn_3d
 from lib_gbb.utils.update_mesh import update_mesh
 from lib_gbb.utils.write_shift import write_shift
+from lib_gbb.utils.deformation_field import deformation_field
+from lib_gbb.utils.apply_shift import apply_shift
 
 # input files
-input_surf = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
+input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters1"
-name_output = "lh.layer10_refined"
+path_output = "/home/daniel/Schreibtisch/parameters_test_test_test_test"
 
 # parameters
 t2s = True # underlying image contrast
@@ -37,19 +39,25 @@ line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
 max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3,5e-4,1e-4] # cost function threshold
+cost_threshold = [1e-3, 5e-4, 1e-4] # cost function threshold
 cleanup = True
 
 # gradient preparation
-sigma = 1 # gaussian filter
-kernel_size = 3 # kernel size used by gradient calculation
+g_sigma = 1 # gaussian filter
+g_kernel = 3 # kernel size used by gradient calculation
+
+# deforamtion field
+o_sigma = 1
 
 # output
 show_cost = True # show temporary cost function
 write_gradient = True # write gradient image
-write_step = 1000 # step size to write intermediate surfaces (if set > 0)
+write_step = 10000 # step size to write intermediate surfaces (if set > 0)
 
 """ do not edit below """
+
+# basename for output
+name_output = os.path.basename(input_white)
 
 # make output folder
 if not os.path.exists(path_output):
@@ -65,9 +73,9 @@ if not os.path.exists(path_temp):
 vox2ras_tkr, ras2vox_tkr = vox2ras(input_ref)
 
 # load data
-vtx_old, fac_old = read_geometry(input_surf)
+vtx_old, fac_old = read_geometry(input_white)
 vol_array = nb.load(input_ref).get_fdata()
-grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, sigma, kernel_size, write_gradient)
+grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, write_gradient)
 vein_array = nb.load(input_vein).get_fdata() 
 
 # get gradient to output folder
@@ -182,9 +190,33 @@ file.write("Final number of skipped iterations: "+str(counter)+"\n")
 # close textfile
 file.close()
 
-# write output surface and vertex shifts
-write_geometry(os.path.join(path_output,name_output), vtx_new, fac_old)
-write_shift(vtx_new, vtx_old, path_output, name_output)
+# get deformation field
+print("write deformation field")
+deformation_array = deformation_field(vtx_old, vtx_new, input_ref, line_dir, 
+                                      vox2ras_tkr, ras2vox_tkr, 
+                                      o_sigma, 
+                                      path_output=path_output, 
+                                      name_output=name_output+"_deformation", 
+                                      write_output=True)
+
+# get shift
+write_shift(vtx_new, vtx_old, line_dir, 
+            path_output=path_output, 
+            name_output=name_output+"_shift")
+
+# apply deformation to white and pial surface
+print("apply deformation")
+vtx, fac = read_geometry(input_white)
+_ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+                path_output=path_output, 
+                name_output=os.path.basename(input_white)+"_refined", 
+                write_output=True)
+
+vtx, fac = read_geometry(input_pial)
+_ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+                path_output=path_output, 
+                name_output=os.path.basename(input_pial)+"_refined", 
+                write_output=True)
 
 # save cost array
 np.save(os.path.join(path_output,name_output+"_cost"), cost_array)

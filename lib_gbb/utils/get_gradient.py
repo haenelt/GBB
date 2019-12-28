@@ -14,36 +14,17 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_o
         
     created by Daniel Haenelt
     Date created: 30-10-2019     
-    Last modified: 23-12-2019
+    Last modified: 28-12-2019
     """
-    import sys
     import os
     import cv2
     import numpy as np
     import nibabel as nb
-    from nibabel.affines import apply_affine
     from scipy.ndimage.filters import gaussian_filter
+    from lib_gbb.utils.line_ras2vox import line_ras2vox
 
-    # get line direction in ras space
-    if line_dir == 0:
-        pt_ras = [1,0,0]
-    elif line_dir == 1:
-        pt_ras = [0,1,0]
-    elif line_dir == 2:
-        pt_ras = [0,0,1]
-    else:
-        sys.exit("Invalid axis direction in gradient calculation!")
-
-    # get unit vector in voxel space
-    pt0_vox = apply_affine(ras2vox, [0,0,0])
-    pt_vox = apply_affine(ras2vox, pt_ras)
-
-    pt_vox = np.abs( pt_vox - pt0_vox )
-    pt_vox = pt_vox / np.max(pt_vox)
-    pt_vox = pt_vox.astype(int)
-
-    # updated line direction in voxel space
-    line_dir = np.where(pt_vox == 1)[0][0]
+    # get line direction in voxel space
+    line_dir = line_ras2vox(line_dir, ras2vox)
 
     # load input
     vol = nb.load(input_vol)

@@ -22,7 +22,7 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 26-12-2019
+    Last modified: 27-12-2019
     """
     import numpy as np
     from nibabel.affines import apply_affine
@@ -51,13 +51,13 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
     outlier[wm_pts[:,1] < 0] = 1
     outlier[wm_pts[:,2] < 0] = 1
     
+    # get rid of outliers
+    gm_pts = gm_pts[outlier == 0]
+    wm_pts = wm_pts[outlier == 0]
+    
     # get values in GM and WM
     gm_val = linear_interpolation3d(gm_pts[:,0], gm_pts[:,1], gm_pts[:,2], vol_array)
     wm_val = linear_interpolation3d(wm_pts[:,0], wm_pts[:,1], wm_pts[:,2], vol_array)
-    
-    # get rid of outliers
-    gm_val = gm_val[outlier == 0]
-    wm_val = wm_val[outlier == 0]
     
     # percent contrast measure
     if t2s == True:

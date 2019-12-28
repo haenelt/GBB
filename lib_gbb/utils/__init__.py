@@ -4,3 +4,6 @@ from .get_adjm import get_adjm
 from .get_shift import get_shift
 from .update_mesh import update_mesh
 from .write_shift import write_shift
+from .line_ras2vox import line_ras2vox
+from .apply_shift import apply_shift
+from .deformation_field import deformation_field
