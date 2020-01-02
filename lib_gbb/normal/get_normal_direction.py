@@ -6,7 +6,7 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
         *vtx_source: array of source vertices (white surface).
         *fac_source: array of source faces (white surface).
         *diff_dir: axis for distance calculation in ras.
-        *diff_threshold: threshold to ignore vertices in parallel to the considered axis.
+        *diff_threshold: threshold to ignore noprmals perpendicular to the considered axis.
     Outputs:
         *r_dist: normalized directions to reference mesh (pial surface).
         *norm: normal per vertex.

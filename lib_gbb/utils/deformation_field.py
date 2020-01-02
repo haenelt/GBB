@@ -1,7 +1,7 @@
 def deformation_field(vtx_old, vtx_new, input_ref, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1,
                       path_output="", name_output="", write_output=True):
     """
-    This function computes a deformation field from a shifted array of vertices. Each voxel in the 
+    This function computes a deformation field from a array of shifted vertices. Each voxel in the 
     deformation field corresponds to a shift in voxel space along one direction. Optionally, a 
     gaussian filter can be applied to the final deformation field.
     Inputs:

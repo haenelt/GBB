@@ -4,7 +4,7 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
     2009). Vertices should be in freesurfer ras_tkr space. First, vertex coordinates on both sides
     normal to the surface in 1 mm distance are computed. Based on a tranformation matrix, vertex 
     coordinates are transformed then into the voxel space of the input array. Vertices are excluded 
-    with coordinates exceeding the array limits. GM and WM values are are sampled using linear 
+    with coordinates exceeding the array limits. GM and WM values are sampled using linear 
     interpolation. A percent contrast measure and the cost function value are then calculated.
     Inputs:
         *vtx: array of vertices.

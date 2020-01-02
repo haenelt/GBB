@@ -5,7 +5,7 @@ def plot_normal_direction(input_surf, diff_dir=2, diff_threshold=0.05):
     Inputs:
         *input_surf: filename of source mesh (white surface).
         *diff_dir: axis for distance calculation in ras space.
-        *diff_threshold: threshold to ignore vertices in parallel to the considered axis.
+        *diff_threshold: threshold to ignore normals perpendicular to the considered axis.
         
     created by Daniel Haenelt
     Date created: 13-12-2019         

@@ -13,7 +13,7 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_o
         *res: gradient array.
         
     created by Daniel Haenelt
-    Date created: 30-10-2019     
+    Date created: 30-10-2019
     Last modified: 28-12-2019
     """
     import os

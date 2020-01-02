@@ -2,23 +2,23 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
               line_length=3, line_dir=2, t2s=True, show_plot=True):
     """
     This function computes the vertex shift in one direction towards the highest GM/WM gradient. 
-    First, the vertex end points of the line are computed and it is checked which side points
-    towards WM. A line between both points is defined and values of the second order gradient are
-    interpolated onto line points. Starting from the current vertex point, the nearest zero crossing
-    is found (if it exists). If a t2s contrast is considered, the intensity values are goind from 
-    dark to bright for WM -> GM. Therefore, we expected a transition from positive to negative in 
-    this case for the around the zero crossing in the second order gradient. If the vertex shift
-    lies within an identified vein, no value is returned. Vertex coordinates are in ras space.
+    First, vertex end points of the line are computed and it is checked which side points towards 
+    WM. A line between both points is calculated and values of the second order gradient are 
+    sampled onto the line. Starting from the current vertex point, the nearest zero crossing
+    is found (if it exists). If a t2s contrast is considered, the intensity values are going from 
+    dark to bright for WM -> GM. Therefore, we expect a transition from positive to negative in 
+    this case for the zero crossing in the second order gradient. If the line lies within an 
+    identified vein, no value is returned. Vertex coordinates are in ras space.
     Inputs:
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
         *n: array of corresponding directions along one axis.
         *ind: current vertex index.
-        *grad_array: 3D array of second order gradient values along one axis. 
+        *grad_array: 3D array of second order gradient values along one axis.
         *vein_array: 3D array with masked veins.
         *vox2ras: voxel to ras transformation matrix.
         *ras2vox: ras to voxel transformation matrix.
-        *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction. 
+        *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction.
         *line_length: length of vertex shift in one direction in mm.
         *line_dir: line direction in ras conventions.
         *t2s: wm darker than gm (boolean).
@@ -27,7 +27,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         *shift_curr: shift of vertex in ras coordinates.
         
     created by Daniel Haenelt
-    Date created: 21-12-2019    
+    Date created: 21-12-2019
     Last modified: 22-12-2019
     """
     import numpy as np

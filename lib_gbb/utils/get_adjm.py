@@ -9,7 +9,7 @@ def get_adjm(input_surf):
         *sparse_adjm: sparse adjacency matrix.
         
     created by Daniel Haenelt
-    Date created: 20-12-2019         
+    Date created: 20-12-2019
     Last modified: 20-12-2019
     """
     import numpy as np

@@ -1,7 +1,7 @@
 def nn_2d(ind, adjm, n_iter):
     """
     This function finds all nearest neigbors on the surface mesh which show a connection within the
-    numbers of iterations steps.
+    number of iterations steps.
     Inputs:
         *ind: vertex index.
         *adjm: sparse adjacency matrix (in csr_matrix format).

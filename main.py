@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 28-12-2019
+Last modified: 02-01-2020
 """
 import os
 import shutil
@@ -33,8 +33,8 @@ input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
 path_output = "/home/daniel/Schreibtisch/parameters_test_test_test_test"
 
 # parameters
-t2s = True # underlying image contrast
-line_dir = 2 # line axis in ras convention
+t2s = True # underlying image contrast (boolean)
+line_dir = 2 # line axis in ras convention (0,1,2)
 line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
@@ -47,7 +47,7 @@ g_sigma = 1 # gaussian filter
 g_kernel = 3 # kernel size used by gradient calculation
 
 # deforamtion field
-o_sigma = 1
+o_sigma = 1 # gaussian filter
 
 # output
 show_cost = True # show temporary cost function
@@ -143,7 +143,7 @@ while i < max_iter:
     else:
         counter += 1
     
-    # exist criterion
+    # update exit criterion
     if c_cost_count  == n_cost_count:
         cost_array.append(c_cost_size / n_cost_count)
         c_cost_size = 0
@@ -165,6 +165,7 @@ while i < max_iter:
             plt.ylabel("Cost function")
             plt.pause(0.01)
     
+    # check exit criterion
     if c_cost_check == n_cost_check and step == n_steps - 1:
         print("Registration converged!")
         file.write("Registration converged!\n")
