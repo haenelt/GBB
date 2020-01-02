@@ -1,66 +1,18 @@
 GBB | Gradient-Based Boundary
 ===
 
-- registration between anatomy and functional image is difficult
-- especially for high-resolution applications
-- BBR registration shows robust registration between different contrasts [[1]](#1).
-- similar approach
-- assume surface and image in same space (e.g. after first rigid alignment)
-- vertices are randomly chosen
-- position of vertex and neighborhood is updated with (shifted towards the GM/WM) boundary (highest contrast)
-- contrast is only checked along one axis
-- this should coincide to phase-encoding direction
-- especially, in t2* images, signal dropouts can lead to falses boundary detections
-- therefore, a vein mask should be given as well
-- so, we avoid shifting vertices into veins
-- a cost function is computed equivalent to the BBR paper
-- refinement stops if maximum of iterations are reached
-- or if cost function reaches steady-state
-- exemplary data can is given
+The gradient-based boundary surface mesh refinement is based on the idea used in boundary-based registration (BBR) which is a method for robust alignment of different image contrasts [[1]](#1). In BBR, the clear GM/WM border of the target image is used to find the transformation of the source image which maximizes its contrast along the tissue boundary of the target image. This method only finds a global rigid-body transformation between both images. Different distortions between source and target image can therefore not adequately taken into account. The proposed method turns the idea of BBR around and locally deforms the surface boundary of the target image to maximize the tissue contrast in the source image.
+
+## Method
+We assume that we have a (distorted) mean epi image and a surface mesh from a (non-distorted) anatomy in the same space after applying a rigid-body transformation to the GM/WM surface boundary based on another registration method (see example data). We now randomly select single vertices in an iterative procedure. In each step, we calculate the gradient along the phase-encoding direction of the epi acquisition around the selected vertex point. The vertex is then shifted a small amount (learning rate) towards the point of maximum GM/WM contrast. Neighboring vertices are also shifted depending on their distance to the considered vertex point. During the iterative procedure, we shrink the neighborhood size and the learning rate. A vein mask should also be applied to prevent the surface to fall into large intenstiy holes. A cost function is computed equivalent to the function used in the BBR method. The procedure stops if the maximum of iterations is reached or if the cost function saturates.
 
 ## Prerequisites
 - Freesurfer should be included in the search path
 - used python packages: os, sys, shutil, subprocess, numpy, nibabel, matplotlib, scipy, cv2
-- one function from my scripts repository
+- one function from my scripts repository is used
 
-## Explanation of input parameters
-```python
-# input files
-input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
-input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def"
-input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
-input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters_test_test_test_test"
-
-# parameters
-t2s = True # underlying image contrast
-line_dir = 2 # line axis in ras convention
-line_length = 3 # line length in one direction in mm
-r_size = [5, 2.5, 1] # neighborhood radius in mm
-l_rate = [0.1, 0.1, 0.1] # learning rate
-max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3, 5e-4, 1e-4] # cost function threshold
-cleanup = True
-
-# gradient preparation
-g_sigma = 1 # gaussian filter
-g_kernel = 3 # kernel size used by gradient calculation
-
-# deforamtion field
-o_sigma = 1
-
-# output
-show_cost = True # show temporary cost function
-write_gradient = True # write gradient image
-write_step = 10000 # step size to write intermediate surfaces (if set > 0)
-```
-
-- number of steps should be larger than number of vertices -> hard to achieve
-- for approximately the first 1000 steps, learning rate should start with a value that is close to unity -> we do not do that because we have already a good starting point
-- normally, learning rate is decreased -> we keep the same small learning rate over all iterations
-- we decrease neighborhood size over time (three steps; couplint strength between neighbors)
-- at the end: neighborhood size and learning rate is small
-
+## Example data
+A time series mean from a GE-EPI acquisition is used as target image. A binary vein mask and surface meshs are given as well. Surface meshs were computed from a separete MP2RAGE acquisition using FreeSurfer and were rigidly aligned to the epi image. To see the effect of the proposed method, a functional contrast image from an visual experiment can be found as well.
 
 ## References
 <a id="1">[1]</a> Greve DN, Fischl B, Accurate and robust brain image alignment using boundary-based registration, Neuroimage 48(1), 63&ndash;72 (2009).
