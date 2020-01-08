@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 02-01-2020
+Last modified: 08-01-2020
 """
 import os
 import shutil
@@ -26,11 +26,11 @@ from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
 
 # input files
-input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def"
-input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def"
-input_ref = "/home/daniel/projects/GBB/test_data/mean_data.nii"
-input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/parameters_test_test_test_test"
+input_white = "/data/pt_01880/odc_temp/surface/def/lh.layer10_def2_smooth"
+input_pial = "/data/pt_01880/odc_temp/surface/def/lh.layer0_def2_smooth"
+input_ref = "/data/pt_01880/Experiment1_ODC/p3/odc/GE_EPI2/diagnosis/mean_data.nii"
+input_vein = "/data/pt_01880/odc_temp/surface/vein/vein.nii"
+path_output = "/data/pt_01880/odc_temp/surface/refined"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
@@ -40,17 +40,17 @@ r_size = [5, 2.5, 1] # neighborhood radius in mm
 l_rate = [0.1, 0.1, 0.1] # learning rate
 max_iterations = [100000, 250000, 500000] # maximum iterations
 cost_threshold = [1e-3, 5e-4, 1e-4] # cost function threshold
-cleanup = True
+cleanup = False
 
 # gradient preparation
 g_sigma = 1 # gaussian filter
 g_kernel = 3 # kernel size used by gradient calculation
 
-# deforamtion field
+# deformation field
 o_sigma = 1 # gaussian filter
 
 # output
-show_cost = True # show temporary cost function
+show_cost = False # show temporary cost function
 write_gradient = True # write gradient image
 write_step = 10000 # step size to write intermediate surfaces (if set > 0)
 
@@ -65,7 +65,7 @@ if not os.path.exists(path_output):
 
 tmp = np.random.randint(0, 10, 5)
 tmp_string = ''.join(str(i) for i in tmp)
-path_temp = os.path.join(path_output,tmp_string)
+path_temp = os.path.join(path_output,"tmp_"+tmp_string)
 if not os.path.exists(path_temp):
     os.makedirs(path_temp)
 
