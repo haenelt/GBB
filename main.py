@@ -28,9 +28,9 @@ from lib_gbb.utils.apply_shift import apply_shift
 # input files
 input_white = "/data/pt_01880/odc_temp/surface/def/lh.layer10_def2_smooth"
 input_pial = "/data/pt_01880/odc_temp/surface/def/lh.layer0_def2_smooth"
-input_ref = "/data/pt_01880/Experiment1_ODC/p3/odc/GE_EPI2/diagnosis/mean_data.nii"
+input_ref = "/data/pt_01880/odc_temp/surface/rBBR_enhanced/magnitude_enhanced_linear_def-img.nii"
 input_vein = "/data/pt_01880/odc_temp/surface/vein/vein.nii"
-path_output = "/data/pt_01880/odc_temp/surface/refined"
+path_output = "/data/pt_01880/odc_temp/surface/refined_enhanced"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
