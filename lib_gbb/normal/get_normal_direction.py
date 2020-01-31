@@ -13,7 +13,7 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
         
     created by Daniel Haenelt
     Date created: 13-12-2019      
-    Last modified: 18-12-2019
+    Last modified: 31-01-2020
     """
     import numpy as np
     from lib_gbb.normal import get_normal
@@ -22,7 +22,7 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
     norm = get_normal(vtx_source, fac_source)
     
     # get distance along one axis
-    r_dist = norm[:, diff_dir]
+    r_dist = norm[:, diff_dir].copy()
     
     # get directions
     if diff_threshold > 0:

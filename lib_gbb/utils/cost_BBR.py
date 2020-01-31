@@ -22,15 +22,15 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 27-12-2019
+    Last modified: 31-01-2020
     """
     import numpy as np
     from nibabel.affines import apply_affine
     from lib_gbb.interpolation import linear_interpolation3d
        
     # sort offset in two groups according to normal direction
-    gm_pts = vtx - vtx_n
-    wm_pts = vtx + vtx_n
+    gm_pts = vtx + vtx_n
+    wm_pts = vtx - vtx_n
     
     # ras2vox transformation
     gm_pts = apply_affine(ras2vox, gm_pts)

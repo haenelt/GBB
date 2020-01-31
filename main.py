@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 08-01-2020
+Last modified: 31-01-2020
 """
 import os
 import shutil
@@ -26,11 +26,11 @@ from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
 
 # input files
-input_white = "/data/pt_01880/odc_temp/surface/def/lh.layer10_def2_smooth"
-input_pial = "/data/pt_01880/odc_temp/surface/def/lh.layer0_def2_smooth"
-input_ref = "/data/pt_01880/odc_temp/surface/rBBR_enhanced/magnitude_enhanced_linear_def-img.nii"
-input_vein = "/data/pt_01880/odc_temp/surface/vein/vein.nii"
-path_output = "/data/pt_01880/odc_temp/surface/refined_enhanced"
+input_white = "/home/raid2/haenelt/projects/GBB/test_data/surf/rigid/lh.layer10_def2_smooth"
+input_pial = "/home/raid2/haenelt/projects/GBB/test_data/surf/rigid/lh.layer0_def2_smooth"
+input_ref = "/home/raid2/haenelt/projects/GBB/test_data/data/mean_epi_enhanced.nii"
+input_vein = "/home/raid2/haenelt/projects/GBB/test_data/data/vein.nii"
+path_output = "/home/raid2/haenelt/test"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
@@ -50,7 +50,7 @@ g_kernel = 3 # kernel size used by gradient calculation
 o_sigma = 1 # gaussian filter
 
 # output
-show_cost = False # show temporary cost function
+show_cost = True # show temporary cost function
 write_gradient = True # write gradient image
 write_step = 10000 # step size to write intermediate surfaces (if set > 0)
 

@@ -9,7 +9,7 @@ We assume that we have a (distorted) mean epi image and a surface mesh from a (n
 ## Prerequisites
 - Freesurfer should be included in the search path
 - used python packages: os, sys, shutil, subprocess, numpy, nibabel, matplotlib, scipy, cv2
-- one function from my scripts repository is used
+- some functions from my scripts repository are used as well
 
 ## Example data
 A time series mean from a GE-EPI acquisition is used as target image. A binary vein mask and surface meshs are given as well. Surface meshs were computed from a separete MP2RAGE acquisition using FreeSurfer and were rigidly aligned to the epi image. To see the effect of the proposed method, a functional contrast image from an visual experiment can be found as well.

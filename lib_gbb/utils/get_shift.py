@@ -28,7 +28,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 22-12-2019
+    Last modified: 31-01-2020
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -89,10 +89,10 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
     j = 0
     switch = 0
     while i > 0 and i < n_line - 1:
-        if grad_curr[i] > 0 and grad_curr[i+1] < 0 and t2s:
+        if grad_curr[i] < 0 and grad_curr[i+1] > 0 and t2s:
             zero_found = 1
             break
-        elif grad_curr[i] < 0 and grad_curr[i+1] > 0 and not t2s:
+        elif grad_curr[i] > 0 and grad_curr[i+1] < 0 and not t2s:
             zero_found = 1
             break
         

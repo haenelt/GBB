@@ -11,14 +11,14 @@ def plot_white2pial(input_white, input_pial, step_size=100, shape="line"):
         
     created by Daniel Haenelt
     Date created: 07-11-2019     
-    Last modified: 13-12-2019
+    Last modified: 31-01-2020
     """
     import numpy as np
     from nibabel.freesurfer.io import read_geometry, write_geometry
 
     # read geometry
     vtx_white, fac_white, header_white = read_geometry(input_white, read_metadata=True)
-    vtx_pial, fac_pial, _ = read_geometry(input_pial)
+    vtx_pial, fac_pial = read_geometry(input_pial)
 
     # array containing a list of considered vertices
     t = np.arange(0,len(vtx_white),step_size)
