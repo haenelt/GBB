@@ -28,7 +28,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 31-01-2020
+    Last modified: 03-02-2020
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -73,6 +73,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
     outlier[line_curr[:,2] > vol_max[2]] = 1
     
     line_curr = line_curr[outlier == 0,:]
+    n_line = len(line_curr) # update line length
     
     # get gradient and vein data along line
     grad_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],grad_array)
@@ -84,25 +85,27 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         plt.xlabel("WM -> GM")
         plt.ylabel("Second order gradient")
     
-    # get point of zero crossing (closest to current point)
-    i = np.round(n_line / 2).astype(int)
+    # get point of zero crossing (closest to current point) if grad_curr exist, i.e., if it contains
+    # not only outliers
+    i = np.floor(n_line / 2).astype(int)
     j = 0
     switch = 0
-    while i > 0 and i < n_line - 1:
-        if grad_curr[i] < 0 and grad_curr[i+1] > 0 and t2s:
-            zero_found = 1
-            break
-        elif grad_curr[i] > 0 and grad_curr[i+1] < 0 and not t2s:
-            zero_found = 1
-            break
-        
-        j += 1
-        if switch == 0:
-            switch = 1
-            i += j
-        else:
-            switch = 0
-            i -= j
+    if len(grad_curr):
+        while i > 0 and i < n_line - 1:
+            if grad_curr[i] < 0 and grad_curr[i+1] > 0 and t2s:
+                zero_found = 1
+                break
+            elif grad_curr[i] > 0 and grad_curr[i+1] < 0 and not t2s:
+                zero_found = 1
+                break
+            
+            j += 1
+            if switch == 0:
+                switch = 1
+                i += j
+            else:
+                switch = 0
+                i -= j
     
     # only consider shift if not positioned within a vein
     if zero_found and np.sum(vein_curr) == 0:
