@@ -8,12 +8,12 @@ def get_normal_direction(vtx_source, fac_source, diff_dir=2, diff_threshold=0.05
         *diff_dir: axis for distance calculation in ras.
         *diff_threshold: threshold to ignore noprmals perpendicular to the considered axis.
     Outputs:
-        *r_dist: normalized directions to reference mesh (pial surface).
+        *r_dist: normalized directions to reference mesh (to pial surface).
         *norm: normal per vertex.
         
     created by Daniel Haenelt
     Date created: 13-12-2019      
-    Last modified: 31-01-2020
+    Last modified: 06-02-2020
     """
     import numpy as np
     from lib_gbb.normal import get_normal
