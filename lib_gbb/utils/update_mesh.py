@@ -1,4 +1,4 @@
-def update_mesh(vtx, vtx_shift, source_ind, nn_ind, shift_dir=2, l_rate=0.9):
+def update_mesh(vtx, vtx_shift, source_ind, nn_ind, l_rate=0.9):
     """
     This function updates the vertices based on a calculated vertex shift within a defined
     neighboorhood and specified learning rate. The learning rate should be a value between 0 and 1.
@@ -14,7 +14,7 @@ def update_mesh(vtx, vtx_shift, source_ind, nn_ind, shift_dir=2, l_rate=0.9):
         
     created by Daniel Haenelt
     Date created: 22-12-2019      
-    Last modified: 22-12-2019
+    Last modified: 07-02-2020
     """
     import numpy as np
 
@@ -29,6 +29,6 @@ def update_mesh(vtx, vtx_shift, source_ind, nn_ind, shift_dir=2, l_rate=0.9):
 
     vtx_new = vtx.copy()
     for i in range(len(nn_ind)):
-        vtx_new[nn_ind[i],shift_dir] = vtx_new[nn_ind[i],shift_dir] - l_rate * s[i] * vtx_shift
+        vtx_new[nn_ind[i],:] = vtx_new[nn_ind[i],:] - l_rate * s[i] * vtx_shift
     
     return vtx_new
