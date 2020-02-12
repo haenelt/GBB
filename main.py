@@ -26,10 +26,10 @@ from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
 
 # input files
-input_white = "/home/raid2/haenelt/projects/GBB/test_data/surf/rigid/lh.layer10_def2_smooth"
-input_pial = "/home/raid2/haenelt/projects/GBB/test_data/surf/rigid/lh.layer0_def2_smooth"
-input_ref = "/home/raid2/haenelt/projects/GBB/test_data/data/mean_epi_enhanced.nii"
-input_vein = "/home/raid2/haenelt/projects/GBB/test_data/data/vein.nii"
+input_white = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer10_def2_smooth"
+input_pial = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer0_def2_smooth"
+input_ref = "/home/raid2/haenelt/projects/GBB/test_data/mean_epi_enhanced.nii"
+input_vein = "/home/raid2/haenelt/projects/GBB/test_data/vein.nii"
 path_output = "/home/raid2/haenelt/gbb_test/refinement/epi_enhanced/rigid"
 
 # parameters
