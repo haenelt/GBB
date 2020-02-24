@@ -22,7 +22,7 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 31-01-2020
+    Last modified: 24-02-2020
     """
     import numpy as np
     from nibabel.affines import apply_affine

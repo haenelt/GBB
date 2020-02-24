@@ -1,4 +1,5 @@
-def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_output=None):
+def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_output=None, 
+                 path_output=None, name_output="gradient"):
     """
     This function computes the second order gradient in one direction (phase-encoding direction) of 
     a mean bold image.
@@ -9,6 +10,8 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_o
         *sigma: gaussian blurring kernel of gradient map (if set > 0).
         *kernel_size: kernel size for gradient calculation.
         *write_output: write output image (boolean).
+        *path_output: path where output is written.
+        *name_output: basename of output file.
     Outputs:
         *res: gradient array.
         
@@ -60,6 +63,6 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, write_o
     # write gradient image
     if write_output:
         output = nb.Nifti1Image(res, vol.affine, vol.header)
-        nb.save(output,os.path.join(os.path.dirname(input_vol),"gradient.nii"))
+        nb.save(output,os.path.join(path_output,name_output+".nii"))
     
     return res

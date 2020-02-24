@@ -9,10 +9,11 @@ def nn_3d(vtx0, vtx, r_size):
         *r_size: radius of sphere in ras coordinates.
     Outputs:
         *nn: array of neighbor indices.
+        *r[nn]: euclidean distance to neighbors.
         
     created by Daniel Haenelt
     Date created: 22-12-2019     
-    Last modified: 22-12-2019
+    Last modified: 24-02-2020
     """
     import numpy as np
 
@@ -24,4 +25,4 @@ def nn_3d(vtx0, vtx, r_size):
     
     nn = np.where(r < r_size)[0]
     
-    return nn
+    return nn, r[nn]

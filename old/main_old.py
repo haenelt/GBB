@@ -1,16 +1,17 @@
 """
 GBB
 
-This script executes the gradient-based boundary (GBB) surface refinement.
+This script executes the gradient-based boundary (GBB) surface reginement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 24-02-2020
+Last modified: 31-01-2020
 """
 import os
 import shutil
 import numpy as np
 import nibabel as nb
+import matplotlib.pyplot as plt
 from nibabel.freesurfer.io import write_geometry
 from nibabel.freesurfer.io import read_geometry
 from lib.surface.vox2ras import vox2ras
@@ -23,43 +24,35 @@ from lib_gbb.utils.update_mesh import update_mesh
 from lib_gbb.utils.write_shift import write_shift
 from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
-from lib_gbb.utils.check_exit import check_exit
-from lib_gbb.plot.cost_plot import cost_plot
-from lib_gbb.plot.slope_plot import slope_plot
 
 # input files
-input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
-input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
-input_ref = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
-input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/test"
+input_white = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer10_def2_smooth"
+input_pial = "/home/raid2/haenelt/projects/GBB/test_data/lh.layer0_def2_smooth"
+input_ref = "/home/raid2/haenelt/projects/GBB/test_data/mean_epi_enhanced.nii"
+input_vein = "/home/raid2/haenelt/projects/GBB/test_data/vein.nii"
+path_output = "/home/raid2/haenelt/gbb_test/refinement/epi_enhanced/rigid"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
 line_dir = 2 # line axis in ras convention (0,1,2)
 line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
-l_rate = [0.1, 0.25, 0.5] # learning rate
+l_rate = [0.1, 0.1, 0.1] # learning rate
 max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3, 1e-5, 1e-6] # cost function threshold
+cost_threshold = [1e-3, 5e-4, 1e-4] # cost function threshold
+cleanup = False
 
 # gradient preparation
 g_sigma = 1 # gaussian filter
 g_kernel = 3 # kernel size used by gradient calculation
-
-# cost parameters
-cost_step = 1000 # step size between cost array points
-cost_fit_min = 5 # sample size for linear fit
 
 # deformation field
 o_sigma = 1 # gaussian filter
 
 # output
 show_cost = True # show temporary cost function
-show_slope = False # show temporary slope function
 write_gradient = True # write gradient image
 write_step = 10000 # step size to write intermediate surfaces (if set > 0)
-cleanup = False # remove intermediate files
 
 """ do not edit below """
 
@@ -82,9 +75,13 @@ vox2ras_tkr, ras2vox_tkr = vox2ras(input_ref)
 # load data
 vtx_old, fac_old = read_geometry(input_white)
 vol_array = nb.load(input_ref).get_fdata()
-grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, write_gradient,
-                          path_output)
+grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, write_gradient)
 vein_array = nb.load(input_vein).get_fdata() 
+
+# get gradient to output folder
+if write_gradient:
+    os.rename(os.path.join(os.path.dirname(input_ref),"gradient.nii"),
+              os.path.join(path_temp,"gradient.nii"))
 
 # get normals
 n, vtx_norm = get_normal_direction(vtx_old, fac_old, line_dir)
@@ -98,23 +95,42 @@ file.write("start registration step 0 at iteration 0\n")
 # initialize some variables
 vtx_new = vtx_old.copy()
 n_coords = len(vtx_old)
+max_iter = np.sum(max_iterations)
 n_steps = len(r_size)
 vol_max = np.shape(vol_array)
 
+# cost function parameters
+n_cost_count = 50 # number of time points for cost array average
+n_cost_size = 1000 # step size between cost array points
+n_cost_check = 5 # number successive time points below threshold for convergent registration
+
 # do surface refinement
 i = 0
-j = 0
-p = 0
-q = 0
 counter = 0
 step = 0
 cost_array = []
-m_array = []
-n_array = [] 
-while True:
-            
+c_steps = 0
+c_cost_count = 0
+c_cost_size = 0
+c_cost_check = 0
+while i < max_iter:
+    
+    if i == max_iterations[step] + c_steps or c_cost_check == n_cost_check:
+        step += 1
+        c_cost_check = 0
+        c_steps += i
+        print("start registration step "+str(step)+" at iteration "+str(i))
+        file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
+       
+    if not np.mod(i,n_cost_size):
+        c_cost_count = 0
+        
     # get current vertex point
     n_vertex = np.random.randint(n_coords)
+    
+    # get cost function
+    if c_cost_count < n_cost_count:
+        c_cost_size += cost_BBR(vtx_new, fac_old, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
     
     # get shift
     vtx_shift = get_shift(vtx_new, fac_old, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
@@ -122,60 +138,49 @@ while True:
 
     # update mesh
     if len(vtx_shift):
-        nn_ind, _ = nn_3d(vtx_new[n_vertex], vtx_new, r_size[step])
+        nn_ind = nn_3d(vtx_new[n_vertex], vtx_new, r_size[step])
         vtx_new = update_mesh(vtx_new,vtx_shift,n_vertex,nn_ind,l_rate[step])
     else:
         counter += 1
-        continue
     
-    # get cost function
-    if p >= cost_step:
-        J = cost_BBR(vtx_new, fac_old, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
-        cost_array = np.append(cost_array, J)
-        q += 1
-        p = 0
-        if len(cost_array) >= cost_fit_min:
-            
-            m_fit, n_fit, exit_crit = check_exit(np.arange(q-cost_fit_min,q), 
-                                                 cost_array[-cost_fit_min:], 
-                                                 cost_threshold=cost_threshold[step])
-            m_array = np.append(m_array, m_fit)
-            n_array = np.append(n_array, n_fit)
-            
-            if show_cost:
-                set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                cost_plot(q, cost_array, m_fit, n_fit, set_title, save_plot=False, 
-                          path_output=False, name_output=False)
-                
-            if show_slope:
-                set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                slope_plot(q, m_array, set_title, save_plot=False, path_output=False, 
-                           name_output=False)
-    else:
-        p += 1
-        exit_crit = False
+    # update exit criterion
+    if c_cost_count  == n_cost_count:
+        cost_array.append(c_cost_size / n_cost_count)
+        c_cost_size = 0
+        if len(cost_array) > 1:
+            cost_diff = np.abs(cost_array[-1] - cost_array[-2])
+            if c_cost_check > 0:
+                cost_diff2 = np.abs(cost_array[-2] - cost_array[-3])
+                if cost_diff < cost_threshold[step] and cost_diff2 < cost_threshold[step]:
+                    c_cost_check += 1
+                else:
+                    c_cost_check = 0
+            else:
+                if cost_diff < cost_threshold[step]:
+                    c_cost_check = 1
 
-    # check exit
-    if exit_crit and step < len(max_iterations) - 1 or j == max_iterations[step]:
-        step += 1
-        j = 0
-        print("start registration step "+str(step)+" at iteration "+str(i))
-        file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
-    elif exit_crit and step == len(max_iterations) - 1:
+        if show_cost:
+            plt.plot(cost_array)
+            plt.xlabel("iteration")
+            plt.ylabel("Cost function")
+            plt.pause(0.01)
+    
+    # check exit criterion
+    if c_cost_check == n_cost_check and step == n_steps - 1:
         print("Registration converged!")
-        file.write("Registration converged!\n")        
+        file.write("Registration converged!\n")
         break
-    elif step == len(max_iterations) - 1 and j == max_iterations[-1]:
+    elif i == max_iterations[step] and step == n_steps - 1:
         print("Registration did not converge!")
         file.write("Registration did not converge!\n")
         break
 
     # write intermediate surfaces
-    if write_step and not np.mod(i,write_step):
+    if write_step > 0 and not np.mod(i,write_step):
         write_geometry(os.path.join(path_temp,"temp_"+str(i)), vtx_new, fac_old)
     
     i += 1
-    j += 1
+    c_cost_count += 1
 
 # print some information
 print("Final number of iterations: "+str(i))
@@ -214,8 +219,8 @@ _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array,
                 name_output=os.path.basename(input_pial)+"_refined", 
                 write_output=True)
 
-# save cost array and slope and y-axis intercept arrays of linear fits
-np.savez(os.path.join(path_output,name_output+"_cost"), J=cost_array, m=m_array, n=n_array)
+# save cost array
+np.save(os.path.join(path_output,name_output+"_cost"), cost_array)
 
 # remove intermediate files
 if cleanup:

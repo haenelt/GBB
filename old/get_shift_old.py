@@ -7,8 +7,8 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
     sampled onto the line. Starting from the current vertex point, the nearest zero crossing
     is found (if it exists). If a t2s contrast is considered, the intensity values are going from 
     dark to bright for WM -> GM. Therefore, we expect a transition from positive to negative in 
-    this case for the zero crossing in the second order gradient. The found shift is only considered
-    if no vein is found in shift direction along the line. Vertex coordinates are in ras space.
+    this case for the zero crossing in the second order gradient. If the line lies within an 
+    identified vein, no value is returned. Vertex coordinates are in ras space.
     Inputs:
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
@@ -28,7 +28,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 24-02-2020
+    Last modified: 03-02-2020
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -85,50 +85,30 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         plt.xlabel("WM -> GM")
         plt.ylabel("Second order gradient")
     
-    # mid-point of line
+    # get point of zero crossing (closest to current point) if grad_curr exist, i.e., if it contains
+    # not only outliers
     i = np.floor(n_line / 2).astype(int)
-    
-    # get point of zero crossing (closest to mid-point) if grad_curr exists, i.e., if it does not 
-    # contain only outliers
     j = 0
     switch = 0
     if len(grad_curr):
-    
-        # look for veins in line
-        vein_up = np.sum(vein_curr[i:])
-        vein_down = np.sum(vein_curr[:i])
-
-        # start search
-        while i > 0 and i < n_line - 2:
-            
-            # if vein up -> i nur in negativer richtung
-            # if vein down -> i nur in positiver richtung
-            # if not -> look in both directions (switch)
-            # if both -> return empty array
-            if vein_up and not vein_down:
-                i -= 1
-            elif not vein_up and vein_down:
-                i += 1
-            elif not vein_up and not vein_down:
-                j += 1
-                if switch == 0:
-                    switch = 1
-                    i += j
-                else:
-                    switch = 0
-                    i -= j
-            else:
-                break
-            
+        while i > 0 and i < n_line - 1:
             if grad_curr[i] < 0 and grad_curr[i+1] > 0 and t2s:
                 zero_found = 1
                 break
             elif grad_curr[i] > 0 and grad_curr[i+1] < 0 and not t2s:
                 zero_found = 1
                 break
-        
+            
+            j += 1
+            if switch == 0:
+                switch = 1
+                i += j
+            else:
+                switch = 0
+                i -= j
+    
     # only consider shift if not positioned within a vein
-    if zero_found:
+    if zero_found and np.sum(vein_curr) == 0:
         zero_curr = apply_affine(vox2ras_tkr, line_curr[i,:])
         shift_curr = vtx_curr - zero_curr
     
