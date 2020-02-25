@@ -16,6 +16,7 @@ def apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation, path_
         *write_output: write output file (boolean).
     Outputs:
         *vtx: deformed vertices.
+        *fac: original faces.
         
     created by Daniel Haenelt
     Date created: 28-12-2019
@@ -45,4 +46,4 @@ def apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation, path_
     if write_output:
         write_geometry(os.path.join(path_output,name_output), vtx, fac)
     
-    return vtx
+    return vtx, fac

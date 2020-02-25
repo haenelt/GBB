@@ -110,10 +110,15 @@ if deveining:
                              n_smooth_deveining, 
                              max_iterations_deveining)
     
+    # load original surface data
+    vtx_white_orig, fac_white_orig = read_geometry(input_white)
+    
+    if input_pial:
+        vtx_pial_orig, fac_pial_orig = read_geometry(input_pial)
+    
     # get deformation field
     print("write deformation field from deveining")
-    vtx_old, _ = read_geometry(input_white)
-    deformation_array = deformation_field(vtx_old, vtx_devein, input_ref, line_dir, 
+    deformation_array = deformation_field(vtx_white_orig, vtx_devein, input_ref, line_dir, 
                                           vox2ras_tkr, ras2vox_tkr, 
                                           o_sigma, 
                                           path_output=path_temp, 
@@ -121,40 +126,42 @@ if deveining:
                                           write_output=True)
     
     # get shift
-    write_shift(vtx_devein, vtx_old, line_dir, 
+    write_shift(vtx_devein, vtx_white_orig, line_dir, 
                 path_output=path_temp, 
                 name_output=name_white+"_devein_shift")
       
     # apply deformation to white and pial surface
     print("apply deformation")
-    vtx, fac = read_geometry(input_white)
-    _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
-                    path_output=path_temp, 
-                    name_output=name_white+"_devein_refined", 
-                    write_output=True)
+    vtx_white, fac_white = apply_shift(vtx_white_orig, fac_white_orig, vox2ras_tkr, ras2vox_tkr, 
+                                       line_dir, 
+                                       deformation_array, 
+                                       path_output=path_temp, 
+                                       name_output=name_white+"_devein_refined", 
+                                       write_output=True)
     
     if input_pial:
-        vtx, fac = read_geometry(input_pial)
-        _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
-                        path_output=path_temp, 
-                        name_output=name_pial+"_devein_refined", 
-                        write_output=True)
-    
-    # load deveined surface data
-    vtx_old, fac_old = read_geometry(os.path.join(path_temp,name_white+"_devein_refined"))
+        vtx_pial, fac_pial = apply_shift(vtx_pial_orig, fac_pial_orig, vox2ras_tkr, ras2vox_tkr, 
+                                         line_dir, 
+                                         deformation_array, 
+                                         path_output=path_temp, 
+                                         name_output=name_pial+"_devein_refined", 
+                                         write_output=True)
 else:
     # load surface data
-    vtx_old, fac_old = read_geometry(input_white)
+    vtx_white, fac_white = read_geometry(input_white)
+    
+    if input_pial:
+        vtx_pial, fac_pial = read_geometry(input_pial)
 
 # get normals
-n, vtx_norm = get_normal_direction(vtx_old, fac_old, line_dir)
+n, vtx_norm = get_normal_direction(vtx_white, fac_white, line_dir)
 
 print("start registration step 0 at iteration 0")
 file.write("start registration step 0 at iteration 0\n")
 
 # initialize some variables
-vtx_new = vtx_old.copy()
-n_coords = len(vtx_old)
+vtx_new = vtx_white.copy()
+n_coords = len(vtx_white)
 n_steps = len(r_size)
 vol_max = np.shape(vol_array)
 
@@ -174,7 +181,7 @@ while True:
     n_vertex = np.random.randint(n_coords)
     
     # get shift
-    vtx_shift = get_shift(vtx_new, fac_old, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
+    vtx_shift = get_shift(vtx_new, fac_white, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
                           ras2vox_tkr, vol_max, line_length, line_dir, t2s, False)
 
     # update mesh
@@ -187,18 +194,22 @@ while True:
     
     # get cost function
     if p >= cost_step:
-        J = cost_BBR(vtx_new, fac_old, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
+        J = cost_BBR(vtx_new, fac_white, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
         cost_array = np.append(cost_array, J)
         q += 1
         p = 0
         if len(cost_array) >= cost_fit_min:
             
+            # check exit criterion
             m_fit, n_fit, exit_crit = check_exit(np.arange(q-cost_fit_min,q), 
                                                  cost_array[-cost_fit_min:], 
                                                  cost_threshold=cost_threshold[step])
+            
+            # save computed slop and y-axis intercept of liner fit
             m_array = np.append(m_array, m_fit)
             n_array = np.append(n_array, n_fit)
             
+            # shot plots
             if show_cost:
                 set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
                 cost_plot(q, cost_array, m_fit, n_fit, set_title, save_plot=False, 
@@ -229,7 +240,7 @@ while True:
 
     # write intermediate surfaces
     if write_step and not np.mod(i,write_step):
-        write_geometry(os.path.join(path_temp,"temp_"+str(i)), vtx_new, fac_old)
+        write_geometry(os.path.join(path_temp,"temp_"+str(i)), vtx_new, fac_white)
     
     i += 1
     j += 1
@@ -245,7 +256,7 @@ file.close()
 
 # get deformation field
 print("write deformation field")
-deformation_array = deformation_field(vtx_old, vtx_new, input_ref, line_dir, 
+deformation_array = deformation_field(vtx_white, vtx_new, input_ref, line_dir, 
                                       vox2ras_tkr, ras2vox_tkr, 
                                       o_sigma, 
                                       path_output=path_output, 
@@ -253,21 +264,19 @@ deformation_array = deformation_field(vtx_old, vtx_new, input_ref, line_dir,
                                       write_output=True)
 
 # get shift
-write_shift(vtx_new, vtx_old, line_dir, 
+write_shift(vtx_new, vtx_white, line_dir, 
             path_output=path_output, 
             name_output=name_white+"_shift")
 
 # apply deformation to white and pial surface
 print("apply deformation")
-vtx, fac = read_geometry(input_white)
-_ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+_ = apply_shift(vtx_white, fac_white, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
                 path_output=path_output, 
                 name_output=name_white+"_refined", 
                 write_output=True)
 
 if input_pial:
-    vtx, fac = read_geometry(input_pial)
-    _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+    _ = apply_shift(vtx_pial, fac_pial, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
                     path_output=path_output, 
                     name_output=name_pial+"_refined", 
                     write_output=True)
