@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface refinement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 24-02-2020
+Last modified: 25-02-2020
 """
 import os
 import shutil
@@ -16,6 +16,9 @@ from nibabel.freesurfer.io import read_geometry
 from lib.surface.vox2ras import vox2ras
 from lib_gbb.normal.get_normal_direction import get_normal_direction
 from lib_gbb.neighbor.nn_3d import nn_3d
+from lib_gbb.plot.cost_plot import cost_plot
+from lib_gbb.plot.slope_plot import slope_plot
+from lib_gbb.utils.devein_mesh import devein_mesh
 from lib_gbb.utils.get_gradient import get_gradient
 from lib_gbb.utils.get_shift import get_shift
 from lib_gbb.utils.cost_BBR import cost_BBR
@@ -24,8 +27,6 @@ from lib_gbb.utils.write_shift import write_shift
 from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
 from lib_gbb.utils.check_exit import check_exit
-from lib_gbb.plot.cost_plot import cost_plot
-from lib_gbb.plot.slope_plot import slope_plot
 
 # input files
 input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
@@ -47,6 +48,12 @@ cost_threshold = [1e-3, 1e-5, 1e-6] # cost function threshold
 g_sigma = 1 # gaussian filter
 g_kernel = 3 # kernel size used by gradient calculation
 
+# deveining parameters
+deveining = True # start with deveining the surface mesh (boolean)
+n_neighbor_deveining = 20 # number of neighbors in surface relaxation
+n_smooth_deveining = 0 # final smoothing
+max_iterations_deveining = 1000 # maximum iterations
+
 # cost parameters
 cost_step = 1000 # step size between cost array points
 cost_fit_min = 5 # sample size for linear fit
@@ -64,7 +71,10 @@ cleanup = False # remove intermediate files
 """ do not edit below """
 
 # basename for output
-name_output = os.path.basename(input_white)
+name_white = os.path.basename(input_white)
+
+if input_pial:
+    name_pial = os.path.basename(input_pial)
 
 # make output folder
 if not os.path.exists(path_output):
@@ -79,18 +89,65 @@ if not os.path.exists(path_temp):
 # get transformation
 vox2ras_tkr, ras2vox_tkr = vox2ras(input_ref)
 
-# load data
-vtx_old, fac_old = read_geometry(input_white)
+# load volume data
 vol_array = nb.load(input_ref).get_fdata()
 grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, write_gradient,
                           path_output)
 vein_array = nb.load(input_vein).get_fdata() 
 
+# create textfile
+file = open(os.path.join(path_output,name_white+"_info.txt"),"w")
+
+# run deveining and load surface
+if deveining:
+    file.write("apply deveining\n")
+    vtx_devein = devein_mesh(input_white, 
+                             input_ref, 
+                             input_vein, 
+                             os.path.join(path_temp,name_white+"_devein"), 
+                             n_neighbor_deveining, 
+                             line_dir, 
+                             n_smooth_deveining, 
+                             max_iterations_deveining)
+    
+    # get deformation field
+    print("write deformation field from deveining")
+    vtx_old, _ = read_geometry(input_white)
+    deformation_array = deformation_field(vtx_old, vtx_devein, input_ref, line_dir, 
+                                          vox2ras_tkr, ras2vox_tkr, 
+                                          o_sigma, 
+                                          path_output=path_temp, 
+                                          name_output=name_white+"_devein_deformation", 
+                                          write_output=True)
+    
+    # get shift
+    write_shift(vtx_devein, vtx_old, line_dir, 
+                path_output=path_temp, 
+                name_output=name_white+"_devein_shift")
+      
+    # apply deformation to white and pial surface
+    print("apply deformation")
+    vtx, fac = read_geometry(input_white)
+    _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+                    path_output=path_temp, 
+                    name_output=name_white+"_devein_refined", 
+                    write_output=True)
+    
+    if input_pial:
+        vtx, fac = read_geometry(input_pial)
+        _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+                        path_output=path_temp, 
+                        name_output=name_pial+"_devein_refined", 
+                        write_output=True)
+    
+    # load deveined surface data
+    vtx_old, fac_old = read_geometry(os.path.join(path_temp,name_white+"_devein_refined"))
+else:
+    # load surface data
+    vtx_old, fac_old = read_geometry(input_white)
+
 # get normals
 n, vtx_norm = get_normal_direction(vtx_old, fac_old, line_dir)
-
-# create textfile
-file = open(os.path.join(path_output,name_output+"_info.txt"),"w")
 
 print("start registration step 0 at iteration 0")
 file.write("start registration step 0 at iteration 0\n")
@@ -192,30 +249,31 @@ deformation_array = deformation_field(vtx_old, vtx_new, input_ref, line_dir,
                                       vox2ras_tkr, ras2vox_tkr, 
                                       o_sigma, 
                                       path_output=path_output, 
-                                      name_output=name_output+"_deformation", 
+                                      name_output=name_white+"_deformation", 
                                       write_output=True)
 
 # get shift
 write_shift(vtx_new, vtx_old, line_dir, 
             path_output=path_output, 
-            name_output=name_output+"_shift")
+            name_output=name_white+"_shift")
 
 # apply deformation to white and pial surface
 print("apply deformation")
 vtx, fac = read_geometry(input_white)
 _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
                 path_output=path_output, 
-                name_output=os.path.basename(input_white)+"_refined", 
+                name_output=name_white+"_refined", 
                 write_output=True)
 
-vtx, fac = read_geometry(input_pial)
-_ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
-                path_output=path_output, 
-                name_output=os.path.basename(input_pial)+"_refined", 
-                write_output=True)
+if input_pial:
+    vtx, fac = read_geometry(input_pial)
+    _ = apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
+                    path_output=path_output, 
+                    name_output=name_pial+"_refined", 
+                    write_output=True)
 
 # save cost array and slope and y-axis intercept arrays of linear fits
-np.savez(os.path.join(path_output,name_output+"_cost"), J=cost_array, m=m_array, n=n_array)
+np.savez(os.path.join(path_output,name_white+"_cost"), J=cost_array, m=m_array, n=n_array)
 
 # remove intermediate files
 if cleanup:
