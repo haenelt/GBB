@@ -101,8 +101,7 @@ file = open(os.path.join(path_output,name_white+"_info.txt"),"w")
 # run deveining and load surface
 if deveining:
     file.write("apply deveining\n")
-    vtx_devein = devein_mesh(input_white, 
-                             input_ref, 
+    vtx_devein = devein_mesh(input_white,
                              input_vein, 
                              os.path.join(path_temp,name_white+"_devein"), 
                              n_neighbor_deveining, 

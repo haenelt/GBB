@@ -1,4 +1,4 @@
-def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smooth_iter=30, 
+def devein_mesh(surf_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smooth_iter=30, 
                 max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and shift these and 
@@ -7,7 +7,6 @@ def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_di
     Optionally, the output mesh can be smoothed.    
     Inputs.
         *surf_in: filename of input surface.
-        *ref_in: filename of reference volume.
         *vein_in: filename of vein mask.
         *surf_out: filename of output surface.
         *n_neighbor: neighborhood size.
@@ -19,11 +18,12 @@ def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_di
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 09-02-2020  
+    Last modified: 25-02-2020  
     """
     import os
     import numpy as np
     import nibabel as nb
+    from numpy.linalg import norm
     from nibabel.freesurfer.io import read_geometry, write_geometry
     from nibabel.affines import apply_affine
     from lib.surface.vox2ras import vox2ras
@@ -37,7 +37,10 @@ def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_di
     vein = np.round(nb.load(vein_in).get_fdata())
     vtx, fac = read_geometry(surf_in)
     adjm = get_adjm(surf_in)
-    _, ras2vox_tkr = vox2ras(ref_in)
+    _, ras2vox_tkr = vox2ras(vein_in)
+    
+    # centroid
+    vtx_c = np.mean(vtx, axis=0)
 
     # get nearest voxel coordinates
     vtx_vox = apply_affine(ras2vox_tkr, vtx)
@@ -49,7 +52,7 @@ def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_di
     n_veins = len(vein_mask[vein_mask == 1])
 
     # get surface normals
-    norm, _ = get_normal_direction(vtx, fac, shift_dir, 0.05)
+    normal_dir, _ = get_normal_direction(vtx, fac, shift_dir, 0.05)
 
     print("start mesh initialization (deveining)")
 
@@ -73,17 +76,22 @@ def devein_mesh(surf_in, ref_in, vein_in, surf_out=None, n_neighbor=20, shift_di
         vtx_shift = np.abs(vtx_shift)
         
         # do only inward shifts
-        if norm[curr_ind] < 0:
+        if normal_dir[curr_ind] < 0:
             vtx_shift = -1 * vtx_shift
-        elif norm[curr_ind] == 0:
-            vein[vtx_vox[curr_ind,0],vtx_vox[curr_ind,1],vtx_vox[curr_ind,2]] = 0
-            continue
-    
-        # update mesh
-        vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
         
-        vtx_vox = apply_affine(ras2vox_tkr, vtx)
-        vtx_vox = np.round(vtx_vox).astype(int)    
+        # check inward shift by comparing distance to centroid
+        vtx_dist_noshift = norm(vtx[curr_ind,:] - vtx_c)
+        vtx_dist_shift = norm(vtx[curr_ind,:] - vtx_shift - vtx_c)
+        
+        # update mesh if valid inward shift        
+        if vtx_dist_shift - vtx_dist_noshift > 0 or normal_dir[curr_ind] == 0:
+            vtx_temp_vox = apply_affine(ras2vox_tkr, vtx[curr_ind])
+            vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
+            vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
+        else:
+            vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
+            vtx_vox = apply_affine(ras2vox_tkr, vtx)
+            vtx_vox = np.round(vtx_vox).astype(int)    
     
         # get all vertices within vein
         vein_mask = np.zeros(len(vtx))
