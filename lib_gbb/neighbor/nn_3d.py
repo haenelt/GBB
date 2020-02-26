@@ -16,7 +16,7 @@ def nn_3d(vtx0, vtx, r_size):
     Last modified: 24-02-2020
     """
     import numpy as np
-
+    
     rx = ( vtx[:,0] - vtx0[0] ) ** 2
     ry = ( vtx[:,1] - vtx0[1] ) ** 2
     rz = ( vtx[:,2] - vtx0[2] ) ** 2

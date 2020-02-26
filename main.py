@@ -40,9 +40,9 @@ t2s = True # underlying image contrast (boolean)
 line_dir = 2 # line axis in ras convention (0,1,2)
 line_length = 3 # line length in one direction in mm
 r_size = [5, 2.5, 1] # neighborhood radius in mm
-l_rate = [0.1, 0.25, 0.5] # learning rate
-max_iterations = [100000, 250000, 500000] # maximum iterations
-cost_threshold = [1e-3, 1e-5, 1e-6] # cost function threshold
+l_rate = [0.1, 0.1, 0.1] # learning rate
+max_iterations = [250000, 500000, 1000000] # maximum iterations
+cost_threshold = [1e-4, 1e-5, 1e-6] # cost function threshold
 
 # gradient preparation
 g_sigma = 1 # gaussian filter
@@ -182,14 +182,14 @@ while True:
     # get shift
     vtx_shift = get_shift(vtx_new, fac_white, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
                           ras2vox_tkr, vol_max, line_length, line_dir, t2s, False)
-
+    
     # update mesh
-    if len(vtx_shift):
+    if len(vtx_shift):        
         nn_ind, _ = nn_3d(vtx_new[n_vertex], vtx_new, r_size[step])
         vtx_new = update_mesh(vtx_new,vtx_shift,n_vertex,nn_ind,l_rate[step])
     else:
         counter += 1
-        continue
+        continue        
     
     # get cost function
     if p >= cost_step:
