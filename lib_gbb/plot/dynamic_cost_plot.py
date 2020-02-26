@@ -44,4 +44,4 @@ def dynamic_cost_plot(file_in, path_output, name_output):
     img_file = sorted(img_file)
     
     # write gif
-    get_gif(img_file, path_output, name_output, 1, 0.5)
+    get_gif(img_file, path_output, name_output, 1, 0.25)
