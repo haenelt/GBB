@@ -56,7 +56,7 @@ max_iterations_deveining = 1000 # maximum iterations
 
 # cost parameters
 cost_step = 1000 # step size between cost array points
-cost_fit_min = 5 # sample size for linear fit
+cost_fit_min = 10 # sample size for linear fit
 
 # deformation field
 o_sigma = 1 # gaussian filter
