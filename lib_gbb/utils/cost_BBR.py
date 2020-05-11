@@ -1,4 +1,4 @@
-def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True):
+def cost_BBR(vtx, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True):
     """
     This function computes the cost function defined in the original BBR paper (Fischl et al., 
     2009). Vertices should be in freesurfer ras_tkr space. First, vertex coordinates on both sides
@@ -9,7 +9,6 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
     Inputs:
         *vtx: array of vertices.
         *vtx_n: array of unit vertices in normal direction.
-        *fac: array of faces.
         *vol_array: 3D array of image volume.
         *ras2vox: transformation matrix to voxel space.
         *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction.
@@ -22,7 +21,7 @@ def cost_BBR(vtx, fac, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 24-02-2020
+    Last modified: 11-05-2020
     """
     import numpy as np
     from nibabel.affines import apply_affine

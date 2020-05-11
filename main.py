@@ -34,8 +34,8 @@ input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
 input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-input_ignore = "/home/daniel/Schreibtisch/ignore_test.nii"
-path_output = "/home/daniel/Schreibtisch/test2"
+input_ignore = "/home/daniel/projects/GBB/test_data/ignore.nii"
+path_output = "/home/daniel/Schreibtisch/test"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
@@ -158,6 +158,12 @@ else:
     if input_pial:
         vtx_pial, fac_pial = read_geometry(input_pial)
 
+# initialize some variables
+vtx_new = vtx_white.copy()
+n_coords = len(vtx_white)
+n_steps = len(r_size)
+vol_max = np.shape(vol_array)
+
 # get normals
 n, vtx_norm = get_normal_direction(vtx_white, fac_white, line_dir)
 
@@ -168,12 +174,6 @@ if input_ignore:
 
 print("start registration step 0 at iteration 0")
 file.write("start registration step 0 at iteration 0\n")
-
-# initialize some variables
-vtx_new = vtx_white.copy()
-n_coords = len(vtx_white)
-n_steps = len(r_size)
-vol_max = np.shape(vol_array)
 
 # do surface refinement
 i = 0
@@ -207,7 +207,7 @@ while True:
     
     # get cost function
     if p >= cost_step:
-        J = cost_BBR(vtx_new, fac_white, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
+        J = cost_BBR(vtx_new, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
         cost_array = np.append(cost_array, J)
         q += 1
         p = 0
