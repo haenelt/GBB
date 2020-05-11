@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface refinement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 25-02-2020
+Last modified: 11-05-2020
 """
 import os
 import shutil
@@ -18,12 +18,12 @@ from lib_gbb.normal.get_normal_direction import get_normal_direction
 from lib_gbb.neighbor.nn_3d import nn_3d
 from lib_gbb.plot.cost_plot import cost_plot
 from lib_gbb.plot.slope_plot import slope_plot
+from lib_gbb.io.write_shift import write_shift
 from lib_gbb.utils.devein_mesh import devein_mesh
 from lib_gbb.utils.get_gradient import get_gradient
 from lib_gbb.utils.get_shift import get_shift
 from lib_gbb.utils.cost_BBR import cost_BBR
 from lib_gbb.utils.update_mesh import update_mesh
-from lib_gbb.utils.write_shift import write_shift
 from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
 from lib_gbb.utils.check_exit import check_exit
