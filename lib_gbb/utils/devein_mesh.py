@@ -1,5 +1,5 @@
-def devein_mesh(surf_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smooth_iter=30, 
-                max_iterations=1000):
+def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift_dir=2, 
+                smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and shift these and 
     their neighborhood until the mesh is free of trapped vertices (or the maximum number of
@@ -8,6 +8,7 @@ def devein_mesh(surf_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smo
     Inputs.
         *surf_in: filename of input surface.
         *vein_in: filename of vein mask.
+        *ignore_in: filename of binary mask where deveining is omitted.
         *surf_out: filename of output surface.
         *n_neighbor: neighborhood size.
         *shift_dir: shift direction in ras conventions.
@@ -18,7 +19,7 @@ def devein_mesh(surf_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smo
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 25-02-2020  
+    Last modified: 11-05-2020  
     """
     import os
     import numpy as np
@@ -35,6 +36,11 @@ def devein_mesh(surf_in, vein_in, surf_out=None, n_neighbor=20, shift_dir=2, smo
 
     # load data
     vein = np.round(nb.load(vein_in).get_fdata())
+    
+    if ignore_in:
+        ignore = np.round(nb.load(ignore_in).get_fdata())
+        vein[ignore == 1] = 0
+
     vtx, fac = read_geometry(surf_in)
     adjm = get_adjm(surf_in)
     _, ras2vox_tkr = vox2ras(vein_in)

@@ -19,6 +19,7 @@ from lib_gbb.neighbor.nn_3d import nn_3d
 from lib_gbb.plot.cost_plot import cost_plot
 from lib_gbb.plot.slope_plot import slope_plot
 from lib_gbb.io.write_shift import write_shift
+from lib_gbb.utils.get_ignore import get_ignore
 from lib_gbb.utils.devein_mesh import devein_mesh
 from lib_gbb.utils.get_gradient import get_gradient
 from lib_gbb.utils.get_shift import get_shift
@@ -33,7 +34,8 @@ input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
 input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
 input_ref = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
 input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-path_output = "/home/daniel/Schreibtisch/test"
+input_ignore = "/home/daniel/Schreibtisch/ignore_test.nii"
+path_output = "/home/daniel/Schreibtisch/test2"
 
 # parameters
 t2s = True # underlying image contrast (boolean)
@@ -95,6 +97,9 @@ grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, w
                           path_output)
 vein_array = nb.load(input_vein).get_fdata() 
 
+if input_ignore:
+    ignore_array = nb.load(input_ignore).get_fdata()
+
 # create textfile
 file = open(os.path.join(path_output,name_white+"_info.txt"),"w")
 
@@ -102,7 +107,8 @@ file = open(os.path.join(path_output,name_white+"_info.txt"),"w")
 if deveining:
     file.write("apply deveining\n")
     vtx_devein = devein_mesh(input_white,
-                             input_vein, 
+                             input_vein,
+                             input_ignore,
                              os.path.join(path_temp,name_white+"_devein"), 
                              n_neighbor_deveining, 
                              line_dir, 
@@ -155,6 +161,11 @@ else:
 # get normals
 n, vtx_norm = get_normal_direction(vtx_white, fac_white, line_dir)
 
+# get vertices to ignore
+if input_ignore:
+    _, ind_ignore = get_ignore(vtx_white, ignore_array, ras2vox_tkr, write_output=False, 
+                               path_output=False)
+
 print("start registration step 0 at iteration 0")
 file.write("start registration step 0 at iteration 0\n")
 
@@ -178,13 +189,16 @@ while True:
             
     # get current vertex point
     n_vertex = np.random.randint(n_coords)
+    if input_ignore and n_vertex in ind_ignore:
+        counter += 1
+        continue
     
     # get shift
     vtx_shift = get_shift(vtx_new, fac_white, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
                           ras2vox_tkr, vol_max, line_length, line_dir, t2s, False)
     
     # update mesh
-    if len(vtx_shift):        
+    if len(vtx_shift):
         nn_ind, _ = nn_3d(vtx_new[n_vertex], vtx_new, r_size[step])
         vtx_new = update_mesh(vtx_new,vtx_shift,n_vertex,nn_ind,l_rate[step])
     else:
