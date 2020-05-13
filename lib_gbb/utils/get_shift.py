@@ -1,4 +1,4 @@
-def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr, vol_max, 
+def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vol_max, 
               line_length=3, line_dir=2, t2s=True, show_plot=True):
     """
     This function computes the vertex shift in one direction towards the highest GM/WM gradient. 
@@ -14,8 +14,8 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         *fac: array of corresponding faces.
         *n: array of corresponding directions along one axis.
         *ind: current vertex index.
-        *grad_array: 3D array of second order gradient values along one axis.
-        *vein_array: 3D array with masked veins.
+        *arr_grad: 3D array of second order gradient values along one axis.
+        *arr_vein: 3D array with masked veins.
         *vox2ras: voxel to ras transformation matrix.
         *ras2vox: ras to voxel transformation matrix.
         *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction.
@@ -28,7 +28,7 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 24-02-2020
+    Last modified: 13-05-2020
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -76,8 +76,8 @@ def get_shift(vtx, fac, n, ind, grad_array, vein_array, vox2ras_tkr, ras2vox_tkr
     n_line = len(line_curr) # update line length
     
     # get gradient and vein data along line
-    grad_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],grad_array)
-    vein_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],vein_array)
+    grad_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_grad)
+    vein_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_vein)
     
     # show line plot
     if show_plot:

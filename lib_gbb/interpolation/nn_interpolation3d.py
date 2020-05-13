@@ -1,4 +1,4 @@
-def nn_interpolation3d(x, y, z, c_array):
+def nn_interpolation3d(x, y, z, arr_c):
     """
     This function computes the nearest neighbor interpolation of an 3D array at points [x,y,z].
     Coordinates are in voxel space.
@@ -6,7 +6,7 @@ def nn_interpolation3d(x, y, z, c_array):
         *x: list of x coordinates.
         *y: list of y coordinates.
         *z: list of z coordinates.
-        *c_array: 3D array with input values.
+        *arr_c: 3D array with input values.
     Outputs:
         *c: list of interpolated values for [x,y,z].
         
@@ -21,6 +21,6 @@ def nn_interpolation3d(x, y, z, c_array):
     y0 = np.round(y).astype(int) 
     z0 = np.round(z).astype(int)
     
-    c = c_array[x0,y0,z0]
+    c = arr_c[x0,y0,z0]
     
     return c

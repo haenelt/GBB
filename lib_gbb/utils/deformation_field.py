@@ -1,4 +1,4 @@
-def deformation_field(vtx_old, vtx_new, vol, vol_array, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1, 
+def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1, 
                       path_output="", name_output="", write_output=True):
     """
     This function computes a deformation field from a array of shifted vertices. Each voxel in the 
@@ -7,8 +7,7 @@ def deformation_field(vtx_old, vtx_new, vol, vol_array, line_ras, vox2ras_tkr, r
     Inputs:
         *vtx_old: original array of vertices.
         *vtx_new: new array of vertices.
-        *vol: nibabel instance of input volume.
-        *vol_array: array of input volume.
+        *input_vol: filename of reference volume.
         *line_ras: shift direction in ras space.
         *vox2ras_tkr: voxel to ras space transformation.
         *ras2vox_tkr: ras to voxel space transformation.
@@ -41,17 +40,21 @@ def deformation_field(vtx_old, vtx_new, vol, vol_array, line_ras, vox2ras_tkr, r
     # get vertex shift along one axis
     vtx_shift = vtx_new[:,line_vox] - vtx_old[:,line_vox]
 
+    # load volume
+    vol = nb.load(input_vol)
+    arr_vol = vol.get_fdata()
+
     # initialize arrays
-    deform_li = np.zeros_like(vol_array)
-    deform_nn = np.zeros_like(vol_array)
+    deform_li = np.zeros_like(arr_vol)
+    deform_nn = np.zeros_like(arr_vol)
 
     # get coordinate grid of one slice
     if line_vox != 2:
-        xf = np.arange(0,np.shape(vol_array)[0])
-        yf = np.arange(0,np.shape(vol_array)[1])
+        xf = np.arange(0,np.shape(arr_vol)[0])
+        yf = np.arange(0,np.shape(arr_vol)[1])
     else:
-        xf = np.arange(0,np.shape(vol_array)[1])
-        yf = np.arange(0,np.shape(vol_array)[2])
+        xf = np.arange(0,np.shape(arr_vol)[1])
+        yf = np.arange(0,np.shape(arr_vol)[2])
     
     y_plane, x_plane = np.meshgrid(yf,xf)
 

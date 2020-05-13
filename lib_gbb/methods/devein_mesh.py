@@ -1,4 +1,4 @@
-def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_dir=2, 
+def devein_mesh(vtx, fac, arr_vein, arr_ignore, n, adjm, ras2vox, n_neighbor=20, shift_dir=2, 
                 smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and shift these and 
@@ -8,8 +8,8 @@ def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_d
     Inputs.
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
-        *vein: vein mask.
-        *ignore: binary mask where deveining is omitted.
+        *arr_vein: vein mask.
+        *arr_ignore: binary mask where deveining is omitted.
         *n: array of vertex normal directions.
         *adjm: adjacecy matrix.
         *ras2vox: transformation matrix from ras to voxel space.
@@ -35,11 +35,11 @@ def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_d
     from lib_gbb.neighbor.nn_2d import nn_2d
 
     # load arrays
-    vein = np.round(vein).astype(int)
+    arr_vein = np.round(arr_vein).astype(int)
     
-    if ignore is not None:
-        ignore = np.round(ignore).astype(int)
-        vein[ignore == 1] = 0
+    if arr_ignore is not None:
+        arr_ignore = np.round(arr_ignore).astype(int)
+        arr_vein[arr_ignore == 1] = 0
    
     # centroid
     vtx_c = np.mean(vtx, axis=0)
@@ -50,7 +50,7 @@ def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_d
 
     # get vertices trapped in veins
     vein_mask = np.zeros(len(vtx))
-    vein_mask = vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
+    vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
     n_veins = len(vein_mask[vein_mask == 1])
 
     print("start mesh initialization (deveining)")
@@ -86,7 +86,7 @@ def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_d
         if vtx_dist_shift - vtx_dist_noshift > 0 or n[curr_ind] == 0:
             vtx_temp_vox = apply_affine(ras2vox, vtx[curr_ind])
             vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
-            vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
+            arr_vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
         else:
             vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
             vtx_vox = apply_affine(ras2vox, vtx)
@@ -94,7 +94,7 @@ def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_d
     
         # get all vertices within vein
         vein_mask = np.zeros(len(vtx))
-        vein_mask = vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
+        vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
         n_veins = len(vein_mask[vein_mask == 1])
         
         counter += 1

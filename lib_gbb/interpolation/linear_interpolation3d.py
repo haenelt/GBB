@@ -1,4 +1,4 @@
-def linear_interpolation3d(x, y, z, c_array):
+def linear_interpolation3d(x, y, z, arr_c):
     """
     This function computes the trilinear interpolation of a 3D array at points [x,y,z]. Coordinates 
     are in voxel space.
@@ -6,13 +6,13 @@ def linear_interpolation3d(x, y, z, c_array):
         *x: list of x coordinates.
         *y: list of y coordinates.
         *z: list of z coordinates.
-        *c_array: 3D array with input values.
+        *arr_c: 3D array with input values.
     Outputs:
         *c: list of interpolated values for [x,y,z].
         
     created by Daniel Haenelt
     Date created: 29-10-2019
-    Last modified: 20-12-2019
+    Last modified: 13-05-2020
     """
     import numpy as np
 
@@ -30,14 +30,14 @@ def linear_interpolation3d(x, y, z, c_array):
     zd = (z - z0) / (z1 - z0)
     
     # corner values
-    c000 = c_array[x0,y0,z0]
-    c001 = c_array[x0,y0,z1]
-    c010 = c_array[x0,y1,z0]
-    c011 = c_array[x0,y1,z1]
-    c100 = c_array[x1,y0,z0]
-    c101 = c_array[x1,y0,z1]
-    c110 = c_array[x1,y1,z0]
-    c111 = c_array[x1,y1,z1]
+    c000 = arr_c[x0,y0,z0]
+    c001 = arr_c[x0,y0,z1]
+    c010 = arr_c[x0,y1,z0]
+    c011 = arr_c[x0,y1,z1]
+    c100 = arr_c[x1,y0,z0]
+    c101 = arr_c[x1,y0,z1]
+    c110 = arr_c[x1,y1,z0]
+    c111 = arr_c[x1,y1,z1]
     
     # interpolation along x-axis
     c00 = c000 * (1 - xd) + c100 * xd

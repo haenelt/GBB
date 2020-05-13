@@ -1,4 +1,4 @@
-def cost_BBR(vtx, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True):
+def cost_BBR(vtx, vtx_n, arr_vol, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True):
     """
     This function computes the cost function defined in the original BBR paper (Fischl et al., 
     2009). Vertices should be in freesurfer ras_tkr space. First, vertex coordinates on both sides
@@ -21,7 +21,7 @@ def cost_BBR(vtx, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 11-05-2020
+    Last modified: 13-05-2020
     """
     import numpy as np
     from nibabel.affines import apply_affine
@@ -55,8 +55,8 @@ def cost_BBR(vtx, vtx_n, vol_array, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True
     wm_pts = wm_pts[outlier == 0]
     
     # get values in GM and WM
-    gm_val = linear_interpolation3d(gm_pts[:,0], gm_pts[:,1], gm_pts[:,2], vol_array)
-    wm_val = linear_interpolation3d(wm_pts[:,0], wm_pts[:,1], wm_pts[:,2], vol_array)
+    gm_val = linear_interpolation3d(gm_pts[:,0], gm_pts[:,1], gm_pts[:,2], arr_vol)
+    wm_val = linear_interpolation3d(wm_pts[:,0], wm_pts[:,1], wm_pts[:,2], arr_vol)
     
     # percent contrast measure
     if t2s == True:

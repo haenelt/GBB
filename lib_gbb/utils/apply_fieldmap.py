@@ -1,5 +1,5 @@
 def apply_fieldmap(file_fmap_magn, file_fmap_phase, file_epi, file_epi_moco, file_surf,
-                       delta_te=1.02, smooth=2.5, udir="y-", bw=16.304, nerode=1, cleanup=True):
+                   delta_te=1.02, smooth=2.5, udir="y-", bw=16.304, nerode=1, cleanup=True):
     """
     This function computes a deformation field from a fieldmap acquisition and applies the inverse
     transformation to the undistorted surface. The following steps are performed:
@@ -29,7 +29,7 @@ def apply_fieldmap(file_fmap_magn, file_fmap_phase, file_epi, file_epi_moco, fil
     
     created by Daniel Haenelt
     Date created: 31-01-2020
-    Last modified: 10-03-2020
+    Last modified: 13-05-2020
     """
     import os
     import numpy as np
@@ -62,9 +62,9 @@ def apply_fieldmap(file_fmap_magn, file_fmap_phase, file_epi, file_epi_moco, fil
     
     # calculate median epi
     udata = nb.load(file_epi_moco)
-    udata_array = udata.get_fdata()
-    udata_array_median = np.median(udata_array, axis=3)
-    udata_median = nb.Nifti1Image(udata_array_median, udata.affine, udata.header)
+    arr_udata = udata.get_fdata()
+    arr_udata_median = np.median(arr_udata, axis=3)
+    udata_median = nb.Nifti1Image(arr_udata_median, udata.affine, udata.header)
     udata_median.header["dim"][0] = 3
     udata_median.header["dim"][4] = 1
     nb.save(udata_median, os.path.join(path_udata, "median_"+name_udata))
@@ -111,20 +111,20 @@ def apply_fieldmap(file_fmap_magn, file_fmap_phase, file_epi, file_epi_moco, fil
     
     # apply skullstrip mask to fmap1 and fmap2 and save with same header information
     fmap1_img = nb.load(os.path.join(path_fmap0, "r"+name_fmap0))
-    fmap1_array = fmap1_img.get_fdata()
+    arr_fmap1 = fmap1_img.get_fdata()
     fmap2_img = nb.load(os.path.join(path_fmap1, "r"+name_fmap1))
-    fmap2_array = fmap2_img.get_fdata()
+    arr_fmap2 = fmap2_img.get_fdata()
     mask_img = nb.load(os.path.join(path_udata, "mask_median_"+name_udata))
-    mask_array = mask_img.get_fdata()
+    arr_mask = mask_img.get_fdata()
     
-    fmap1_array = fmap1_array * mask_array
-    fmap2_array = (fmap2_array * mask_array) 
-    fmap2_array = fmap2_array + np.abs(np.min(fmap2_array))
-    fmap2_array = fmap2_array / np.max(fmap2_array) * 4095 # rescale phase image to be within 0-4095
+    arr_fmap1 = arr_fmap1 * arr_mask
+    arr_fmap2 = (arr_fmap2 * arr_mask) 
+    arr_fmap2 = arr_fmap2 + np.abs(np.min(arr_fmap2))
+    arr_fmap2 = arr_fmap2 / np.max(arr_fmap2) * 4095 # rescale phase image to be within 0-4095
     
-    fmap1_img = nb.Nifti1Image(fmap1_array, fmap1_img.affine, fmap1_img.header)
+    fmap1_img = nb.Nifti1Image(arr_fmap1, fmap1_img.affine, fmap1_img.header)
     nb.save(fmap1_img, os.path.join(path_fmap0, "pr"+name_fmap0))
-    fmap2_img = nb.Nifti1Image(fmap2_array, fmap1_img.affine, fmap1_img.header)
+    fmap2_img = nb.Nifti1Image(arr_fmap2, fmap1_img.affine, fmap1_img.header)
     nb.save(fmap2_img, os.path.join(path_fmap1, "pr"+name_fmap1))
     
     # prepare fieldmap (saves fieldmap in rad/s)
