@@ -1,5 +1,5 @@
 def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vol_max, 
-              line_length=3, line_dir=2, t2s=True, show_plot=True):
+              line_dir=2, line_length=3, t2s=True, show_plot=True):
     """
     This function computes the vertex shift in one direction towards the highest GM/WM gradient. 
     First, vertex end points of the line are computed and it is checked which side points towards 
@@ -19,8 +19,8 @@ def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vo
         *vox2ras: voxel to ras transformation matrix.
         *ras2vox: ras to voxel transformation matrix.
         *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction.
-        *line_length: length of vertex shift in one direction in mm.
         *line_dir: line direction in ras conventions.
+        *line_length: length of vertex shift in one direction in mm.
         *t2s: wm darker than gm (boolean).
         *show_plot: show line plot in command window.
     Outputs:

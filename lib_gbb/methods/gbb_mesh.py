@@ -87,10 +87,8 @@ def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_ve
             continue
         
         # get shift
-        vtx_shift = get_shift(vtx, fac, n_dir, n_vertex, 
-                              arr_gradient, arr_vein, vox2ras_tkr, ras2vox_tkr, 
-                              vol_max, line_length, 
-                              line_dir, t2s, False)
+        vtx_shift = get_shift(vtx, fac, n_dir, n_vertex, arr_gradient, arr_vein, vox2ras_tkr, 
+                              ras2vox_tkr, vol_max, line_dir, line_length, t2s, False)
            
         # update mesh
         if len(vtx_shift):
