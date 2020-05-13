@@ -1,4 +1,4 @@
-def deformation_field(vtx_old, vtx_new, input_ref, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1,
+def deformation_field(vtx_old, vtx_new, vol, vol_array, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1, 
                       path_output="", name_output="", write_output=True):
     """
     This function computes a deformation field from a array of shifted vertices. Each voxel in the 
@@ -7,7 +7,8 @@ def deformation_field(vtx_old, vtx_new, input_ref, line_ras, vox2ras_tkr, ras2vo
     Inputs:
         *vtx_old: original array of vertices.
         *vtx_new: new array of vertices.
-        *input_ref: filename of reference volume.
+        *vol: nibabel instance of input volume.
+        *vol_array: array of input volume.
         *line_ras: shift direction in ras space.
         *vox2ras_tkr: voxel to ras space transformation.
         *ras2vox_tkr: ras to voxel space transformation.
@@ -20,7 +21,7 @@ def deformation_field(vtx_old, vtx_new, input_ref, line_ras, vox2ras_tkr, ras2vo
         
     created by Daniel Haenelt
     Date created: 28-12-2019       
-    Last modified: 28-12-2019
+    Last modified: 13-05-2020
     """
     import os
     import numpy as np
@@ -39,10 +40,6 @@ def deformation_field(vtx_old, vtx_new, input_ref, line_ras, vox2ras_tkr, ras2vo
 
     # get vertex shift along one axis
     vtx_shift = vtx_new[:,line_vox] - vtx_old[:,line_vox]
-
-    # load reference volume
-    vol = nb.load(input_ref)
-    vol_array = vol.get_fdata()
 
     # initialize arrays
     deform_li = np.zeros_like(vol_array)

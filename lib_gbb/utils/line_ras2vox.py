@@ -32,7 +32,7 @@ def line_ras2vox(line_ras, ras2vox_tkr):
 
     pt_vox = np.abs( pt_vox - pt0_vox )
     pt_vox = pt_vox / np.max(pt_vox)
-    pt_vox = pt_vox.astype(int)
+    pt_vox = np.round(pt_vox).astype(int)
 
     # updated line direction in voxel space
     line_vox = np.where(pt_vox == 1)[0][0]

@@ -8,5 +8,4 @@ from .line_ras2vox import line_ras2vox
 from .apply_shift import apply_shift
 from .deformation_field import deformation_field
 from .apply_fieldmap import apply_fieldmap
-from .devein_mesh import devein_mesh
 from .check_exit import check_exit

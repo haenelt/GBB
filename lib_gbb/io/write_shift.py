@@ -1,18 +1,18 @@
-def write_shift(vtx_new, vtx_old, line_dir, path_output, name_output):
+def write_shift(vtx_old, vtx_new, line_dir, path_output, name_output):
     """
     This function writes an overlay with final vertex shifts. The difference between new and old
     coordinates is computed. Since they differ only along one axis, we can just sum across columns.
     This gets rid of the zeros in all other axes.
     Inputs:
-        *vtx_new: source array of vertices.
         *vtx_old: target array of vertices.
+        *vtx_new: source array of vertices.
         *line_dir: shift direction.
         *path_output: path where output is written.
         *name_output: basename of written output file without file extension.
         
     created by Daniel Haenelt
     Date created: 22-12-2019         
-    Last modified: 28-12-2019
+    Last modified: 13-05-2020
     """
     import os
     import numpy as np

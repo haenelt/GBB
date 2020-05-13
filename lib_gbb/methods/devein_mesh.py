@@ -1,4 +1,4 @@
-def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift_dir=2, 
+def devein_mesh(vtx, fac, vein, ignore, n, adjm, ras2vox, n_neighbor=20, shift_dir=2, 
                 smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and shift these and 
@@ -6,59 +6,52 @@ def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift
     iterations is reached). Shifts will be applied only along one axis and in inward direction. 
     Optionally, the output mesh can be smoothed.    
     Inputs.
-        *surf_in: filename of input surface.
-        *vein_in: filename of vein mask.
-        *ignore_in: filename of binary mask where deveining is omitted.
-        *surf_out: filename of output surface.
+        *vtx: array of vertex points.
+        *fac: array of corresponding faces.
+        *vein: vein mask.
+        *ignore: binary mask where deveining is omitted.
+        *n: array of vertex normal directions.
+        *adjm: adjacecy matrix.
+        *ras2vox: transformation matrix from ras to voxel space.
         *n_neighbor: neighborhood size.
         *shift_dir: shift direction in ras conventions.
         *smooth_iter: number of smoothing iterations of final surface mesh.
         *max_iterations: maximum number of deveining iterations.
     Outputs:
         *vtx: shifted array of vertex points.
+        *counter: number of deveining iterations.
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 11-05-2020  
+    Last modified: 13-05-2020  
     """
     import os
     import numpy as np
-    import nibabel as nb
     from numpy.linalg import norm
     from nibabel.freesurfer.io import read_geometry, write_geometry
     from nibabel.affines import apply_affine
-    from lib.surface.vox2ras import vox2ras
     from lib.surface.smooth_surface import smooth_surface
-    from lib_gbb.utils.get_adjm import get_adjm
     from lib_gbb.utils.update_mesh import update_mesh
     from lib_gbb.neighbor.nn_2d import nn_2d
-    from lib_gbb.normal.get_normal_direction import get_normal_direction
 
-    # load data
-    vein = np.round(nb.load(vein_in).get_fdata())
+    # load arrays
+    vein = np.round(vein).astype(int)
     
-    if ignore_in:
-        ignore = np.round(nb.load(ignore_in).get_fdata())
+    if ignore is not None:
+        ignore = np.round(ignore).astype(int)
         vein[ignore == 1] = 0
-
-    vtx, fac = read_geometry(surf_in)
-    adjm = get_adjm(surf_in)
-    _, ras2vox_tkr = vox2ras(vein_in)
-    
+   
     # centroid
     vtx_c = np.mean(vtx, axis=0)
 
     # get nearest voxel coordinates
-    vtx_vox = apply_affine(ras2vox_tkr, vtx)
+    vtx_vox = apply_affine(ras2vox, vtx)
     vtx_vox = np.round(vtx_vox).astype(int)   
 
     # get vertices trapped in veins
     vein_mask = np.zeros(len(vtx))
     vein_mask = vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
     n_veins = len(vein_mask[vein_mask == 1])
-
-    # get surface normals
-    normal_dir, _ = get_normal_direction(vtx, fac, shift_dir, 0.05)
 
     print("start mesh initialization (deveining)")
 
@@ -82,7 +75,7 @@ def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift
         vtx_shift = np.abs(vtx_shift)
         
         # do only inward shifts
-        if normal_dir[curr_ind] < 0:
+        if n[curr_ind] < 0:
             vtx_shift = -1 * vtx_shift
         
         # check inward shift by comparing distance to centroid
@@ -90,13 +83,13 @@ def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift
         vtx_dist_shift = norm(vtx[curr_ind,:] - vtx_shift - vtx_c)
         
         # update mesh if valid inward shift        
-        if vtx_dist_shift - vtx_dist_noshift > 0 or normal_dir[curr_ind] == 0:
-            vtx_temp_vox = apply_affine(ras2vox_tkr, vtx[curr_ind])
+        if vtx_dist_shift - vtx_dist_noshift > 0 or n[curr_ind] == 0:
+            vtx_temp_vox = apply_affine(ras2vox, vtx[curr_ind])
             vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
             vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
         else:
             vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
-            vtx_vox = apply_affine(ras2vox_tkr, vtx)
+            vtx_vox = apply_affine(ras2vox, vtx)
             vtx_vox = np.round(vtx_vox).astype(int)    
     
         # get all vertices within vein
@@ -111,14 +104,12 @@ def devein_mesh(surf_in, vein_in, ignore_in, surf_out=None, n_neighbor=20, shift
     
     # smooth output
     if smooth_iter:
-        surf_temp = os.path.join(os.path.dirname(surf_out),"surf_temp")
+        tmp = np.random.randint(0, 10, 5)
+        tmp_string = ''.join(str(i) for i in tmp)
+        surf_temp = os.path.join(os.getcwd(),"surf_"+tmp_string)
         write_geometry(surf_temp, vtx, fac)
         smooth_surface(surf_temp, surf_temp, smooth_iter)
         vtx, _ = read_geometry(surf_temp)
         os.remove(surf_temp)
-     
-    # write output
-    if surf_out:
-        write_geometry(surf_out, vtx, fac) 
         
-    return vtx
+    return vtx, counter

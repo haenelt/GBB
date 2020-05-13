@@ -5,298 +5,178 @@ This script executes the gradient-based boundary (GBB) surface refinement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 11-05-2020
+Last modified: 13-05-2020
 """
 import os
-import shutil
 import numpy as np
-import nibabel as nb
-from nibabel.freesurfer.io import write_geometry
-from nibabel.freesurfer.io import read_geometry
-from lib.surface.vox2ras import vox2ras
-from lib_gbb.normal.get_normal_direction import get_normal_direction
-from lib_gbb.neighbor.nn_3d import nn_3d
-from lib_gbb.plot.cost_plot import cost_plot
-from lib_gbb.plot.slope_plot import slope_plot
+from lib_gbb.io.load_data import load_data
+from lib_gbb.io.write_readme import write_readme
 from lib_gbb.io.write_shift import write_shift
-from lib_gbb.utils.get_ignore import get_ignore
-from lib_gbb.utils.devein_mesh import devein_mesh
-from lib_gbb.utils.get_gradient import get_gradient
-from lib_gbb.utils.get_shift import get_shift
-from lib_gbb.utils.cost_BBR import cost_BBR
-from lib_gbb.utils.update_mesh import update_mesh
+from lib_gbb.methods.devein_mesh import devein_mesh
+from lib_gbb.methods.anchor_mesh import anchor_mesh
+from lib_gbb.methods.gbb_mesh import gbb_mesh
 from lib_gbb.utils.deformation_field import deformation_field
 from lib_gbb.utils.apply_shift import apply_shift
-from lib_gbb.utils.check_exit import check_exit
 
-# input files
-input_white = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
-input_pial = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
-input_ref = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
-input_vein = "/home/daniel/projects/GBB/test_data/vein.nii"
-input_ignore = "/home/daniel/projects/GBB/test_data/ignore.nii"
-path_output = "/home/daniel/Schreibtisch/test"
-
-# parameters
-t2s = True # underlying image contrast (boolean)
-line_dir = 2 # line axis in ras convention (0,1,2)
-line_length = 3 # line length in one direction in mm
-r_size = [5, 2.5, 1] # neighborhood radius in mm
-l_rate = [0.1, 0.1, 0.1] # learning rate
-max_iterations = [250000, 500000, 1000000] # maximum iterations
-cost_threshold = [1e-4, 1e-5, 1e-6] # cost function threshold
-
-# gradient preparation
-g_sigma = 1 # gaussian filter
-g_kernel = 3 # kernel size used by gradient calculation
+# input and output parameters
+io_file = dict()
+io_file["i_white"] = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
+io_file["i_pial"] = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
+io_file["i_ref"] = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
+io_file["i_vein"] = "/home/daniel/projects/GBB/test_data/vein.nii"
+io_file["i_ignore"] = "/home/daniel/projects/GBB/test_data/ignore.nii"
+io_file["i_anchor"] = "/home/daniel/projects/GBB/test_data/control_points.dat"
+io_file["o_output"] = "/home/daniel/Schreibtisch/test"
 
 # deveining parameters
-deveining = True # start with deveining the surface mesh (boolean)
-n_neighbor_deveining = 20 # number of neighbors in surface relaxation
-n_smooth_deveining = 0 # final smoothing
-max_iterations_deveining = 1000 # maximum iterations
+devein_params = dict()
+devein_params["run"] = True 
+devein_params["n_neighbor"] = 20 # number of neighbors in surface relaxation
+devein_params["n_smooth"] = 0 # final smoothing
+devein_params["max_iter"] = 1000 # maximum iterations
 
-# cost parameters
-cost_step = 1000 # step size between cost array points
-cost_fit_min = 10 # sample size for linear fit
+# anchoring parameters
+anchor_params = dict()
+anchor_params["run"] = True
+anchor_params["n_neighbor"] = 20 # number of neighbors
+anchor_params["n_smooth"] = 0 # final smoothing
 
-# deformation field
-o_sigma = 1 # gaussian filter
-
-# output
-show_cost = True # show temporary cost function
-show_slope = False # show temporary slope function
-write_gradient = True # write gradient image
-write_step = 10000 # step size to write intermediate surfaces (if set > 0)
-cleanup = False # remove intermediate files
+# registration parameter
+reg_params = dict()
+reg_params["run"] = True
+reg_params["t2s"] = True # underlying image contrast (boolean)
+reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
+reg_params["line_length"] = 3 # line length in one direction in mm
+reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
+reg_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
+reg_params["max_iter"] = [250000, 500000, 1000000] # maximum iterations
+reg_params["cost_threshold"] = [1e-4, 1e-5, 1e-6] # cost function threshold
+reg_params["gradient_sigma"] = 1 # gaussian filter
+reg_params["gradient_kernel"] = 3 # kernel size used by gradient calculation
+reg_params["gradient_write"] = True # write gradient image
+reg_params["overwrite_control"] = False # do not lock control points
+reg_params["cost_step"] = 1000 # step size between cost array points
+reg_params["cost_sample"] = 10 # sample size for linear fit
+reg_params["deformation_sigma"] = 1 # gaussian filter for deformation field
+reg_params["show_cost"] = True # show temporary cost function
+reg_params["show_slope"] = False # show temporary slope function
+reg_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
 
 """ do not edit below """
 
-# basename for output
-name_white = os.path.basename(input_white)
-
-if input_pial:
-    name_pial = os.path.basename(input_pial)
-
 # make output folder
-if not os.path.exists(path_output):
-    os.makedirs(path_output)
+if not os.path.exists(io_file["o_output"]):
+    os.makedirs(io_file["o_output"])
 
-tmp = np.random.randint(0, 10, 5)
-tmp_string = ''.join(str(i) for i in tmp)
-path_temp = os.path.join(path_output,"tmp_"+tmp_string)
-if not os.path.exists(path_temp):
-    os.makedirs(path_temp)
+# load input
+volume, T, surf, point, basename = load_data(io_file, reg_params)
 
-# get transformation
-vox2ras_tkr, ras2vox_tkr = vox2ras(input_ref)
+# run deveining
+niter_devein = 0
+if devein_params["run"]:    
+    surf["vtx_white"], niter_devein = devein_mesh(surf["vtx_white"], 
+                                                  surf["fac_white"], 
+                                                  volume["vein"], 
+                                                  volume["ignore"], 
+                                                  surf["dir_white"], 
+                                                  T["adjm"], 
+                                                  T["ras2vox"],
+                                                  devein_params["n_neighbor"], 
+                                                  reg_params["line_dir"], 
+                                                  devein_params["n_smooth"], 
+                                                  devein_params["max_iter"])    
 
-# load volume data
-vol_array = nb.load(input_ref).get_fdata()
-grad_array = get_gradient(input_ref, ras2vox_tkr, line_dir, g_sigma, g_kernel, write_gradient,
-                          path_output)
-vein_array = nb.load(input_vein).get_fdata() 
+# run anchoring
+ind_control = []
+if anchor_params["run"]:
+    surf["vtx_white"], ind_control = anchor_mesh(surf["vtx_white"], 
+                                                 surf["fac_white"], 
+                                                 T["adjm"], 
+                                                 point["anchor"],
+                                                 anchor_params["n_neighbor"], 
+                                                 anchor_params["n_smooth"])
 
-if input_ignore:
-    ignore_array = nb.load(input_ignore).get_fdata()
-
-# create textfile
-file = open(os.path.join(path_output,name_white+"_info.txt"),"w")
-
-# run deveining and load surface
-if deveining:
-    file.write("apply deveining\n")
-    vtx_devein = devein_mesh(input_white,
-                             input_vein,
-                             input_ignore,
-                             os.path.join(path_temp,name_white+"_devein"), 
-                             n_neighbor_deveining, 
-                             line_dir, 
-                             n_smooth_deveining, 
-                             max_iterations_deveining)
+# run gbb
+if reg_params["run"]:
     
-    # load original surface data
-    vtx_white_orig, fac_white_orig = read_geometry(input_white)
+    # do not consider control points in gbb
+    if reg_params["overwrite_control"]:
+        ind_control = []
     
-    if input_pial:
-        vtx_pial_orig, fac_pial_orig = read_geometry(input_pial)
-    
-    # get deformation field
-    print("write deformation field from deveining")
-    deformation_array = deformation_field(vtx_white_orig, vtx_devein, input_ref, line_dir, 
-                                          vox2ras_tkr, ras2vox_tkr, 
-                                          o_sigma, 
-                                          path_output=path_temp, 
-                                          name_output=name_white+"_devein_deformation", 
-                                          write_output=True)
-    
-    # get shift
-    write_shift(vtx_devein, vtx_white_orig, line_dir, 
-                path_output=path_temp, 
-                name_output=name_white+"_devein_shift")
-      
-    # apply deformation to white and pial surface
-    print("apply deformation")
-    vtx_white, fac_white = apply_shift(vtx_white_orig, fac_white_orig, vox2ras_tkr, ras2vox_tkr, 
-                                       line_dir, 
-                                       deformation_array, 
-                                       path_output=path_temp, 
-                                       name_output=name_white+"_devein_refined", 
-                                       write_output=True)
-    
-    if input_pial:
-        vtx_pial, fac_pial = apply_shift(vtx_pial_orig, fac_pial_orig, vox2ras_tkr, ras2vox_tkr, 
-                                         line_dir, 
-                                         deformation_array, 
-                                         path_output=path_temp, 
-                                         name_output=name_pial+"_devein_refined", 
-                                         write_output=True)
-else:
-    # load surface data
-    vtx_white, fac_white = read_geometry(input_white)
-    
-    if input_pial:
-        vtx_pial, fac_pial = read_geometry(input_pial)
+    surf["vtx_white"], gbb_params = gbb_mesh(surf["vtx_white"], 
+                                             surf["fac_white"], 
+                                             surf["dir_white"],
+                                             surf["n_white"],
+                                             ind_control,
+                                             volume["ref"], 
+                                             volume["gradient"], 
+                                             volume["vein"], 
+                                             volume["ignore"], 
+                                             reg_params["t2s"], 
+                                             T["vox2ras"], 
+                                             T["ras2vox"], 
+                                             reg_params["line_dir"], 
+                                             reg_params["line_length"], 
+                                             reg_params["r_size"], 
+                                             reg_params["l_rate"], 
+                                             reg_params["max_iter"], 
+                                             reg_params["cost_threshold"], 
+                                             reg_params["cost_step"], 
+                                             reg_params["cost_sample"], 
+                                             io_file["o_output"], 
+                                             reg_params["show_cost"], 
+                                             reg_params["show_slope"], 
+                                             reg_params["intermediate_write"])
 
-# initialize some variables
-vtx_new = vtx_white.copy()
-n_coords = len(vtx_white)
-n_steps = len(r_size)
-vol_max = np.shape(vol_array)
-
-# get normals
-n, vtx_norm = get_normal_direction(vtx_white, fac_white, line_dir)
-
-# get vertices to ignore
-if input_ignore:
-    _, ind_ignore = get_ignore(vtx_white, ignore_array, ras2vox_tkr, write_output=False, 
-                               path_output=False)
-
-print("start registration step 0 at iteration 0")
-file.write("start registration step 0 at iteration 0\n")
-
-# do surface refinement
-i = 0
-j = 0
-p = 0
-q = 0
-counter = 0
-step = 0
-cost_array = []
-m_array = []
-n_array = [] 
-while True:
-            
-    # get current vertex point
-    n_vertex = np.random.randint(n_coords)
-    if input_ignore and n_vertex in ind_ignore:
-        counter += 1
-        continue
-    
-    # get shift
-    vtx_shift = get_shift(vtx_new, fac_white, n, n_vertex, grad_array, vein_array, vox2ras_tkr, 
-                          ras2vox_tkr, vol_max, line_length, line_dir, t2s, False)
-    
-    # update mesh
-    if len(vtx_shift):
-        nn_ind, _ = nn_3d(vtx_new[n_vertex], vtx_new, r_size[step])
-        vtx_new = update_mesh(vtx_new,vtx_shift,n_vertex,nn_ind,l_rate[step])
-    else:
-        counter += 1
-        continue        
-    
-    # get cost function
-    if p >= cost_step:
-        J = cost_BBR(vtx_new, vtx_norm, vol_array, ras2vox_tkr, vol_max, t2s)
-        cost_array = np.append(cost_array, J)
-        q += 1
-        p = 0
-        if len(cost_array) >= cost_fit_min:
-            
-            # check exit criterion
-            m_fit, n_fit, exit_crit = check_exit(np.arange(q-cost_fit_min,q), 
-                                                 cost_array[-cost_fit_min:], 
-                                                 cost_threshold=cost_threshold[step])
-            
-            # save computed slop and y-axis intercept of liner fit
-            m_array = np.append(m_array, m_fit)
-            n_array = np.append(n_array, n_fit)
-            
-            # shot plots
-            if show_cost:
-                set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                cost_plot(q, cost_array, m_fit, n_fit, set_title, save_plot=False, 
-                          path_output=False, name_output=False)
-                
-            if show_slope:
-                set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                slope_plot(q, m_array, set_title, save_plot=False, path_output=False, 
-                           name_output=False)
-    else:
-        p += 1
-        exit_crit = False
-
-    # check exit
-    if exit_crit and step < len(max_iterations) - 1 or j == max_iterations[step]:
-        step += 1
-        j = 0
-        print("start registration step "+str(step)+" at iteration "+str(i))
-        file.write("start registration step "+str(step)+" at iteration "+str(i)+"\n")
-    elif exit_crit and step == len(max_iterations) - 1:
-        print("Registration converged!")
-        file.write("Registration converged!\n")        
-        break
-    elif step == len(max_iterations) - 1 and j == max_iterations[-1]:
-        print("Registration did not converge!")
-        file.write("Registration did not converge!\n")
-        break
-
-    # write intermediate surfaces
-    if write_step and not np.mod(i,write_step):
-        write_geometry(os.path.join(path_temp,"temp_"+str(i)), vtx_new, fac_white)
-    
-    i += 1
-    j += 1
-
-# print some information
-print("Final number of iterations: "+str(i))
-print("Final number of skipped iterations: "+str(counter))
-file.write("Final number of iterations: "+str(i)+"\n")
-file.write("Final number of skipped iterations: "+str(counter)+"\n")
-
-# close textfile
-file.close()
-
-# get deformation field
+# write deformation field
 print("write deformation field")
-deformation_array = deformation_field(vtx_white, vtx_new, input_ref, line_dir, 
-                                      vox2ras_tkr, ras2vox_tkr, 
-                                      o_sigma, 
-                                      path_output=path_output, 
-                                      name_output=name_white+"_deformation", 
-                                      write_output=True)
+deformation_array = deformation_field(surf["vtx_white_archive"],
+                                      surf["vtx_white"],
+                                      volume["instance"],
+                                      volume["ref"],
+                                      reg_params["line_dir"],
+                                      T["vox2ras"],
+                                      T["ras2vox"],
+                                      reg_params["deformation_sigma"],
+                                      io_file["o_output"],
+                                      basename["white"]+"_deformation",
+                                      True)
 
 # get shift
-write_shift(vtx_new, vtx_white, line_dir, 
-            path_output=path_output, 
-            name_output=name_white+"_shift")
-
+print("write shift")
+write_shift(surf["vtx_white_archive"], 
+            surf["vtx_white"],
+            reg_params["line_dir"], 
+            io_file["o_output"], 
+            basename["white"]+"_shift")
+  
 # apply deformation to white and pial surface
 print("apply deformation")
-_ = apply_shift(vtx_white, fac_white, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
-                path_output=path_output, 
-                name_output=name_white+"_refined", 
-                write_output=True)
+_, _ = apply_shift(surf["vtx_white_archive"],
+                   surf["fac_white"],
+                   T["vox2ras"], 
+                   T["ras2vox"], 
+                   reg_params["line_dir"], 
+                   deformation_array,
+                   io_file["o_output"], 
+                   basename["white"]+"_refined", 
+                   True)
 
-if input_pial:
-    _ = apply_shift(vtx_pial, fac_pial, vox2ras_tkr, ras2vox_tkr, line_dir, deformation_array, 
-                    path_output=path_output, 
-                    name_output=name_pial+"_refined", 
-                    write_output=True)
+if surf["vtx_pial"] is not None:
+    _, _ = apply_shift(surf["vtx_pial"], 
+                       surf["fac_pial"], 
+                       T["vox2ras"], 
+                       T["ras2vox"], 
+                       reg_params["line_dir"], 
+                       deformation_array, 
+                       io_file["o_output"], 
+                       basename["pial"]+"_refined", 
+                       True)
 
 # save cost array and slope and y-axis intercept arrays of linear fits
-np.savez(os.path.join(path_output,name_white+"_cost"), J=cost_array, m=m_array, n=n_array)
+np.savez(os.path.join(io_file["o_output"],basename["white"]+"_cost"), J= gbb_params["cost_array"], 
+         m=gbb_params["m_array"], n=gbb_params["n_array"])
 
-# remove intermediate files
-if cleanup:
-    shutil.rmtree(path_temp, ignore_errors=True)
+# write readme
+write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_devein, len(ind_control), 
+             io_file["o_output"], basename["white"])

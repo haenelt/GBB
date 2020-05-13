@@ -8,12 +8,19 @@ def read_anchor(input_anchor):
         
     created by Daniel Haenelt
     Date created: 11-05-2020
-    Last modified: 11-05-2020
+    Last modified: 12-05-2020
     """
+    import sys
     import numpy as np
-
+    
+    input_anchor = "/home/daniel/projects/GBB/test_data/control_points.dat"
+    
     with open(input_anchor, "r") as f:
         x = f.readlines()
+        
+        # check coordinate system
+        if int(x[-1].split()[1]) != 0:
+            sys.exit("Anchor points in wrong coordinate system!")
         
         # skip last 3 lines
         n_points = len(x) - 3
