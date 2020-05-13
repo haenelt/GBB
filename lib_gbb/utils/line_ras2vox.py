@@ -1,9 +1,9 @@
-def line_ras2vox(line_ras, ras2vox_tkr):
+def line_ras2vox(line_dir, ras2vox_tkr):
     """
     This function transforms the line direction from ras coordinates into its orientation in voxel
     space.
     Inputs:
-        *line_ras: line direction in ras space (0,1,2).
+        *line_dir: line direction in ras space (0,1,2).
         *ras2vox_tkr: transformation matrix from ras to voxel space.
     Outputs:
         *line_vox: line direction in voxel space.
@@ -17,11 +17,11 @@ def line_ras2vox(line_ras, ras2vox_tkr):
     from nibabel.affines import apply_affine
 
     # get line direction in ras space
-    if line_ras == 0:
+    if line_dir == 0:
         pt_ras = [1,0,0]
-    elif line_ras == 1:
+    elif line_dir == 1:
         pt_ras = [0,1,0]
-    elif line_ras == 2:
+    elif line_dir == 2:
         pt_ras = [0,0,1]
     else:
         sys.exit("Invalid axis direction in gradient calculation!")

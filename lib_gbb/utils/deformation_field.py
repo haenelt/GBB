@@ -1,4 +1,4 @@
-def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vox_tkr, sigma=1, 
+def deformation_field(vtx_old, vtx_new, input_vol, line_dir, vox2ras_tkr, ras2vox_tkr, sigma=1, 
                       path_output="", name_output="", write_output=True):
     """
     This function computes a deformation field from a array of shifted vertices. Each voxel in the 
@@ -8,7 +8,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vo
         *vtx_old: original array of vertices.
         *vtx_new: new array of vertices.
         *input_vol: filename of reference volume.
-        *line_ras: shift direction in ras space.
+        *line_dir: shift direction in ras space.
         *vox2ras_tkr: voxel to ras space transformation.
         *ras2vox_tkr: ras to voxel space transformation.
         *sigma: sigma for gaussian filtering of deformation field.
@@ -35,7 +35,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vo
     vtx_new = apply_affine(ras2vox_tkr, vtx_new)
 
     # line direction in voxel space
-    line_vox = line_ras2vox(line_ras, ras2vox_tkr)
+    line_vox = line_ras2vox(line_dir, ras2vox_tkr)
 
     # get vertex shift along one axis
     vtx_shift = vtx_new[:,line_vox] - vtx_old[:,line_vox]
@@ -63,7 +63,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vo
     y_plane_reshape = y_plane.reshape(len(xf)*len(yf),)
 
     # get slices in voxel space
-    vtx_slice = np.round(vtx_old[:,line_ras]).astype(int)
+    vtx_slice = np.round(vtx_old[:,line_dir]).astype(int)
 
     # get deformation field
     n_iter = np.unique(vtx_slice)
@@ -74,7 +74,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, line_ras, vox2ras_tkr, ras2vo
         vtx_shift_temp = vtx_shift[vtx_slice == i]
         
         # delete slice column
-        vtx_old_temp = np.delete(vtx_old_temp, line_ras, axis=1)
+        vtx_old_temp = np.delete(vtx_old_temp, line_dir, axis=1)
 
         # grid interpolation of index data
         coord_plane = np.transpose(np.array((x_plane_reshape, y_plane_reshape)))

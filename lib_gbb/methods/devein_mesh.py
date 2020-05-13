@@ -1,4 +1,4 @@
-def devein_mesh(vtx, fac, arr_vein, arr_ignore, n, adjm, ras2vox, n_neighbor=20, shift_dir=2, 
+def devein_mesh(vtx, fac, arr_vein, arr_ignore, n, adjm, ras2vox, n_neighbor=20, line_dir=2, 
                 smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and shift these and 
@@ -14,7 +14,7 @@ def devein_mesh(vtx, fac, arr_vein, arr_ignore, n, adjm, ras2vox, n_neighbor=20,
         *adjm: adjacecy matrix.
         *ras2vox: transformation matrix from ras to voxel space.
         *n_neighbor: neighborhood size.
-        *shift_dir: shift direction in ras conventions.
+        *line_dir: shift direction in ras conventions.
         *smooth_iter: number of smoothing iterations of final surface mesh.
         *max_iterations: maximum number of deveining iterations.
     Outputs:
@@ -69,8 +69,8 @@ def devein_mesh(vtx, fac, arr_vein, arr_ignore, n, adjm, ras2vox, n_neighbor=20,
     
         # get shift as weighted average
         vtx_shift = np.zeros((len(nn_ind),3))
-        vtx_shift[:,shift_dir] = vtx[nn_ind,shift_dir]
-        vtx_shift[:,shift_dir] = vtx[curr_ind,shift_dir] - vtx_shift[:,shift_dir]
+        vtx_shift[:,line_dir] = vtx[nn_ind,line_dir]
+        vtx_shift[:,line_dir] = vtx[curr_ind,line_dir] - vtx_shift[:,line_dir]
         vtx_shift = np.mean(vtx_shift, axis=0)
         vtx_shift = np.abs(vtx_shift)
         
