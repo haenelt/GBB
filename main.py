@@ -73,18 +73,18 @@ volume, T, surf, point, basename = load_data(io_file, reg_params)
 
 # run deveining
 niter_devein = 0
-if devein_params["run"]:    
+if devein_params["run"]:        
     surf["vtx_white"], niter_devein = devein_mesh(surf["vtx_white"], 
                                                   surf["fac_white"], 
+                                                  surf["n_white"],
                                                   volume["vein"], 
-                                                  volume["ignore"], 
-                                                  surf["dir_white"], 
+                                                  volume["ignore"],  
                                                   T["adjm"], 
                                                   T["ras2vox"],
                                                   devein_params["n_neighbor"], 
                                                   reg_params["line_dir"], 
                                                   devein_params["n_smooth"], 
-                                                  devein_params["max_iter"])    
+                                                  devein_params["max_iter"])   
 
 # run anchoring
 ind_control = []
