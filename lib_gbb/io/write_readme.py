@@ -34,7 +34,7 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
         file.write("Number of deveining iterations: "+str(niter_d)+"\n")
         
     # anchoring
-    file.write("apply anchoring: "+str(anchor_params["run"]))
+    file.write("apply anchoring: "+str(anchor_params["run"])+"\n")
     if anchor_params["run"]:
         
         # anchoring parameters
@@ -45,7 +45,7 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
         file.write("Number of control points: "+str(niter_a)+"\n")
        
     # registration
-    file.write("apply registering: "+str(reg_params["run"]))
+    file.write("apply registering: "+str(reg_params["run"])+"\n")
     if reg_params["run"]:
         
         # registration parameters

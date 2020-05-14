@@ -127,6 +127,10 @@ if reg_params["run"]:
                                              reg_params["show_cost"], 
                                              reg_params["show_slope"], 
                                              reg_params["intermediate_write"])
+    
+    # save cost array and slope and y-axis intercept arrays of linear fits
+    np.savez(os.path.join(io_file["o_output"],basename["white"]+"_cost"), 
+             J= gbb_params["cost_array"], m=gbb_params["m_array"], n=gbb_params["n_array"])
 
 # write deformation field
 print("write deformation field")
@@ -168,10 +172,6 @@ if surf["vtx_pial"] is not None:
                              io_file["o_output"], 
                              basename["pial"]+"_refined", 
                              True)
-
-# save cost array and slope and y-axis intercept arrays of linear fits
-np.savez(os.path.join(io_file["o_output"],basename["white"]+"_cost"), J= gbb_params["cost_array"], 
-         m=gbb_params["m_array"], n=gbb_params["n_array"])
 
 # write readme
 write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_devein, len(ind_control), 
