@@ -16,7 +16,7 @@ from lib_gbb.methods.devein_mesh import devein_mesh
 from lib_gbb.methods.anchor_mesh import anchor_mesh
 from lib_gbb.methods.gbb_mesh import gbb_mesh
 from lib_gbb.utils.deformation_field import deformation_field
-from lib_gbb.utils.apply_shift import apply_shift
+from lib_gbb.utils.apply_deformation import apply_deformation
 
 # input and output parameters
 io_file = dict()
@@ -150,26 +150,26 @@ write_shift(surf["vtx_white_archive"],
   
 # apply deformation to white and pial surface
 print("apply deformation")
-_, _ = apply_shift(surf["vtx_white_archive"],
-                   surf["fac_white"],
-                   T["vox2ras"], 
-                   T["ras2vox"], 
-                   reg_params["line_dir"], 
-                   deformation_array,
-                   io_file["o_output"], 
-                   basename["white"]+"_refined", 
-                   True)
+_, _ = apply_deformation(surf["vtx_white_archive"],
+                         surf["fac_white"],
+                         T["vox2ras"], 
+                         T["ras2vox"], 
+                         reg_params["line_dir"], 
+                         deformation_array,
+                         io_file["o_output"], 
+                         basename["white"]+"_refined", 
+                         True)
 
 if surf["vtx_pial"] is not None:
-    _, _ = apply_shift(surf["vtx_pial"], 
-                       surf["fac_pial"], 
-                       T["vox2ras"], 
-                       T["ras2vox"], 
-                       reg_params["line_dir"], 
-                       deformation_array, 
-                       io_file["o_output"], 
-                       basename["pial"]+"_refined", 
-                       True)
+    _, _ = apply_deformation(surf["vtx_pial"], 
+                             surf["fac_pial"], 
+                             T["vox2ras"], 
+                             T["ras2vox"], 
+                             reg_params["line_dir"], 
+                             deformation_array, 
+                             io_file["o_output"], 
+                             basename["pial"]+"_refined", 
+                             True)
 
 # save cost array and slope and y-axis intercept arrays of linear fits
 np.savez(os.path.join(io_file["o_output"],basename["white"]+"_cost"), J= gbb_params["cost_array"], 

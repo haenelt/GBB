@@ -1,5 +1,5 @@
-def apply_shift(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation, path_output="", 
-                name_output="", write_output=True):
+def apply_deformation(vtx, fac, vox2ras_tkr, ras2vox_tkr, line_dir, deformation, path_output="", 
+                      name_output="", write_output=True):
     """
     This function applies the coordinate shift to an array of vertices. The coordinate shift is 
     taken from a deformation field where each voxel corresponds to a shift along one direction in 
