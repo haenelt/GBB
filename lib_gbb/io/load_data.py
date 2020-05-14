@@ -23,7 +23,7 @@ def load_data(io_file, reg_params):
     from nibabel.freesurfer.io import read_geometry
     from lib.surface.vox2ras import vox2ras
     from lib_gbb.io.read_anchor import read_anchor
-    from lib_gbb.normal.get_normal_direction import get_normal_direction
+    from lib_gbb.normal.get_normal import get_normal
     from lib_gbb.utils.get_adjm import get_adjm
     from lib_gbb.utils.get_gradient import get_gradient
     
@@ -44,9 +44,7 @@ def load_data(io_file, reg_params):
         surf["vtx_white_archive"] = surf["vtx_white"].copy()
         
         # get normals
-        surf["dir_white"], surf["n_white"] = get_normal_direction(surf["vtx_white"],
-                                                                  surf["fac_white"],
-                                                                  reg_params["line_dir"])
+        surf["n_white"] = get_normal(surf["vtx_white"], surf["fac_white"])
         
         # adjacency matrix
         T["adjm"] = get_adjm(io_file["i_white"])
