@@ -3,8 +3,9 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
     """
     This function finds vertex points which are located within marked veins and shift these and 
     their neighborhood until the mesh is free of trapped vertices (or the maximum number of
-    iterations is reached). Shifts will be applied only along one axis or along the surface normal
-    and in inward direction. Optionally, the output mesh can be smoothed.    
+    iterations is reached). Shifts are computed a averaging vertex coordinates within a neighborhood
+    around a single vertex along one direction or along all axes. All shifts are applied in inward
+    direction. Optionally, the output mesh can be smoothed.    
     Inputs.
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
@@ -85,20 +86,16 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
             vtx_shift[:,line_dir] = vtx[curr_ind,line_dir] - vtx_shift[:,line_dir]
         
         vtx_shift = np.mean(vtx_shift, axis=0)
-        #vtx_shift = np.abs(vtx_shift)            
-            
-        # do only inward shifts
-        #if n[curr_ind] < 0:
-        #    vtx_shift = -1 * vtx_shift
         
         # check inward shift by comparing distance to centroid
         vtx_dist_noshift = norm(vtx[curr_ind,:] - vtx_c)
         vtx_dist_shift = norm(vtx[curr_ind,:] - vtx_shift - vtx_c)
         
+        # do only inward shifts        
         if vtx_dist_shift - vtx_dist_noshift > 0:
             vtx_shift = -1 * vtx_shift
         
-            # update mesh if valid inward shift        
+        # update mesh if valid inward shift
         if line_dir != 3 and np.abs(vtx_norm[curr_ind,line_dir]) < line_threshold:
             vtx_temp_vox = apply_affine(ras2vox, vtx[curr_ind])
             vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
@@ -107,16 +104,6 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
             vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
             vtx_vox = apply_affine(ras2vox, vtx)
             vtx_vox = np.round(vtx_vox).astype(int)    
-        
-        # update mesh if valid inward shift        
-        #if vtx_dist_shift - vtx_dist_noshift > 0 or n[curr_ind] == 0:
-        #    vtx_temp_vox = apply_affine(ras2vox, vtx[curr_ind])
-        #    vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
-        #    arr_vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
-        #else:
-        #    vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
-        #    vtx_vox = apply_affine(ras2vox, vtx)
-        #    vtx_vox = np.round(vtx_vox).astype(int)    
     
         # get all vertices within vein
         vein_mask = np.zeros(len(vtx))
