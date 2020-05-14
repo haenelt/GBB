@@ -1,25 +1,28 @@
-def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vol_max, 
+def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vol_max,
               line_dir=2, line_length=3, t2s=True, show_plot=True):
     """
-    This function computes the vertex shift in one direction towards the highest GM/WM gradient. 
-    First, vertex end points of the line are computed and it is checked which side points towards 
-    WM. A line between both points is calculated and values of the second order gradient are 
-    sampled onto the line. Starting from the current vertex point, the nearest zero crossing
-    is found (if it exists). If a t2s contrast is considered, the intensity values are going from 
-    dark to bright for WM -> GM. Therefore, we expect a transition from positive to negative in 
-    this case for the zero crossing in the second order gradient. The found shift is only considered
-    if no vein is found in shift direction along the line. Vertex coordinates are in ras space.
+    This function computes the vertex shift in one direction (line_dir: 0,1,2) or along the surface
+    normal (line_dir: 3) towards the highest GM/WM gradient. First, a line with a defined direction 
+    is computed for a chosen vertex point and values of the second order gradient are sampled onto 
+    the line. If the line direction is along one axis, lines are omitted if the normal projection 
+    along that axis has a length below a set threshold. This is done to exlude shifts for surface
+    locations which are almost perpendicularly oriented to the shift direction. Starting from the 
+    current vertex point, the nearest zero crossing is found (if it exists). If a t2s contrast is 
+    considered, the intensity values are going from dark to bright for WM -> GM. Therefore, we 
+    expect a transition from positive to negative in this case for the zero crossing in the second 
+    order gradient. The found shift is only considered if no vein is found in shift direction along 
+    the line. Vertex coordinates are in ras space.
     Inputs:
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
-        *n: array of corresponding directions along one axis.
+        *vtx_norm: array of corresponding vertex normals.
         *ind: current vertex index.
         *arr_grad: 3D array of second order gradient values along one axis.
         *arr_vein: 3D array with masked veins.
         *vox2ras: voxel to ras transformation matrix.
         *ras2vox: ras to voxel transformation matrix.
         *vol_max: array of maximum voxel coordinates in x-, y-, and z-direction.
-        *line_dir: line direction in ras conventions.
+        *line_dir: line direction in ras conventions (0,1,2) or normal direction (3).
         *line_length: length of vertex shift in one direction in mm.
         *t2s: wm darker than gm (boolean).
         *show_plot: show line plot in command window.
@@ -28,38 +31,60 @@ def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vo
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 13-05-2020
+    Last modified: 14-05-2020
     """
+    import sys
     import numpy as np
     import matplotlib.pyplot as plt
     from nibabel.affines import apply_affine
     from lib_gbb.interpolation import linear_interpolation3d
-
+    
     # initialize
     shift_curr = []
     zero_found = []
     
     # fix parameters
     n_line = 1000 # number of line points
+    line_threshold = 0.05 # if direction is along one axis, omit line if length is below threshold
     
     # get current vertex and normal
-    vtx_curr = vtx[ind,:]
-    n_curr = n[ind]
+    vtx_curr = vtx[ind,:].copy()
+    normal_curr = vtx_norm[ind,:].copy()
+    
+    if line_dir == 0:
+        normal_curr[0] = normal_curr[0] / np.abs(normal_curr[0])
+        normal_curr[1] = 0
+        normal_curr[2] = 0
+        
+        if np.abs(normal_curr[0]) < line_threshold:
+            return []
+        
+    elif line_dir == 1:
+        normal_curr[0] = 0
+        normal_curr[1] = normal_curr[1] / np.abs(normal_curr[1])
+        normal_curr[2] = 0
+        
+        if np.abs(normal_curr[1]) < line_threshold:
+            return []
+        
+    elif line_dir == 2:
+        normal_curr[0] = 0
+        normal_curr[1] = 0
+        normal_curr[2] = normal_curr[2] / np.abs(normal_curr[2])
+        
+        if np.abs(normal_curr[2]) < line_threshold:
+            return []
+        
+    elif line_dir > 3 or line_dir < 0:
+        sys.exit("Choose a valid line direction!")
     
     # get line a -> b (WM -> GM)
     pt_start = vtx_curr.copy()
     pt_end = vtx_curr.copy()
-    if n_curr == 1:
-        pt_start[line_dir] += line_length
-        pt_end[line_dir] -= line_length
-    elif n_curr == -1:
-        pt_start[line_dir] -= line_length
-        pt_end[line_dir] += line_length
-    else:
-        return []
-       
-    line_curr = np.zeros((n_line,3), dtype=np.float)
-    line_curr[:,line_dir] = np.linspace(0,1,n_line)    
+    pt_start += line_length * normal_curr
+    pt_end -= line_length * normal_curr
+    
+    line_curr = np.linspace((0,0,0),(1,1,1,),n_line,dtype=np.float)
     line_curr = (pt_end-pt_start) * line_curr + pt_start
     line_curr = apply_affine(ras2vox_tkr, line_curr)
     
@@ -97,7 +122,7 @@ def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vo
         # look for veins in line
         vein_up = np.sum(vein_curr[i:])
         vein_down = np.sum(vein_curr[:i])
-
+    
         # start search
         while i > 0 and i < n_line - 2:
             
@@ -126,7 +151,7 @@ def get_shift(vtx, fac, n, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_tkr, vo
             elif grad_curr[i] > 0 and grad_curr[i+1] < 0 and not t2s:
                 zero_found = 1
                 break
-        
+    
     # only consider shift if not positioned within a vein
     if zero_found:
         zero_curr = apply_affine(vox2ras_tkr, line_curr[i,:])

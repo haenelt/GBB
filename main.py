@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface refinement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 13-05-2020
+Last modified: 14-05-2020
 """
 import os
 import numpy as np
@@ -103,11 +103,10 @@ if reg_params["run"]:
     if reg_params["overwrite_control"]:
         ind_control = []
     
-    surf["vtx_white"], gbb_params = gbb_mesh(surf["vtx_white"], 
+    surf["vtx_white"], gbb_params = gbb_mesh(surf["vtx_white"],
                                              surf["fac_white"], 
-                                             surf["dir_white"],
                                              surf["n_white"],
-                                             ind_control,
+                                             ind_control, 
                                              volume["ref"], 
                                              volume["gradient"], 
                                              volume["vein"], 

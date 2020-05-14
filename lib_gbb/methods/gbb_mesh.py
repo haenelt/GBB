@@ -1,4 +1,4 @@
-def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_vein, arr_ignore, t2s, 
+def gbb_mesh(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, arr_ignore, t2s, 
              vox2ras_tkr, ras2vox_tkr, line_dir, line_length, r_size, l_rate, max_iterations, 
              cost_threshold, cost_step=1000, cost_sample=10, path_output = "", show_cost=True, 
              show_slope=False, write_temp=10000):
@@ -7,8 +7,7 @@ def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_ve
     Inputs.
         *vtx: array of vertex points.
         *fac: array of corresponding faces.
-        *n_dir: array normal directions.
-        *normal: array of normal vectors.
+        *vtx_n: array of vertex normals.
         *ind_control: array of vertex indices matching control points.
         *arr_ref: array of reference volume.
         *arr_gradient: array of gradient image.
@@ -35,7 +34,7 @@ def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_ve
     
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 13-05-2020
+    Last modified: 14-05-2020
     """
     import os
     import numpy as np
@@ -86,12 +85,12 @@ def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_ve
             counter += 1
             continue
         
-        # get shift
-        vtx_shift = get_shift(vtx, fac, n_dir, n_vertex, arr_gradient, arr_vein, vox2ras_tkr, 
+        # get shift        
+        vtx_shift = get_shift(vtx, fac, vtx_n, n_vertex, arr_gradient, arr_vein, vox2ras_tkr, 
                               ras2vox_tkr, vol_max, line_dir, line_length, t2s, False)
-           
+        
         # update mesh
-        if len(vtx_shift):
+        if vtx_shift:
             nn_ind, _ = nn_3d(vtx[n_vertex], vtx, r_size[step])
             if np.any(np.in1d(nn_ind,ind_control)):
                 counter += 1
@@ -103,8 +102,7 @@ def gbb_mesh(vtx, fac, n_dir, normal, ind_control, arr_ref, arr_gradient, arr_ve
         
         # get cost function
         if p >= cost_step:
-            J = cost_BBR(vtx, normal, arr_ref, ras2vox_tkr, vol_max, 
-                         t2s)
+            J = cost_BBR(vtx, vtx_n, arr_ref, ras2vox_tkr, vol_max, t2s)
             cost_array = np.append(cost_array, J)
             q += 1
             p = 0
