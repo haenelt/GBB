@@ -33,7 +33,7 @@ def write_shift(vtx_old, vtx_new, line_dir, path_output, name_output):
     elif line_dir == 3:
         for i in range(3):
             output = nb.freesurfer.mghformat.MGHImage(vtx_shift[:,i], np.eye(4), header)
-            nb.save(output, os.path.join(path_output,name_output+"_"+suffix+".mgh"))
+            nb.save(output, os.path.join(path_output,name_output+"_"+suffix[i]+".mgh"))
     else:
         output = nb.freesurfer.mghformat.MGHImage(vtx_shift[:,line_dir], np.eye(4), header)
         nb.save(output, os.path.join(path_output,name_output+".mgh"))

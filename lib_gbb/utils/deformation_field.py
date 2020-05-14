@@ -55,7 +55,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, sig
     # get vertex shifts in voxel space
     vtx_shift = np.zeros((len(vtx_old),3))
     for i in range(len(line_vox)):
-        vtx_shift[:,line_vox[i]] = vtx_new[:,line_vox[i]] - vtx_old[:,line_vox[i]]
+        vtx_shift[:,i] = vtx_new[:,i] - vtx_old[:,i]
     
     # get volume coordinates in voxel space
     xf = np.arange(0,vol.header["dim"][1])

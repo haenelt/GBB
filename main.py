@@ -45,7 +45,7 @@ anchor_params["n_smooth"] = 0 # final smoothing
 reg_params = dict()
 reg_params["run"] = False
 reg_params["t2s"] = True # underlying image contrast (boolean)
-reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
+reg_params["line_dir"] = 3 # line axis in ras convention (0,1,2,3)
 reg_params["line_length"] = 3 # line length in one direction in mm
 reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
 reg_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
@@ -97,6 +97,7 @@ if anchor_params["run"]:
                                                  anchor_params["n_smooth"])
 
 # run gbb
+gbb_params = None
 if reg_params["run"]:
     
     # do not consider control points in gbb
@@ -129,15 +130,15 @@ if reg_params["run"]:
 
 # write deformation field
 print("write deformation field")
-deformation_array = deformation_field(surf["vtx_white_archive"],
-                                      surf["vtx_white"],
-                                      io_file["i_ref"],
-                                      T["vox2ras"],
-                                      T["ras2vox"],
-                                      reg_params["deformation_sigma"],
-                                      io_file["o_output"],
-                                      basename["white"]+"_deformation",
-                                      True)
+arr_deformation = deformation_field(surf["vtx_white_archive"],
+                                    surf["vtx_white"],
+                                    io_file["i_ref"],
+                                    T["vox2ras"],
+                                    T["ras2vox"],
+                                    reg_params["deformation_sigma"],
+                                    io_file["o_output"],
+                                    basename["white"]+"_deformation",
+                                    True)
 
 # get shift
 print("write shift")
@@ -151,21 +152,19 @@ write_shift(surf["vtx_white_archive"],
 print("apply deformation")
 _, _ = apply_deformation(surf["vtx_white_archive"],
                          surf["fac_white"],
-                         T["vox2ras"], 
-                         T["ras2vox"], 
-                         reg_params["line_dir"], 
-                         deformation_array,
-                         io_file["o_output"], 
+                         arr_deformation,
+                         T["vox2ras"],
+                         T["ras2vox"],
+                         io_file["o_output"],
                          basename["white"]+"_refined", 
                          True)
 
 if surf["vtx_pial"] is not None:
     _, _ = apply_deformation(surf["vtx_pial"], 
                              surf["fac_pial"], 
-                             T["vox2ras"], 
-                             T["ras2vox"], 
-                             reg_params["line_dir"], 
-                             deformation_array, 
+                             arr_deformation,
+                             T["vox2ras"],
+                             T["ras2vox"],
                              io_file["o_output"], 
                              basename["pial"]+"_refined", 
                              True)

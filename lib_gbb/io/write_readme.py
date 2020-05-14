@@ -64,12 +64,13 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
         file.write("Deformation (gaussian): "+str(reg_params["deformation_sigma"])+"\n")
         
         # number of registration iterations
-        for i in range(len(gbb_params["n_iter_step"])):
-            file.write("Number of iterations at step "+str(i)+": "+str(gbb_params["n_iter_step"][i])+"\n")
+        if gbb_params is not None:
+            for i in range(len(gbb_params["n_iter_step"])):
+                file.write("Number of iterations at step "+str(i)+": "+str(gbb_params["n_iter_step"][i])+"\n")
         
-        file.write("Registration converged: "+str(gbb_params["convergence"])+"\n")
-        file.write("Final number of iterations: "+str(gbb_params["n_iter"])+"\n")
-        file.write("Final number of skipped iterations: "+str(gbb_params["n_skip"])+"\n")
+            file.write("Registration converged: "+str(gbb_params["convergence"])+"\n")
+            file.write("Final number of iterations: "+str(gbb_params["n_iter"])+"\n")
+            file.write("Final number of skipped iterations: "+str(gbb_params["n_skip"])+"\n")
     
     # close textfile
     file.close()
