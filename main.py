@@ -132,7 +132,6 @@ print("write deformation field")
 deformation_array = deformation_field(surf["vtx_white_archive"],
                                       surf["vtx_white"],
                                       io_file["i_ref"],
-                                      reg_params["line_dir"],
                                       T["vox2ras"],
                                       T["ras2vox"],
                                       reg_params["deformation_sigma"],
