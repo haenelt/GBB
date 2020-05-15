@@ -1,7 +1,7 @@
 def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, sigma=1, 
                       path_output="", name_output="", write_output=True):
     """
-    This function computes a deformation field from a array of shifted vertices. Each voxel in the 
+    This function computes a deformation field from an array of shifted vertices. Each voxel in the 
     deformation field corresponds to a shift in voxel space along one direction. Optionally, a 
     gaussian filter can be applied to the final deformation field.
     Inputs:
@@ -19,7 +19,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, sig
         
     created by Daniel Haenelt
     Date created: 28-12-2019       
-    Last modified: 14-05-2020
+    Last modified: 15-05-2020
     """
     import os
     import numpy as np
@@ -27,11 +27,6 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, sig
     from nibabel.affines import apply_affine
     from scipy.interpolate import griddata
     from scipy.ndimage import gaussian_filter
-    from lib_gbb.utils.line_ras2vox import line_ras2vox
-    
-    # line directions
-    line_dir = [0,1,2]
-    line_vox = []
     
     # load reference volume
     vol = nb.load(input_vol)
@@ -49,38 +44,31 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, sig
     vtx_old = apply_affine(ras2vox_tkr, vtx_old)
     vtx_new = apply_affine(ras2vox_tkr, vtx_new)
     
-    # get line directions to voxel space
-    line_vox = [line_ras2vox(line_dir[i], ras2vox_tkr) for i in line_dir]
-    
     # get vertex shifts in voxel space
-    vtx_shift = np.zeros((len(vtx_old),3))
-    for i in range(len(line_vox)):
-        vtx_shift[:,i] = vtx_new[:,i] - vtx_old[:,i]
+    vtx_shift = vtx_new - vtx_old
     
     # get volume coordinates in voxel space
-    xf = np.arange(0,vol.header["dim"][1])
-    yf = np.arange(0,vol.header["dim"][2])
-    zf = np.arange(0,vol.header["dim"][3])
+    xf = np.arange(0,x_dim)
+    yf = np.arange(0,y_dim)
+    zf = np.arange(0,z_dim)
     
-    x_plane, y_plane, z_plane = np.meshgrid(xf,yf,zf)
+    y_plane, x_plane, z_plane = np.meshgrid(yf,xf,zf)
     x_plane = x_plane.flatten()
     y_plane = y_plane.flatten()
     z_plane = z_plane.flatten()
     
-    vox_coords = np.column_stack([y_plane,x_plane,z_plane])
-    
     # grid interpolation
-    nn = griddata(vtx_old, vtx_shift, vox_coords, method='nearest')
-    li = griddata(vtx_old, vtx_shift, vox_coords, method='linear')
+    nn = griddata(vtx_old, vtx_shift, np.column_stack([x_plane,y_plane,z_plane]), method='nearest')
+    li = griddata(vtx_old, vtx_shift, np.column_stack([x_plane,y_plane,z_plane]), method='linear')
     
     # fill all nans from the linear interpolation with nearest neighbor values
     li[np.isnan(li)] = nn[np.isnan(li)]
     
     # reshape to deformation volume
-    for i in range(len(line_vox)):
+    for i in range(3):
         
         # reshape
-        arr_deform[:,:,:,i] = np.reshape(nn[:,i],(y_dim,x_dim,z_dim))
+        arr_deform[:,:,:,i] = np.reshape(li[:,i],(x_dim,y_dim,z_dim))
     
         # apply gaussian filter
         if sigma:
