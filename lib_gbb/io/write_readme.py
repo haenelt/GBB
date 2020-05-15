@@ -1,5 +1,5 @@
-def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, niter_a, path_output, 
-                 name_output):
+def write_readme(devein_params, anchor_params, reg_params, gbb_params, deformation_sigma, niter_d, 
+                 niter_a, path_output, name_output):
     """
     This function writes a textfile summarizing input and output parameters. 
     Inputs.
@@ -7,6 +7,7 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
         *anchor_params: anchoring parameters (dict).
         *reg_params: registration parameters (dict).
         *gbb_params: gbb performance parameters (dict).
+        *deformation_sigma: gaussian filter for deformation field
         *niter_d: number of deveining iterations.
         *niter_a: number of anchoring iterations.
         *path_output: path where output is saved.
@@ -61,7 +62,6 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
         file.write("Overwrite control points: "+str(reg_params["overwrite_control"])+"\n")
         file.write("Cost (step size): "+str(reg_params["cost_step"])+"\n")
         file.write("Cost (sample size): "+str(reg_params["cost_sample"])+"\n")
-        file.write("Deformation (gaussian): "+str(reg_params["deformation_sigma"])+"\n")
         
         # number of registration iterations
         if gbb_params is not None:
@@ -71,6 +71,8 @@ def write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_d, 
             file.write("Registration converged: "+str(gbb_params["convergence"])+"\n")
             file.write("Final number of iterations: "+str(gbb_params["n_iter"])+"\n")
             file.write("Final number of skipped iterations: "+str(gbb_params["n_skip"])+"\n")
+    
+    file.write("Deformation (gaussian): "+str(deformation_sigma)+"\n")
     
     # close textfile
     file.close()

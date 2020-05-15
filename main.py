@@ -27,17 +27,18 @@ io_file["i_vein"] = "/home/daniel/projects/GBB/test_data/vein.nii"
 io_file["i_ignore"] = "/home/daniel/projects/GBB/test_data/ignore.nii"
 io_file["i_anchor"] = "/home/daniel/projects/GBB/test_data/control_points.dat"
 io_file["o_output"] = "/home/daniel/Schreibtisch/test"
+io_file["o_sigma"] = 1 # gaussian filter for deformation field
 
 # deveining parameters
 devein_params = dict()
-devein_params["run"] = True 
+devein_params["run"] = False
 devein_params["n_neighbor"] = 20 # number of neighbors in surface relaxation
 devein_params["n_smooth"] = 20 # final smoothing
 devein_params["max_iter"] = 1000 # maximum iterations
 
 # anchoring parameters
 anchor_params = dict()
-anchor_params["run"] = False
+anchor_params["run"] = True
 anchor_params["n_neighbor"] = 20 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
@@ -57,7 +58,6 @@ reg_params["gradient_write"] = True # write gradient image
 reg_params["overwrite_control"] = False # do not lock control points
 reg_params["cost_step"] = 1000 # step size between cost array points
 reg_params["cost_sample"] = 10 # sample size for linear fit
-reg_params["deformation_sigma"] = 1 # gaussian filter for deformation field
 reg_params["show_cost"] = True # show temporary cost function
 reg_params["show_slope"] = False # show temporary slope function
 reg_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
@@ -139,7 +139,7 @@ arr_deformation = deformation_field(surf["vtx_white_archive"],
                                     io_file["i_ref"],
                                     T["vox2ras"],
                                     T["ras2vox"],
-                                    reg_params["deformation_sigma"],
+                                    io_file["o_sigma"],
                                     io_file["o_output"],
                                     basename["white"]+"_deformation",
                                     True)
@@ -174,5 +174,5 @@ if surf["vtx_pial"] is not None:
                              True)
 
 # write readme
-write_readme(devein_params, anchor_params, reg_params, gbb_params, niter_devein, len(ind_control), 
-             io_file["o_output"], basename["white"])
+write_readme(devein_params, anchor_params, reg_params, gbb_params, io_file["o_sigma"], niter_devein, 
+             len(ind_control), io_file["o_output"], basename["white"])
