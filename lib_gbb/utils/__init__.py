@@ -7,5 +7,4 @@ from .update_mesh import update_mesh
 from .line_ras2vox import line_ras2vox
 from .apply_deformation import apply_deformation
 from .deformation_field import deformation_field
-from .apply_fieldmap import apply_fieldmap
 from .check_exit import check_exit

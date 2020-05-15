@@ -13,8 +13,6 @@ def read_anchor(input_anchor):
     import sys
     import numpy as np
     
-    input_anchor = "/home/daniel/projects/GBB/test_data/control_points.dat"
-    
     with open(input_anchor, "r") as f:
         x = f.readlines()
         
