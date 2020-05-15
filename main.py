@@ -27,24 +27,24 @@ io_file["i_vein"] = "/home/daniel/projects/GBB/test_data/vein.nii"
 io_file["i_ignore"] = "/home/daniel/projects/GBB/test_data/ignore.nii"
 io_file["i_anchor"] = "/home/daniel/projects/GBB/test_data/control_points.dat"
 io_file["o_output"] = "/home/daniel/Schreibtisch/test"
-io_file["o_sigma"] = 1 # gaussian filter for deformation field
+io_file["o_sigma"] = 2 # gaussian filter for deformation field
 
 # deveining parameters
 devein_params = dict()
-devein_params["run"] = False
+devein_params["run"] = True
 devein_params["n_neighbor"] = 20 # number of neighbors in surface relaxation
 devein_params["n_smooth"] = 20 # final smoothing
 devein_params["max_iter"] = 1000 # maximum iterations
 
 # anchoring parameters
 anchor_params = dict()
-anchor_params["run"] = True
+anchor_params["run"] = False
 anchor_params["n_neighbor"] = 20 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
 # registration parameter
 reg_params = dict()
-reg_params["run"] = False
+reg_params["run"] = True
 reg_params["t2s"] = True # underlying image contrast (boolean)
 reg_params["line_dir"] = 3 # line axis in ras convention (0,1,2,3)
 reg_params["line_length"] = 3 # line length in one direction in mm

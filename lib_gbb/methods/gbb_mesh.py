@@ -34,7 +34,7 @@ def gbb_mesh(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, arr_
     
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 14-05-2020
+    Last modified: 15-05-2020
     """
     import os
     import numpy as np
@@ -90,7 +90,7 @@ def gbb_mesh(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, arr_
                               ras2vox_tkr, vol_max, line_dir, line_length, t2s, False)
         
         # update mesh
-        if vtx_shift:
+        if len(vtx_shift):
             nn_ind, _ = nn_3d(vtx[n_vertex], vtx, r_size[step])
             if np.any(np.in1d(nn_ind,ind_control)):
                 counter += 1
