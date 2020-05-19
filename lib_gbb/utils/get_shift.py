@@ -31,7 +31,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 14-05-2020
+    Last modified: 18-05-2020
     """
     import sys
     import numpy as np
@@ -102,7 +102,9 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_
     
     # get gradient and vein data along line
     grad_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_grad)
-    vein_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_vein)
+    
+    if arr_vein is not None:
+        vein_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_vein)
     
     # show line plot
     if show_plot:
@@ -120,8 +122,12 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_
     if len(grad_curr):
     
         # look for veins in line
-        vein_up = np.sum(vein_curr[i:])
-        vein_down = np.sum(vein_curr[:i])
+        if arr_vein is not None:
+            vein_up = np.sum(vein_curr[i:])
+            vein_down = np.sum(vein_curr[:i])
+        else:
+            vein_up = 0
+            vein_down = 0
     
         # start search
         while i > 0 and i < n_line - 2:

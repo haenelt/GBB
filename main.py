@@ -5,7 +5,7 @@ This script executes the gradient-based boundary (GBB) surface refinement.
 
 created by Daniel Haenelt
 Date created: 26-12-2019
-Last modified: 14-05-2020
+Last modified: 18-05-2020
 """
 import os
 import numpy as np
@@ -52,7 +52,7 @@ reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
 reg_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
 reg_params["max_iter"] = [250000, 500000, 1000000] # maximum iterations
 reg_params["cost_threshold"] = [1e-4, 1e-5, 1e-6] # cost function threshold
-reg_params["gradient_sigma"] = 1 # gaussian filter
+reg_params["gradient_sigma"] = 1 # gaussian blurring used by gradient calculation
 reg_params["gradient_kernel"] = 3 # kernel size used by gradient calculation
 reg_params["gradient_write"] = True # write gradient image
 reg_params["overwrite_control"] = False # do not lock control points
