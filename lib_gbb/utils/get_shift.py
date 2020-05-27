@@ -31,7 +31,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 18-05-2020
+    Last modified: 26-05-2020
     """
     import sys
     import numpy as np
@@ -93,9 +93,9 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, ras2vox_
     outlier[line_curr[:,0] < 0] = 1
     outlier[line_curr[:,1] < 0] = 1
     outlier[line_curr[:,2] < 0] = 1
-    outlier[line_curr[:,0] > vol_max[0]] = 1
-    outlier[line_curr[:,1] > vol_max[1]] = 1
-    outlier[line_curr[:,2] > vol_max[2]] = 1
+    outlier[line_curr[:,0] >= vol_max[0] - 1] = 1
+    outlier[line_curr[:,1] >= vol_max[1] - 1] = 1
+    outlier[line_curr[:,2] >= vol_max[2] - 1] = 1
     
     line_curr = line_curr[outlier == 0,:]
     n_line = len(line_curr) # update line length

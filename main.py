@@ -20,18 +20,18 @@ from lib_gbb.utils.apply_deformation import apply_deformation
 
 # input and output parameters
 io_file = dict()
-io_file["i_white"] = "/home/daniel/projects/GBB/test_data/lh.layer10_def2_smooth"
-io_file["i_pial"] = "/home/daniel/projects/GBB/test_data/lh.layer0_def2_smooth"
-io_file["i_ref"] = "/home/daniel/projects/GBB/test_data/mean_epi_enhanced.nii"
-io_file["i_vein"] = "/home/daniel/projects/GBB/test_data/vein.nii"
-io_file["i_ignore"] = "/home/daniel/projects/GBB/test_data/ignore.nii"
-io_file["i_anchor"] = "/home/daniel/projects/GBB/test_data/control_points.dat"
-io_file["o_output"] = "/home/daniel/Schreibtisch/test"
+io_file["i_white"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined/gbb/lh.white_def2_smooth_refined"
+io_file["i_pial"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined/gbb/lh.pial_def2_smooth_refined"
+io_file["i_ref"] = "/data/pt_01880/Experiment1_ODC/p4/resting_state3/mean_udata_enhanced.nii"
+io_file["i_vein"] = None
+io_file["i_ignore"] = None
+io_file["i_anchor"] = None
+io_file["o_output"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined"
 io_file["o_sigma"] = 2 # gaussian filter for deformation field
 
 # deveining parameters
 devein_params = dict()
-devein_params["run"] = True
+devein_params["run"] = False
 devein_params["n_neighbor"] = 20 # number of neighbors in surface relaxation
 devein_params["n_smooth"] = 20 # final smoothing
 devein_params["max_iter"] = 1000 # maximum iterations
@@ -46,7 +46,7 @@ anchor_params["n_smooth"] = 0 # final smoothing
 reg_params = dict()
 reg_params["run"] = True
 reg_params["t2s"] = True # underlying image contrast (boolean)
-reg_params["line_dir"] = 3 # line axis in ras convention (0,1,2,3)
+reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
 reg_params["line_length"] = 3 # line length in one direction in mm
 reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
 reg_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
