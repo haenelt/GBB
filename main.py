@@ -20,14 +20,14 @@ from lib_gbb.utils.apply_deformation import apply_deformation
 
 # input and output parameters
 io_file = dict()
-io_file["i_white"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined/gbb/rh.pial_def2_smooth_refined"
-io_file["i_pial"] = None
+io_file["i_white"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_deformed/lh.white_def2_smooth"
+io_file["i_pial"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_deformed/lh.pial_def2_smooth"
 io_file["i_ref"] = "/data/pt_01880/Experiment1_ODC/p4/resting_state3/mean_udata_enhanced.nii"
 io_file["i_vein"] = None
 io_file["i_ignore"] = None
-io_file["i_anchor"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined/pts/rh_pial_anchor.dat"
-io_file["o_output"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined/anchor_pial"
-io_file["o_sigma"] = 0 # gaussian filter for deformation field
+io_file["i_anchor"] = None
+io_file["o_output"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined"
+io_file["o_sigma"] = 2 # gaussian filter for deformation field
 
 # deveining parameters
 devein_params = dict()
@@ -38,13 +38,13 @@ devein_params["max_iter"] = 1000 # maximum iterations
 
 # anchoring parameters
 anchor_params = dict()
-anchor_params["run"] = True
+anchor_params["run"] = False
 anchor_params["n_neighbor"] = 20 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
 # registration parameter
 reg_params = dict()
-reg_params["run"] = False
+reg_params["run"] = True
 reg_params["t2s"] = True # underlying image contrast (boolean)
 reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
 reg_params["line_length"] = 3 # line length in one direction in mm
