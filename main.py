@@ -32,8 +32,8 @@ io_file["o_sigma"] = 2 # gaussian filter for deformation field
 # deveining parameters
 devein_params = dict()
 devein_params["run"] = False
-devein_params["n_neighbor"] = 20 # number of neighbors in surface relaxation
-devein_params["n_smooth"] = 20 # final smoothing
+devein_params["n_neighbor"] = 10 # number of neighbors in surface relaxation
+devein_params["n_smooth"] = 0 # final smoothing
 devein_params["max_iter"] = 1000 # maximum iterations
 
 # anchoring parameters

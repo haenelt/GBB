@@ -24,7 +24,7 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 14-05-2020  
+    Last modified: 21-06-2020  
     """
     import os
     import sys
@@ -46,20 +46,35 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
     # load arrays
     arr_vein = np.round(arr_vein).astype(int)
     
+    # get image dimensions
+    xdim = np.shape(arr_vein)[0]
+    ydim = np.shape(arr_vein)[1]
+    zdim = np.shape(arr_vein)[2]
+    
     if arr_ignore is not None:
         arr_ignore = np.round(arr_ignore).astype(int)
         arr_vein[arr_ignore == 1] = 0
-   
+
     # centroid
-    vtx_c = np.mean(vtx, axis=0)
+    vtx_c = np.mean(vtx, axis=0)    
 
     # get nearest voxel coordinates
     vtx_vox = apply_affine(ras2vox, vtx)
     vtx_vox = np.round(vtx_vox).astype(int)
+    
+    # mask outlier points (ignored in deveining)
+    vtx_mask = np.ones(len(vtx_vox))
+    
+    vtx_mask[vtx_vox[:,0] > xdim - 1] = 0
+    vtx_mask[vtx_vox[:,1] > ydim - 1] = 0
+    vtx_mask[vtx_vox[:,2] > zdim - 1] = 0
+    
+    vtx_mask[vtx_vox[:,0] < 0] = 0
+    vtx_mask[vtx_vox[:,1] < 0] = 0
+    vtx_mask[vtx_vox[:,2] < 0] = 0
 
     # get vertices trapped in veins
-    vein_mask = np.zeros(len(vtx))
-    vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
+    vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]] * vtx_mask
     n_veins = len(vein_mask[vein_mask == 1])
 
     print("start mesh initialization (deveining)")
@@ -107,7 +122,7 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, n_neigh
     
         # get all vertices within vein
         vein_mask = np.zeros(len(vtx))
-        vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]]
+        vein_mask = arr_vein[vtx_vox[:,0], vtx_vox[:,1], vtx_vox[:,2]] * vtx_mask
         n_veins = len(vein_mask[vein_mask == 1])
         
         counter += 1
