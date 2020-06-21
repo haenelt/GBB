@@ -20,13 +20,13 @@ from lib_gbb.utils.apply_deformation import apply_deformation
 
 # input and output parameters
 io_file = dict()
-io_file["i_white"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_deformed/lh.white_def2_smooth"
-io_file["i_pial"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_deformed/lh.pial_def2_smooth"
-io_file["i_ref"] = "/data/pt_01880/Experiment1_ODC/p4/resting_state3/mean_udata_enhanced.nii"
-io_file["i_vein"] = None
+io_file["i_white"] = "/data/pt_01880/Experiment1_ODC/p1/anatomy/dense_deformed/rh.white_def2"
+io_file["i_pial"] = "/data/pt_01880/Experiment1_ODC/p1/anatomy/dense_deformed/rh.pial_def2"
+io_file["i_ref"] = "/data/pt_01880/Experiment1_ODC/p1/resting_state/mean_udata_enhanced.nii"
+io_file["i_vein"] = "/data/pt_01880/Experiment1_ODC/p1/resting_state/vein/native/vein.nii"
 io_file["i_ignore"] = None
 io_file["i_anchor"] = None
-io_file["o_output"] = "/data/pt_01880/Experiment1_ODC/p4/anatomy/dense_refined"
+io_file["o_output"] = "/data/pt_01880/Experiment1_ODC/p1/anatomy/dense_refined/gbb"
 io_file["o_sigma"] = 2 # gaussian filter for deformation field
 
 # deveining parameters
@@ -82,7 +82,7 @@ if devein_params["run"]:
                                                   T["adjm"], 
                                                   T["ras2vox"],
                                                   devein_params["n_neighbor"], 
-                                                  reg_params["line_dir"], 
+                                                  3, # along all directions
                                                   devein_params["n_smooth"], 
                                                   devein_params["max_iter"])   
 
