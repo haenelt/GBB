@@ -3,7 +3,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     """
     This function applies the coordinate shift to an array of vertices. The coordinate shift is 
     taken from a deformation field where each voxel corresponds to a shift along one direction in 
-    voxel space.
+    voxel space. Vertices outside the deformation field are removed from the mesh.
     Inputs:
         *vtx: array of vertices.
         *fac: array of faces.
@@ -15,11 +15,11 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
         *write_output: write output file (boolean).
     Outputs:
         *vtx: deformed vertices.
-        *fac: original faces.
+        *fac: corresponding faces.
         
     created by Daniel Haenelt
     Date created: 28-12-2019
-    Last modified: 21-06-2020
+    Last modified: 22-06-2020
     """
     import os
     import numpy as np
@@ -36,7 +36,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     # get vertices to voxel space
     vtx = apply_affine(ras2vox_tkr, vtx)
     
-    # remove outliers
+    # only keep vertex indices within the slab
     vtx[vtx[:,0] < 0,0] = np.nan
     vtx[vtx[:,1] < 0,1] = np.nan
     vtx[vtx[:,2] < 0,2] = np.nan
@@ -45,13 +45,14 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     vtx[vtx[:,1] > ydim - 1,1] = np.nan
     vtx[vtx[:,2] > zdim - 1,2] = np.nan
     
-    # only keep vertex indices within the slab
-    ind_keep = np.arange(0,len(vtx[:,0]))
-    ind_keep[np.isnan(np.sum(vtx, axis=1))] = -1
-    ind_keep = ind_keep[ind_keep != -1]
-    
     # remove vertices outside the slab
-    vtx, fac = remove_vertex(vtx, fac, ind_keep)
+    if np.any(np.isnan(vtx)):
+        
+        ind_keep = np.arange(len(vtx))
+        ind_keep[np.isnan(np.sum(vtx, axis=1))] = -1
+        ind_keep = ind_keep[ind_keep != -1]
+        
+        vtx, fac = remove_vertex(vtx, fac, ind_keep)
     
     # sample shifts from deformation map
     vtx_shift = np.zeros((len(vtx),3))

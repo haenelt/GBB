@@ -39,7 +39,7 @@ devein_params["max_iter"] = 1000 # maximum iterations
 # anchoring parameters
 anchor_params = dict()
 anchor_params["run"] = False
-anchor_params["n_neighbor"] = 20 # number of neighbors
+anchor_params["n_neighbor"] = 10 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
 # registration parameter
