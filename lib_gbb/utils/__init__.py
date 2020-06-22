@@ -8,3 +8,4 @@ from .line_ras2vox import line_ras2vox
 from .apply_deformation import apply_deformation
 from .deformation_field import deformation_field
 from .check_exit import check_exit
+from .remove_vertex import remove_vertex

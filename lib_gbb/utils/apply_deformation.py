@@ -26,6 +26,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     from nibabel.freesurfer.io import write_geometry
     from nibabel.affines import apply_affine
     from lib_gbb.interpolation.linear_interpolation3d import linear_interpolation3d
+    from lib_gbb.utils.remove_vertex import remove_vertex
     
     # get array dimensions
     xdim = np.shape(arr_deform)[0]
@@ -36,13 +37,21 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     vtx = apply_affine(ras2vox_tkr, vtx)
     
     # remove outliers
-    vtx[vtx[:,0] < 0,0] = 0
-    vtx[vtx[:,1] < 0,1] = 0
-    vtx[vtx[:,2] < 0,2] = 0
+    vtx[vtx[:,0] < 0,0] = np.nan
+    vtx[vtx[:,1] < 0,1] = np.nan
+    vtx[vtx[:,2] < 0,2] = np.nan
     
-    vtx[vtx[:,0] > xdim - 1,0] = xdim - 1
-    vtx[vtx[:,1] > ydim - 1,1] = ydim - 1
-    vtx[vtx[:,2] > zdim - 1,2] = zdim - 1
+    vtx[vtx[:,0] > xdim - 1,0] = np.nan
+    vtx[vtx[:,1] > ydim - 1,1] = np.nan
+    vtx[vtx[:,2] > zdim - 1,2] = np.nan
+    
+    # only keep vertex indices within the slab
+    ind_keep = np.arange(0,len(vtx[:,0]))
+    ind_keep[np.isnan(np.sum(vtx, axis=1))] = -1
+    ind_keep = ind_keep[ind_keep != -1]
+    
+    # remove vertices outside the slab
+    vtx, fac = remove_vertex(vtx, fac, ind_keep)
     
     # sample shifts from deformation map
     vtx_shift = np.zeros((len(vtx),3))
