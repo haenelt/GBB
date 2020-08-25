@@ -10,7 +10,7 @@ To improve the starting mesh for the GBB method, two processes can optionally be
 
 ## Prerequisites
 - FreeSurfer should be included in the search path
-- used python packages: os, sys, subprocess, glob, numpy, scipy, nibabel, nipype, cv2, matplotlib, imageio
+- used python packages: os, sys, subprocess, glob, numpy, scipy, nibabel, cv2, matplotlib, imageio
 - some functions from my scripts repository are used as well
 
 ## Example data
