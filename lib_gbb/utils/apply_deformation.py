@@ -58,7 +58,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, path_outpu
     vtx_shift = np.zeros((len(vtx),3))
     for i in range(3):
         vtx_shift[:,i] = linear_interpolation3d(vtx[:,0], vtx[:,1], vtx[:,2], arr_deform[:,:,:,i])
-        vtx_shift[np.isnan(vtx_shift[:,i]),i] = 0 
+        vtx_shift[np.isnan(vtx_shift[:,i]),i] = 0
     
     # shift coordinates to new location
     vtx += vtx_shift
