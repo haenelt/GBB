@@ -1,22 +1,23 @@
-def plot_normal(input_surf, step_size=100, shape="line"):
+def plot_normal(vtx, fac, adjm, file_out, step_size=100, shape="line"):
     """
     This function generates lines to visualize outward directed surface normals of an input surface
     mesh.
     Inputs:
-        *input_surf: filename of input surface.
+        *vtx: array of vertex points.
+        *fac: corresponding face array.
+        *adjm: adjacency matrix.
+        *file_out: filename of output surface mesh.
         *step_size: subset of vertices.
         *shape: line, triangle, prism
         
     created by Daniel Haenelt
-    Date created: 13-12-2019     
-    Last modified: 13-12-2019
+    Date created: 13-12-2019
+    Last modified: 28-08-2020
     """
     import numpy as np
-    from nibabel.freesurfer.io import read_geometry, write_geometry
+    from nibabel.freesurfer.io import write_geometry
+    from lib_gbb.neighbor.nn_2d import nn_2d
     from lib_gbb.normal import get_normal
-   
-    # read geometry
-    vtx, fac, header = read_geometry(input_surf, read_metadata=True)
     
     # get surface normals
     normal = get_normal(vtx, fac)
@@ -25,7 +26,7 @@ def plot_normal(input_surf, step_size=100, shape="line"):
     t = np.arange(0,len(vtx),step_size)
     
     # initialise faces for specific shape
-    if shape is "prism":
+    if shape == "prism":
         fac_new = [[0, 1, 2],
                    [3, 4, 5],
                    [0, 1, 4],
@@ -35,10 +36,10 @@ def plot_normal(input_surf, step_size=100, shape="line"):
                    [0, 2, 5],
                    [0, 3, 5]]
         fac_iter = 6
-    elif shape is "triangle":
+    elif shape == "triangle":
         fac_new = [[0,1,2]]
         fac_iter = 3
-    elif shape is "line":
+    elif shape == "line":
         fac_new = [[0,1,0]]
         fac_iter = 2
     
@@ -46,28 +47,25 @@ def plot_normal(input_surf, step_size=100, shape="line"):
     fac_res = []
     for i in range(len(t)):
         
-        # get triangle from nearest neighbour point of a given vertex
-        neighbour, _ = np.where(fac == t[i])
-        neighbour = fac[neighbour,:]
-        neighbour = np.concatenate(neighbour)
-        neighbour = neighbour[neighbour != t[i]]
-        neighbour = neighbour[:2]
+        # get index from nearest neighbour of a given vertex
+        nn = nn_2d(t[i], adjm, 0)
+        nn = nn[:2]
         
         # get all vertex points for specific shape
-        if shape is "prism":
+        if shape == "prism":
             A = list(vtx[t[i]])
-            B = list(vtx[neighbour[0]])
-            C = list(vtx[neighbour[1]])
+            B = list(vtx[nn[0]])
+            C = list(vtx[nn[1]])
             D = list(vtx[t[i]] - normal[t[i]])
-            E = list(vtx[neighbour[0]] - normal[neighbour[0]])
-            F = list(vtx[neighbour[1]] - normal[neighbour[1]])
+            E = list(vtx[nn[0]] - normal[nn[0]])
+            F = list(vtx[nn[1]] - normal[nn[1]])
             vtx_new = [A,B,C,D,E,F]
-        elif shape is "triangle":
+        elif shape == "triangle":
             A = list(vtx[t[i]])
-            B = list(vtx[neighbour[0]])
+            B = list(vtx[nn[0]])
             C = list(vtx[t[i]] - normal[t[i]])
             vtx_new = [A,B,C]
-        elif shape is "line":
+        elif shape == "line":
             A = list(vtx[t[i]])
             B = list(vtx[t[i]] - normal[t[i]])
             vtx_new = [A,B]
@@ -86,4 +84,4 @@ def plot_normal(input_surf, step_size=100, shape="line"):
     fac_res = np.array(fac_res)
     
     # write output geometry
-    write_geometry(input_surf+"_plot_normal", vtx_res, fac_res, volume_info=header)
+    write_geometry(file_out, vtx_res, fac_res)
