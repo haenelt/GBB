@@ -115,6 +115,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
     
     # show line plot
     if show_plot:
+        plt.clf()
         plt.plot(grad_curr)
         plt.xlabel("WM -> GM")
         plt.ylabel("Second order gradient")
