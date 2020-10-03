@@ -20,3 +20,12 @@ A time series mean from a GE-EPI acquisition is used as target image. A binary v
 
 ## References
 <a id="1">[1]</a> Greve DN, Fischl B, Accurate and robust brain image alignment using boundary-based registration, Neuroimage 48(1), 63&ndash;72 (2009).
+
+# TODO
+- general information and purpose
+- URL of the main source of the software
+- freesurfer dependency (and other?)
+- basic credit information
+- howto install
+- Example
+- contact

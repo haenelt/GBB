@@ -31,6 +31,7 @@ def cost_plot(x_max, cost_array, m, n, set_title="", save_plot=False,
     line_fit = np.arange(x_max) * m + n
     
     # show plot
+    plt.clf()
     plt.plot(np.arange(x_max), cost_array, label="J")
     plt.plot(np.arange(x_max), line_fit, label="fit (m: "+str("%.10e" % m)+")")
     plt.legend(loc=1)

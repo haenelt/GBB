@@ -26,6 +26,7 @@ def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="",
         os.makedirs(path_output)
     
     # show plot
+    plt.clf()
     plt.plot(np.arange(x_max), m_array, label="m: "+str("%.10e" % m_array[-1]))
     plt.legend(loc=1)
     plt.xlabel("iteration")

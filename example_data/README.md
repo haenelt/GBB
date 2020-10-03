@@ -1,4 +1,4 @@
-Files in ./test_data
+Files in ./example_data
 ====================
 Surface meshs are based on a cortex segmentation of a whole-brain MP2RAGE acquisition and are transformed to the native epi space of the functional time series.
 

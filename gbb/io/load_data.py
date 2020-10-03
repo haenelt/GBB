@@ -43,7 +43,11 @@ def load_data(io_file, reg_params):
     
     # load white surface
     if io_file["i_white"]:
-        surf["vtx_white"], surf["fac_white"] = read_geometry(io_file["i_white"])
+        try:
+            surf["vtx_white"], surf["fac_white"] = read_geometry(io_file["i_white"])
+        except FileNotFoundError:
+            sys.exit("White surface not found!")
+
         surf["vtx_white_archive"] = surf["vtx_white"].copy()
         
         # get normals
@@ -55,23 +59,15 @@ def load_data(io_file, reg_params):
         # basename
         basename["white"] = os.path.basename(io_file["i_white"])
     else:
-        sys.exit("White surface is not found!")
-    
-    # load pial surface
-    if io_file["i_pial"]:
-        surf["vtx_pial"], surf["fac_pial"] = read_geometry(io_file["i_pial"])
-        
-        # basename
-        basename["pial"] = os.path.basename(io_file["i_pial"])
-    else:
-        print("No pial surface is loaded")
-        surf["vtx_pial"] = None
-        surf["fac_pial"] = None
-        basename["pial"] = None
-    
+        sys.exit("White surface not defined!")
+
     # load reference volume
     if io_file["i_ref"]:
-        volume["instance"] = nb.load(io_file["i_ref"])
+        try:
+            volume["instance"] = nb.load(io_file["i_ref"])
+        except FileNotFoundError:
+            sys.exit("Reference volume not found!")
+
         volume["ref"] = volume["instance"].get_fdata()
     
         # get transformation
@@ -86,27 +82,51 @@ def load_data(io_file, reg_params):
                                           reg_params["gradient_write"], 
                                           io_file["o_output"])
     else:
-        sys.exit("Reference volume is not found!")
+        sys.exit("Reference volume not defined!")
     
+    # load pial surface
+    if io_file["i_pial"]:
+        try:
+            surf["vtx_pial"], surf["fac_pial"] = read_geometry(io_file["i_pial"])
+        except FileNotFoundError:
+            sys.exit("Pial surface not found!")
+        
+        # basename
+        basename["pial"] = os.path.basename(io_file["i_pial"])
+    else:
+        print("No pial surface loaded")
+        surf["vtx_pial"] = None
+        surf["fac_pial"] = None
+        basename["pial"] = None
+        
     # load vein mask
     if io_file["i_vein"]:
-        volume["vein"] = nb.load(io_file["i_vein"]).get_fdata()
+        try:
+            volume["vein"] = nb.load(io_file["i_vein"]).get_fdata()
+        except FileNotFoundError:
+            sys.exit("Vein mask not found!")
     else:
-        print("No vein mask is loaded")
+        print("No vein mask loaded")
         volume["vein"] = None
     
     # load ignore volume
     if io_file["i_ignore"]:
-        volume["ignore"] = nb.load(io_file["i_ignore"]).get_fdata()
+        try:
+            volume["ignore"] = nb.load(io_file["i_ignore"]).get_fdata()
+        except FileNotFoundError:
+            sys.exit("Ignore mask not found!")
     else:
-        print("No ignore mask is loaded")
+        print("No ignore mask loaded")
         volume["ignore"] = None
     
     # load anchor points
     if io_file["i_anchor"]:
-        point["anchor"] = read_anchor(io_file["i_anchor"])
+        try:
+            point["anchor"] = read_anchor(io_file["i_anchor"])
+        except FileNotFoundError:
+            sys.exit("Anchor points not found!")
     else:
-        print("No anchor points are loaded")
+        print("No anchor points loaded")
         point["anchor"] = None
     
     return volume, T, surf, point, basename
