@@ -3,7 +3,7 @@ import os
 import glob
 import numpy as np
 from gbb.plot.cost_plot import cost_plot
-from lib.img.get_gif import get_gif
+from gbb.plot.get_gif import get_gif
 
 
 def dynamic_cost_plot(file_in, path_output, name_output):

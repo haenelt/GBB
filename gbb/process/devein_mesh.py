@@ -5,9 +5,9 @@ import numpy as np
 from numpy.linalg import norm
 from nibabel.freesurfer.io import read_geometry, write_geometry
 from nibabel.affines import apply_affine
-from lib.surface.smooth_surface import smooth_surface
-from gbb.utils.update_mesh import update_mesh
 from gbb.neighbor.nn_2d import nn_2d
+from gbb.utils.update_mesh import update_mesh
+from gbb.utils.smooth_surface import smooth_surface
 
 
 def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, 

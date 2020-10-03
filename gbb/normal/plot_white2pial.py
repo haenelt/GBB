@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from lib_gbb.neighbor.nn_2d import nn_2d
 from nibabel.freesurfer.io import read_geometry, write_geometry
+from gbb.neighbor.nn_2d import nn_2d
     
 
 def plot_white2pial(input_white, input_pial, adjm, step_size=100, shape="line"):
