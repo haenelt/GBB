@@ -1,6 +1,8 @@
 GBB | Gradient-Based Boundary
 ===
 
+<img src="https://github.com/haenelt/GBB/gbb_logo.gif" width="20%" heigth="20%" align="right">
+
 The gradient-based boundary surface mesh refinement is based on the idea used in boundary-based registration (BBR), which is a method for robust alignment of images with different image contrasts [[1]](#1). In BBR, the clear GM/WM border of the target image is used to find the transformation of the source image which maximizes its contrast along the tissue boundary of the target image. This method only finds a global rigid-body transformation between both images. Different distortions between source and target image can therefore not adequately be taken into account. The proposed method turns the idea of BBR around and deforms the surface boundary of the target image locally to maximize the tissue contrast around the surface boundary in the source image.
 
 ## Methods
