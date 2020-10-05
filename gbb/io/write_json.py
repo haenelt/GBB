@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 import json
 import datetime
@@ -21,7 +23,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
 
     created by Daniel Haenelt
     Date created: 03-10-2020
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # make output folder

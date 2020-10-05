@@ -1,7 +1,12 @@
-GBB | Gradient-Based Boundary
+GBB | Gradient-Based Boundary | not finished
 ===
 
-<img src="https://github.com/haenelt/GBB/blob/master/gbb_logo.gif" width="20%" heigth="20%" align="center">
+[![Python](https://img.shields.io/badge/Python-3-blue)](https://github.com/haenelt/GBB)
+[![License](https://img.shields.io/badge/license-GPL--3.0-orange)](https://github.com/haenelt/GBB)
+
+<p align="center">
+  <img src="https://github.com/haenelt/GBB/blob/master/gbb_logo.gif?raw=true" width=75% height=75% alt="Illustration of GBB"/>
+</p>
 
 The gradient-based boundary surface mesh refinement is based on the idea used in boundary-based registration (BBR), which is a method for robust alignment of images with different image contrasts [[1]](#1). In BBR, the clear GM/WM border of the target image is used to find the transformation of the source image which maximizes its contrast along the tissue boundary of the target image. This method only finds a global rigid-body transformation between both images. Different distortions between source and target image can therefore not adequately be taken into account. The proposed method turns the idea of BBR around and deforms the surface boundary of the target image locally to maximize the tissue contrast around the surface boundary in the source image.
 
@@ -10,16 +15,35 @@ We assume that we have a (distorted) mean epi image and a surface mesh from a (n
 
 To improve the starting mesh for the GBB method, two processes can optionally be applied beforehand, called *deveining* and *anchoring*. In deveining, all surface mesh vertex points are pulled out of masked veins. In anchoring, anchor points are manually set and the surface mesh is locally shifted to these points. Vertices now located within these anchor points are locked and not moved during the GBB method.
 
-## Prerequisites
-- FreeSurfer should be included in the search path
-- used python packages: os, sys, subprocess, glob, numpy, scipy, nibabel, cv2, matplotlib, imageio
-- some functions from my scripts repository are used as well
+## Installation
+- freesurfer dependency
+
+### Stable release (PyPI)
+
+GBB can be installed via the `pip` command. I recommend to use `Anaconda to create a new python environment with Python >= 3 and then simply run the following line from a terminal with the environment being activated:
+```
+pip install gbb
+```
+
+### Development version (github)
+
+Alternatively, it is possible to clone this repository and run one of the following lines from the directory in which the repository was cloned:
+```
+python setup.py install
+```
+or
+```
+pip install .[<options>]
+```
 
 ## Example data
 A time series mean from a GE-EPI acquisition is used as target image. A binary vein mask and surface meshs are given as well. Surface meshs were computed from a separete MP2RAGE acquisition using FreeSurfer and were rigidly aligned to the epi image.
 
 ## References
 <a id="1">[1]</a> Greve DN, Fischl B, Accurate and robust brain image alignment using boundary-based registration, Neuroimage 48(1), 63&ndash;72 (2009).
+
+## Contact
+If you have questions, problems or suggestions regarding the GBB package, please feel free to contact [me](<daniel.haenelt@gmail.com>).
 
 # TODO
 - general information and purpose

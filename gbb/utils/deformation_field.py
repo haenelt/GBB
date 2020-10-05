@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import numpy as np
 import nibabel as nb
 from nibabel.affines import apply_affine
 from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
-    
+
     
 def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, 
                       sigma=1, path_output="", name_output="", 
@@ -30,7 +34,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr,
         
     created by Daniel Haenelt
     Date created: 28-12-2019       
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # load reference volume

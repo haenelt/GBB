@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# local inputs
 from .get_gradient import get_gradient
 from .get_ignore import get_ignore
 from .cost_BBR import cost_BBR
@@ -12,3 +14,12 @@ from .check_exit import check_exit
 from .remove_vertex import remove_vertex
 from .smooth_surface import smooth_surface
 from .vox2ras import vox2ras
+
+
+"""
+Python package for gradient-based boundary (GBB) surface refinement.
+
+created by Daniel Haenelt
+Date created: 05-10-2020
+Last modified: 05-10-2020
+"""

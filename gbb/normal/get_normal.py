@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -16,7 +18,7 @@ def get_normal(vtx, fac):
         
     created by Daniel Haenelt
     Date created: 13-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     def normalize_v3(arr):

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -18,7 +22,7 @@ def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="",
 
     created by Daniel Haenelt
     Date created: 24-02-2020         
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # make output folder

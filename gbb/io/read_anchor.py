@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import sys
+
+# external inputs
 import numpy as np
 
 
@@ -14,7 +18,7 @@ def read_anchor(input_anchor):
         
     created by Daniel Haenelt
     Date created: 11-05-2020
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     with open(input_anchor, "r") as f:

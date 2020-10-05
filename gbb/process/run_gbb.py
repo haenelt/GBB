@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import numpy as np
 from nibabel.freesurfer.io import write_geometry
+
+# local inputs
 from gbb.neighbor.nn_3d import nn_3d
 from gbb.utils.get_shift import get_shift
 from gbb.utils.cost_BBR import cost_BBR
@@ -12,11 +18,11 @@ from gbb.plot.cost_plot import cost_plot
 from gbb.plot.slope_plot import slope_plot
 
 
-def gbb_mesh(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, 
-             arr_ignore, t2s, vox2ras_tkr, ras2vox_tkr, line_dir, line_length, 
-             r_size, l_rate, max_iterations, cost_threshold, cost_step=1000, 
-             cost_sample=10, path_output = "", show_cost=True, show_slope=False, 
-             write_temp=10000):
+def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, 
+            arr_ignore, t2s, vox2ras_tkr, ras2vox_tkr, line_dir, line_length, 
+            r_size, l_rate, max_iterations, cost_threshold, cost_step=1000, 
+            cost_sample=10, path_output = "", show_cost=True, show_slope=False, 
+            write_temp=10000):
     """
     This function applies the core function of the gbb method. 
     Inputs.
@@ -49,7 +55,7 @@ def gbb_mesh(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # make intermediate folder

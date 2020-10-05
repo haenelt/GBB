@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -18,7 +20,7 @@ def nn_3d(vtx0, vtx, r_size):
         
     created by Daniel Haenelt
     Date created: 22-12-2019     
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     rx = ( vtx[:,0] - vtx0[0] ) ** 2

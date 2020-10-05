@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -15,7 +17,7 @@ def nn_2d(ind, adjm, n_iter):
         
     created by Daniel Haenelt
     Date created: 21-12-2019     
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get first order neighbours

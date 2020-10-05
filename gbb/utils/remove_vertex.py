@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -16,7 +18,7 @@ def remove_vertex(vtx, fac, ind_keep):
         
     created by Daniel Haenelt
     Date created: 22-06-2020
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get new vertices

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 from nibabel.freesurfer.io import read_geometry, write_geometry
+
+# local inputs
 from gbb.neighbor.nn_2d import nn_2d
     
 
@@ -19,7 +23,7 @@ def plot_white2pial(input_white, input_pial, adjm, step_size=100, shape="line"):
         
     created by Daniel Haenelt
     Date created: 07-11-2019     
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # read geometry

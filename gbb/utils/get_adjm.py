@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 from scipy.sparse import csr_matrix
 from nibabel.freesurfer.io import read_geometry
@@ -16,7 +18,7 @@ def get_adjm(input_surf):
         
     created by Daniel Haenelt
     Date created: 20-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # load surface mesh

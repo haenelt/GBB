@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import numpy as np
 from nibabel.freesurfer.io import write_geometry
 from nibabel.affines import apply_affine
+
+# local inputs
 from gbb.interpolation.linear_interpolation3d import linear_interpolation3d
 from gbb.utils.remove_vertex import remove_vertex
     
@@ -29,7 +35,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
         
     created by Daniel Haenelt
     Date created: 28-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # get array dimensions

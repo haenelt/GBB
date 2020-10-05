@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -18,7 +20,7 @@ def check_exit(arr_x, arr_y, cost_threshold=None):
     
     created by Daniel Haenelt
     Date created: 09-02-2020
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # make linear fit

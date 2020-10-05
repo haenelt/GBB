@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import cv2
 import numpy as np
 import nibabel as nb
 from scipy.ndimage.filters import gaussian_filter
+
+# local inputs
 from gbb.utils.line_ras2vox import line_ras2vox
 
 
@@ -26,7 +32,7 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3,
         
     created by Daniel Haenelt
     Date created: 30-10-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get line direction in voxel space

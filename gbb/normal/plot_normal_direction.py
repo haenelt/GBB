@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 import nibabel as nb
 from nibabel.freesurfer.io import read_geometry
+
+# local inputs
 from gbb.normal import get_normal
     
 
@@ -15,7 +19,7 @@ def plot_normal_direction(input_surf, axis=2):
         
     created by Daniel Haenelt
     Date created: 13-12-2019         
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # fixed parameter

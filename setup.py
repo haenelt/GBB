@@ -1,31 +1,44 @@
+# -*- coding: utf-8 -*-
+
+# external inputs
 import setuptools
 
-# version from textfile?????????????????????????????????????????????????????
-# install_requires=['peppercorn'],
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+INSTALL_REQUIREMENTS = ['numpy',
+                        'nibabel',
+                        'scipy',
+                        'matplotlib',
+                        'imageio',
+                        'opencv-python',
+                        ]
+
+CLASSIFIERS = ["Programming Language :: Python :: 3",
+               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+               "Operating System :: OS Independent",
+               "Development Status :: 3 - Alpha",
+               "Intended Audience :: Science/Research",
+               "Topic :: Scientific/Engineering",
+               ]
+
+with open("VERSION", "r", encoding="utf8") as fh:
+    VERSION = fh.read().strip()
+
+with open("README.md", "r", encoding="utf8") as fh:
+    LONG_DESCRIPTION = fh.read()
 
 setuptools.setup(
-    name="gbb", # Replace with your own username
-    version="0.1.0",
+    name="gbb",
+    version=VERSION,
     author="Daniel Haenelt",
     author_email="daniel.haenelt@gmail.com",
     description="Gradient-based boundary (GBB) surface refinement",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/haenelt/GBB",
-    licesen="LICENSE", # brauche ich das?????????????????????????????????????
+    license='GPL v3',
     packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        ],
+    classifiers=CLASSIFIERS,
     python_requires='>=3',
+    include_package_data=True,
+    zip_safe=False,
     )
-
-
-
-
-#      scripts=['bin/script1','bin/script2'],

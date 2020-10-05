@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 
 
@@ -16,7 +18,7 @@ def get_filename(input):
         
     created by Daniel Haenelt
     Date created: 09-12-2019   
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get path of input

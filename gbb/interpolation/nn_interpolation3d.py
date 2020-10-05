@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -16,7 +18,7 @@ def nn_interpolation3d(x, y, z, arr_c):
         
     created by Daniel Haenelt
     Date created: 30-10-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get nearest neighbour grid points

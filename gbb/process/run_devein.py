@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 import sys
+
+# external inputs
 import numpy as np
 from numpy.linalg import norm
 from nibabel.freesurfer.io import read_geometry, write_geometry
 from nibabel.affines import apply_affine
+
+# local inputs
 from gbb.neighbor.nn_2d import nn_2d
 from gbb.utils.update_mesh import update_mesh
 from gbb.utils.smooth_surface import smooth_surface
 
 
-def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, 
-                n_neighbor=20, line_dir=2, smooth_iter=30, max_iterations=1000):
+def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, 
+               n_neighbor=20, line_dir=2, smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and 
     shift these and their neighborhood until the mesh is free of trapped 
@@ -37,7 +43,7 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 03-10-2020  
+    Last modified: 05-10-2020  
     """
     
     # fix parameters
@@ -46,6 +52,10 @@ def devein_mesh(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
     # check line direction
     if line_dir > 3 or line_dir < 0:
         sys.exit("Choose a valid line direction!")
+
+    # check vein array
+    if arr_vein is None:
+        sys.exit("No vein mask found for deveining!")
 
     # load arrays
     arr_vein = np.round(arr_vein).astype(int)

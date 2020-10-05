@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 import sys
+
+# external inputs
 import nibabel as nb
 from nibabel.freesurfer.io import read_geometry
+
+# local inputs
 from gbb.io.read_anchor import read_anchor
 from gbb.normal.get_normal import get_normal
 from gbb.utils.get_adjm import get_adjm
@@ -27,7 +33,7 @@ def load_data(io_file, reg_params):
         
     created by Daniel Haenelt
     Date created: 12-05-2020
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # initialize dictionaries

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 import sys
 import subprocess
+
+# local inputs
 from gbb.io.get_filename import get_filename
 
 
@@ -15,7 +19,7 @@ def smooth_surface(file_in, file_out, n_iter):
         
     created by Daniel Haenelt
     Date created: 13-07-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
        
     # make output folder

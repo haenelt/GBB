@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
 import glob
+
+# external inputs
 import numpy as np
+
+# local inputs
 from gbb.plot.cost_plot import cost_plot
 from gbb.plot.get_gif import get_gif
 
@@ -17,7 +23,7 @@ def dynamic_cost_plot(file_in, path_output, name_output):
         
     created by Daniel Haenelt
     Date created: 24-02-2020     
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # load numpy variables

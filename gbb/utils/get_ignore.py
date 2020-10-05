@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import numpy as np
 import nibabel as nb
 from nibabel.affines import apply_affine
+
+# local inputs
 from gbb.interpolation import nn_interpolation3d
 
 
@@ -23,7 +29,7 @@ def get_ignore(vtx, arr_ignore, ras2vox_tkr, write_output=False,
         
     created by Daniel Haenelt
     Date created: 11-05-2020         
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # transform vertices to voxel space

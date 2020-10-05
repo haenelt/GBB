@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+
+# external inputs
 import imageio
 import numpy as np
 
@@ -17,7 +21,7 @@ def get_gif(img_file, path_output, name_output, nsteps, duration):
 
     created by Daniel Haenelt
     Date created: 17-11-2018
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # append first list item to the end of the list

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import subprocess
+
+# external inputs
 import numpy as np
 from numpy.linalg import inv
 
@@ -18,7 +22,7 @@ def vox2ras(file_in):
     
     created by Daniel Haenelt
     Date created: 18-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get affine vox2ras-tkr and ras2vox-tkr transformation to reference volume

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 from nibabel.affines import apply_affine
+
+# local inputs
 from gbb.interpolation import linear_interpolation3d
     
 
@@ -29,7 +33,7 @@ def cost_BBR(vtx, vtx_n, arr_vol, ras2vox, vol_max, Q0=0, M=0.5, h=1, t2s=True):
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
        
     # sort offset in two groups according to normal direction

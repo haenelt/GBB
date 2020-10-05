@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 
 
@@ -20,7 +22,7 @@ def update_mesh(vtx, vtx_shift, source_ind, nn_ind, l_rate=0.9):
         
     created by Daniel Haenelt
     Date created: 22-12-2019      
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     if set(nn_ind) == set([source_ind]):

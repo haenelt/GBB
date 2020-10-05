@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import sys
+
+# external inputs
 import numpy as np
 from nibabel.affines import apply_affine
     
@@ -16,7 +20,7 @@ def line_ras2vox(line_dir, ras2vox_tkr):
         
     created by Daniel Haenelt
     Date created: 28-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
 
     # get line direction in ras space

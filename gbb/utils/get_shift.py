@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import sys
+
+# external inputs
 import numpy as np
 import matplotlib.pyplot as plt
 from nibabel.affines import apply_affine
+
+# local inputs
 from gbb.interpolation import linear_interpolation3d
     
     
@@ -43,7 +49,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
         
     created by Daniel Haenelt
     Date created: 21-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # initialize

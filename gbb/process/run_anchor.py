@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
+
+# python standard library inputs
 import os
+import sys
+
+# external inputs
 import numpy as np
 from numpy.linalg import norm
 from nibabel.freesurfer.io import read_geometry, write_geometry
+
+# local inputs
 from gbb.neighbor.nn_2d import nn_2d
 from gbb.utils.update_mesh import update_mesh
 from gbb.utils.smooth_surface import smooth_surface
 
 
-def anchor_mesh(vtx, fac, adjm, anchor, n_neighbor=20, smooth_iter=0):
+def run_anchor(vtx, fac, adjm, anchor, n_neighbor=20, smooth_iter=0):
     """
     This function loads a list of control points and shifts a mesh with its 
     local neighborhood to match these control points. Control points are assumed 
@@ -25,10 +32,14 @@ def anchor_mesh(vtx, fac, adjm, anchor, n_neighbor=20, smooth_iter=0):
 
     created by Daniel Haenelt
     Date created: 12-05-2020 
-    Last modified: 03-10-2020  
+    Last modified: 05-10-2020  
     """
     
     print("start mesh initialization (anchoring)")
+    
+    # check vein array
+    if anchor is None:
+        sys.exit("No control points found for anchoring!")
     
     # number of anchor points
     n_anchor = len(anchor)

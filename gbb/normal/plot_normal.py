@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+# external inputs
 import numpy as np
 from nibabel.freesurfer.io import write_geometry
+
+# local inputs
 from gbb.neighbor.nn_2d import nn_2d
 from gbb.normal import get_normal
     
@@ -19,7 +23,7 @@ def plot_normal(vtx, fac, adjm, file_out, step_size=100, shape="line"):
         
     created by Daniel Haenelt
     Date created: 13-12-2019
-    Last modified: 03-10-2020
+    Last modified: 05-10-2020
     """
     
     # get surface normals
