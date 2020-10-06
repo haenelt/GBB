@@ -13,6 +13,9 @@ INSTALL_REQUIREMENTS = ['numpy',
                         ]
 
 CLASSIFIERS = ["Programming Language :: Python :: 3",
+               "Programming Language :: Python :: 3.6",
+               "Programming Language :: Python :: 3.7",
+               "Programming Language :: Python :: 3.8",
                "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
                "Operating System :: OS Independent",
                "Development Status :: 3 - Alpha",
@@ -38,7 +41,7 @@ setuptools.setup(
     license='GPL v3',
     packages=setuptools.find_packages(),
     classifiers=CLASSIFIERS,
-    python_requires='>=3',
+    python_requires='>=3.6',
     include_package_data=True,
     zip_safe=False,
     )
