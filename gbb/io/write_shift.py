@@ -37,7 +37,7 @@ def write_shift(vtx_old, vtx_new, line_dir, path_output, name_output):
     
     # write output
     if line_dir > 3 or line_dir < 0:
-        sys.exit("Choose a valid line direction!")
+        sys.exit("error: choose a valid line direction!")
     elif line_dir == 3:
         for i in range(3):
             output = nb.freesurfer.mghformat.MGHImage(vtx_shift[:,i], np.eye(4), header)

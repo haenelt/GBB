@@ -51,11 +51,11 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
 
     # check line direction
     if line_dir > 3 or line_dir < 0:
-        sys.exit("Choose a valid line direction!")
+        sys.exit("error: choose a valid line direction!")
 
     # check vein array
     if arr_vein is None:
-        sys.exit("No vein mask found for deveining!")
+        sys.exit("error: no vein mask found for deveining!")
 
     # load arrays
     arr_vein = np.round(arr_vein).astype(int)
@@ -142,7 +142,7 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
         counter += 1
     
     if counter < max_iterations:
-        print("Deveining converged!")
+        print("deveining converged!")
     
     # smooth output
     if smooth_iter:

@@ -2,6 +2,7 @@
 
 # python standard library inputs
 import os
+import sys
 
 # external inputs
 import numpy as np
@@ -25,16 +26,19 @@ def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="",
     Last modified: 05-10-2020
     """
 
-    # make output folder
-    if not os.path.exists(path_output):
-        os.makedirs(path_output)
+    # make output folder    
+    try:
+        if not os.path.exists(path_output):
+            os.makedirs(path_output)
+    except TypeError:
+        sys.exit("error: output directory not defined!")
     
     # show plot
     plt.clf()
     plt.plot(np.arange(x_max), m_array, label="m: "+str("%.10e" % m_array[-1]))
     plt.legend(loc=1)
     plt.xlabel("iteration")
-    plt.ylabel("Cost function")
+    plt.ylabel("cost function")
 
     # make title
     if set_title:

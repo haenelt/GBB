@@ -2,6 +2,7 @@
 
 # python standard library inputs
 import os
+import sys
 import json
 import datetime
 
@@ -25,10 +26,13 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
     Date created: 03-10-2020
     Last modified: 05-10-2020
     """
-
-    # make output folder
-    if not os.path.exists(path_output):
-        os.makedirs(path_output)
+       
+    # make output folder    
+    try:
+        if not os.path.exists(path_output):
+            os.makedirs(path_output)
+    except TypeError:
+        sys.exit("error: output directory not defined!")
 
     # get date string for moved files
     date = datetime.datetime.now().strftime("%Y%m%d%H%M")

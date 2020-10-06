@@ -50,7 +50,7 @@ try:
     freesurfer_version = subprocess.check_output(['recon-all', '--{}'.format("version")]).decode()
     freesurfer_version = freesurfer_version.rstrip()
 except FileNotFoundError:
-    sys.exit("No freesurfer installation found!")
+    sys.exit("error: no freesurfer installation found!")
 
 # run main module
 print("-----------------------------------------------------------------------")

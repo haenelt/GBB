@@ -74,7 +74,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
         if not os.path.exists(io_file["o_output"]):
             os.makedirs(io_file["o_output"])
     except TypeError:
-        sys.exit("Output directory not defined!")
+        sys.exit("error: output directory not defined!")
     
     # load input
     volume, T, surf, point, basename = load_data(io_file, reg_params)

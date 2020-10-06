@@ -89,7 +89,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
             return []
         
     elif line_dir > 3 or line_dir < 0:
-        sys.exit("Choose a valid line direction!")
+        sys.exit("error: choose a valid line direction!")
     
     # get line a -> b (WM -> GM)
     pt_start = vtx_curr.copy()

@@ -26,7 +26,7 @@ def read_anchor(input_anchor):
         
         # check coordinate system
         if int(x[-1].split()[1]) != 0:
-            sys.exit("Anchor points in wrong coordinate system!")
+            sys.exit("error: anchor points in wrong coordinate system!")
         
         # skip last 3 lines
         n_points = len(x) - 3

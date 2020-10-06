@@ -150,12 +150,12 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         elif exit_crit and step == len(max_iterations) - 1:
             n_iter_step[step] = j
             gbb_converged = True
-            print("Registration converged!")   
+            print("registration converged!")   
             break
         elif step == len(max_iterations) - 1 and j == max_iterations[-1]:
             n_iter_step[step] = j
             gbb_converged = False
-            print("Registration did not converge!")
+            print("registration did not converge!")
             break
     
         # write intermediate surfaces
@@ -166,8 +166,8 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         j += 1
     
     # print some information
-    print("Final number of iterations: "+str(i))
-    print("Final number of skipped iterations: "+str(counter))
+    print("final number of iterations: "+str(i))
+    print("final number of skipped iterations: "+str(counter))
     
     # collect some descriptive variables
     gbb = dict()

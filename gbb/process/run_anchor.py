@@ -39,7 +39,7 @@ def run_anchor(vtx, fac, adjm, anchor, n_neighbor=20, smooth_iter=0):
     
     # check vein array
     if anchor is None:
-        sys.exit("No control points found for anchoring!")
+        sys.exit("error: no control points found for anchoring!")
     
     # number of anchor points
     n_anchor = len(anchor)

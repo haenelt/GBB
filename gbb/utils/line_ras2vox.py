@@ -31,7 +31,7 @@ def line_ras2vox(line_dir, ras2vox_tkr):
     elif line_dir == 2:
         pt_ras = [0,0,1]
     else:
-        sys.exit("Invalid axis direction in gradient calculation!")
+        sys.exit("error: invalid axis direction in gradient calculation!")
 
     # get unit vector in voxel space
     pt0_vox = apply_affine(ras2vox_tkr, [0,0,0])

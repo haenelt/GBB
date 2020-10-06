@@ -2,6 +2,7 @@
 
 # python standard library inputs
 import os
+import sys
 
 # external inputs
 import numpy as np
@@ -27,9 +28,12 @@ def cost_plot(x_max, cost_array, m, n, set_title="", save_plot=False,
     Last modified: 05-10-2020
     """
      
-    # make output folder
-    if not os.path.exists(path_output):
-        os.makedirs(path_output)
+    # make output folder    
+    try:
+        if not os.path.exists(path_output):
+            os.makedirs(path_output)
+    except TypeError:
+        sys.exit("error: Output directory not defined!")
     
     # compute line
     line_fit = np.arange(x_max) * m + n
@@ -40,7 +44,7 @@ def cost_plot(x_max, cost_array, m, n, set_title="", save_plot=False,
     plt.plot(np.arange(x_max), line_fit, label="fit (m: "+str("%.10e" % m)+")")
     plt.legend(loc=1)
     plt.xlabel("iteration")
-    plt.ylabel("Cost function")
+    plt.ylabel("cost function")
     
     # make title
     if set_title:

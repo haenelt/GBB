@@ -35,5 +35,5 @@ def smooth_surface(file_in, file_out, n_iter):
                         file_in, 
                         file_out], check = True)
     except subprocess.CalledProcessError:
-        sys.exit("Surface smoothing failed!")
+        sys.exit("error: surface smoothing failed!")
         
