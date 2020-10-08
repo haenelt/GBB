@@ -18,14 +18,14 @@ def cost_plot(x_max, cost_array, m, n, set_title="", save_plot=False,
         *cost_array (arr): array with cost function values J.
         *m (float): slope of linear fit.
         *n (float): y-axis intercept of linear fit.
-        *set_title (str): optional plot title.
+        *set_title (str): plot title.
         *save_plot (bool): write out image file.
         *path_output (str): path where output is written.
         *name_output (str): basename of saved plot.
 
     created by Daniel Haenelt
     Date created: 24-02-2020         
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
      
     # make output folder    

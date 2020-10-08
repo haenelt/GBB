@@ -15,13 +15,13 @@ def get_gif(img_file, path_output, name_output, nsteps, duration):
     Inputs:
         *img_file (list): list of input images.
         *path_output (str): path where output is saved.
-        *name_output (str): base name of output file.
+        *name_output (str): basename of output file.
         *nsteps (int): number of generated transition images.
         *duration (float): duration for each frame in seconds.
 
     created by Daniel Haenelt
     Date created: 17-11-2018
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
 
     # append first list item to the end of the list

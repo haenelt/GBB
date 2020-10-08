@@ -55,6 +55,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     devein_params = config.devein_params
     anchor_params = config.anchor_params
     reg_params = config.reg_params
+    bbr_params = config.bbr_params
 
     # load custom configurations
     if file_config:
@@ -68,6 +69,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
         devein_params = config_custom.devein_params
         anchor_params = config_custom.anchor_params
         reg_params = config_custom.reg_params
+        bbr_params = config_custom.bbr_params
 
     # make output folder    
     try:
@@ -120,7 +122,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                 volume["gradient"], 
                                                 volume["vein"], 
                                                 volume["ignore"], 
-                                                reg_params["t2s"], 
+                                                bbr_params["t2s"], 
                                                 T["vox2ras"], 
                                                 T["ras2vox"], 
                                                 reg_params["line_dir"], 
@@ -134,11 +136,15 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                 io_file["o_output"], 
                                                 reg_params["show_cost"], 
                                                 reg_params["show_slope"], 
-                                                reg_params["intermediate_write"])
+                                                reg_params["intermediate_write"],
+                                                bbr_params["Q0"],
+                                                bbr_params["M"],
+                                                bbr_params["h"],
+                                                bbr_params["s"])
         
         # save cost array and slope and y-axis intercept arrays of linear fits
-        np.savez(os.path.join(io_file["o_output"],basename["white"]+"_cost"), 
-                 J= gbb_params["cost_array"], 
+        np.savez(os.path.join(io_file["o_output"], basename["white"]+"_cost"), 
+                 J=gbb_params["cost_array"], 
                  m=gbb_params["m_array"], 
                  n=gbb_params["n_array"])
     

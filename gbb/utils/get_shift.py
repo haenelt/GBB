@@ -12,8 +12,8 @@ from nibabel.affines import apply_affine
 from gbb.interpolation import linear_interpolation3d
     
     
-def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr, 
-              ras2vox_tkr, vol_max, line_dir=2, line_length=3, t2s=True, 
+def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr, 
+              arr_vein=None, line_dir=2, line_length=3, t2s=True, 
               show_plot=True):
     """
     This function computes the vertex shift in one direction (line_dir: 0,1,2) 
@@ -26,8 +26,8 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
     perpendicularly oriented to the shift direction. Starting from the current 
     vertex point, the nearest zero crossing is found (if it exists). If a t2s 
     contrast is considered, the intensity values are going from dark to bright 
-    for WM -> GM. Therefore, we expect a transition from positive to negative in 
-    this case for the zero crossing in the second order gradient. The found 
+    for WM -> GM. In this case, we expect a transition from positive to negative 
+    for the zero crossing in the second order gradient. Optionally, the found 
     shift is only considered if no vein is found in shift direction along the 
     line. Vertex coordinates are in ras space.
     Inputs:
@@ -39,7 +39,6 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
         *arr_vein (arr): 3D array with masked veins.
         *vox2ras (arr): voxel to ras transformation matrix.
         *ras2vox (arr): ras to voxel transformation matrix.
-        *vol_max (arr): array of maximum voxel coordinates in x-, y-, and z-direction.
         *line_dir (int): line direction in ras conventions (0,1,2) or normal direction (3).
         *line_length (float): length of vertex shift in one direction in mm.
         *t2s (bool): wm darker than gm.
@@ -59,6 +58,9 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, arr_vein, vox2ras_tkr,
     # fix parameters
     n_line = 1000 # number of line points
     line_threshold = 0.05 # if direction is along one axis, omit line if length is below threshold
+    
+    # maximum voxel coordinates in x-, y-, and z-direction
+    vol_max = np.shape(arr_grad)
     
     # get current vertex and normal
     vtx_curr = vtx[ind,:].copy()

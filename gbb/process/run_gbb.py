@@ -22,7 +22,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
             arr_ignore, t2s, vox2ras_tkr, ras2vox_tkr, line_dir, line_length, 
             r_size, l_rate, max_iterations, cost_threshold, cost_step=1000, 
             cost_sample=10, path_output = "", show_cost=True, show_slope=False, 
-            write_temp=10000):
+            write_temp=10000, Q0=0, M=0.5, h=1, s=1):    
     """
     This function applies the core function of the gbb method. 
     Inputs.
@@ -49,13 +49,17 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         *show_cost (bool): show temporary cost function.
         *show_slope (bool): show temporary slope function.
         *write_temp (int): step size to write intermediate surfaces (if set > 0).
+        *Q0 (float): const function offset parameter.
+        *M (float): cost function slope parameter.
+        *h (float): cost function weight parameter.
+        *s (float): cost function distance parameter.
     Outputs:
         *vtx (arr): shifted array of vertex points.
         *gbb (dict): collection of performance parameters.
     
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
 
     # make intermediate folder
@@ -86,7 +90,6 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     n_array = [] 
     n_coords = len(vtx)
     n_iter_step = np.zeros(len(r_size))
-    vol_max = np.shape(arr_ref)
     while True:
         
         # get current vertex point
@@ -96,8 +99,9 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
             continue
         
         # get shift        
-        vtx_shift = get_shift(vtx, fac, vtx_n, n_vertex, arr_gradient, arr_vein, vox2ras_tkr, 
-                              ras2vox_tkr, vol_max, line_dir, line_length, t2s, False)
+        vtx_shift = get_shift(vtx, fac, vtx_n, n_vertex, arr_gradient, 
+                              vox2ras_tkr, ras2vox_tkr, arr_vein, line_dir, 
+                              line_length, t2s, False)
         
         # update mesh
         if len(vtx_shift):
@@ -112,7 +116,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         
         # get cost function
         if p >= cost_step:
-            J = cost_BBR(vtx, vtx_n, arr_ref, ras2vox_tkr, vol_max, t2s)
+            J = cost_BBR(vtx, vtx_n, arr_ref, ras2vox_tkr, Q0=Q0, M=M, h=h, s=s, t2s=t2s)
             cost_array = np.append(cost_array, J)
             q += 1
             p = 0

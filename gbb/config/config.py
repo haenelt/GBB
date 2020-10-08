@@ -10,14 +10,18 @@ for later checks.
 
 created by Daniel Haenelt
 Date created: 03-10-2020
-Last modified: 03-10-2020
+Last modified: 08-10-2020
 """
 
 # io parameters
+#-------------------------------------------------------------------------------
+
 io_params = dict()
 io_params["o_sigma"] = 2 # gaussian filter for deformation field
 
 # deveining parameters
+#-------------------------------------------------------------------------------
+
 devein_params = dict()
 devein_params["run"] = False # run deveining
 devein_params["n_neighbor"] = 10 # number of neighbors in surface relaxation
@@ -25,12 +29,27 @@ devein_params["n_smooth"] = 0 # final smoothing
 devein_params["max_iter"] = 1000 # maximum iterations
 
 # anchoring parameters
+#-------------------------------------------------------------------------------
+
 anchor_params = dict()
 anchor_params["run"] = False # run anchoring
 anchor_params["n_neighbor"] = 10 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
 # registration parameter
+#-------------------------------------------------------------------------------
+
+# NB: If the parameter line_dir is set to 3, the mesh is not shifted in
+# direction of one of the 3 volume axes but in direction normal to the surface
+# mesh.
+
+# NB: Multiple neighborhood sizes (r_size) and learning rates (l_rate) can be 
+# defined. During processing, the next neighborhood size and/or learning rate 
+# is used if the cost function is below the set threshold (cost_threshold) or 
+# the maximum number of iterations (max_iter) is reached. To run properly, the 
+# lists r_size, l_rate, max_iter and cost_threshold need to have the same number
+# of elements.
+
 reg_params = dict()
 reg_params["run"] = True # run gbb
 reg_params["t2s"] = True # underlying image contrast (boolean)
@@ -49,3 +68,17 @@ reg_params["cost_sample"] = 10 # sample size for linear fit
 reg_params["show_cost"] = True # show temporary cost function
 reg_params["show_slope"] = False # show temporary slope function
 reg_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
+
+# bbr parameter (cost function)
+#-------------------------------------------------------------------------------
+
+# NB: Cost function parameters are explained in the original BBR publication.
+# Greve DN and Fischl B, Accurate and robust brain image alignment using 
+# boundary-based registration, 48(1), 63--72 (2009).
+
+bbr_params = dict()
+bbr_params["t2s"] = True # underlying image contrast (boolean)
+bbr_params["Q0"] = 0 # offset parameter in percent contrast measure
+bbr_params["M"] = 0.5 # slope parameter in percent contrast measure
+bbr_params["h"] = 1 # weight for each vertex in percent contrast measure
+bbr_params["s"] = 1 # distance scaling for sampling normal to the surface

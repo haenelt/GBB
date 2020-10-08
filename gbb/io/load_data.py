@@ -29,7 +29,6 @@ def load_data(io_file, reg_params):
         *surf (dict): loaded surface vertices and faces.
         *point (dict): loaded point set.
         *basename (dict): basenames.
-        *path_temp (str): path of temporary folder.
         
     created by Daniel Haenelt
     Date created: 12-05-2020
