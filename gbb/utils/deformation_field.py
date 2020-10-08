@@ -11,9 +11,8 @@ from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
 
     
-def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr, 
-                      sigma=1, path_output="", name_output="", 
-                      write_output=True):
+def deformation_field(vtx_old, vtx_new, input_vol, ras2vox_tkr, sigma=1, 
+                      path_output="", name_output="", write_output=True):
     """
     This function computes a deformation field from an array of shifted 
     vertices. Each voxel in the deformation field corresponds to a shift in 
@@ -23,7 +22,6 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr,
         *vtx_old (arr): original array of vertices.
         *vtx_new (arr): new array of vertices.
         *input_vol (str): filename of reference volume.
-        *vox2ras_tkr (arr): voxel to ras space transformation.
         *ras2vox_tkr (arr): ras to voxel space transformation.
         *sigma (float): sigma for gaussian filtering of deformation field.
         *path_output (str): path where output is written.
@@ -34,7 +32,7 @@ def deformation_field(vtx_old, vtx_new, input_vol, vox2ras_tkr, ras2vox_tkr,
         
     created by Daniel Haenelt
     Date created: 28-12-2019       
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
     
     # load reference volume

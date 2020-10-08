@@ -16,7 +16,7 @@ from gbb.utils.update_mesh import update_mesh
 from gbb.utils.smooth_surface import smooth_surface
 
 
-def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox, 
+def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox_tkr, 
                n_neighbor=20, line_dir=2, smooth_iter=30, max_iterations=1000):
     """
     This function finds vertex points which are located within marked veins and 
@@ -32,7 +32,7 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
         *arr_vein (arr): vein mask.
         *arr_ignore (arr): binary mask where deveining is omitted.
         *adjm (obj): adjacecy matrix.
-        *ras2vox (arr): transformation matrix from ras to voxel space.
+        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
         *n_neighbor (int): neighborhood size.
         *line_dir (int): shift direction in ras conventions (0,1,2,3).
         *smooth_iter (int): number of smoothing iterations of final mesh.
@@ -43,7 +43,7 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
     
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 05-10-2020  
+    Last modified: 08-10-2020  
     """
     
     # fix parameters
@@ -73,7 +73,7 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
     vtx_c = np.mean(vtx, axis=0)    
 
     # get nearest voxel coordinates
-    vtx_vox = apply_affine(ras2vox, vtx)
+    vtx_vox = apply_affine(ras2vox_tkr, vtx)
     vtx_vox = np.round(vtx_vox).astype(int)
     
     # mask outlier points (ignored in deveining)
@@ -126,12 +126,12 @@ def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox,
         
         # update mesh if valid inward shift
         if line_dir != 3 and np.abs(vtx_norm[curr_ind,line_dir]) < line_threshold:
-            vtx_temp_vox = apply_affine(ras2vox, vtx[curr_ind])
+            vtx_temp_vox = apply_affine(ras2vox_tkr, vtx[curr_ind])
             vtx_temp_vox = np.round(vtx_temp_vox).astype(int)
             arr_vein[vtx_temp_vox[0],vtx_temp_vox[1],vtx_temp_vox[2]] = 0
         else:
             vtx = update_mesh(vtx, vtx_shift, curr_ind, nn_ind, 1)
-            vtx_vox = apply_affine(ras2vox, vtx)
+            vtx_vox = apply_affine(ras2vox_tkr, vtx)
             vtx_vox = np.round(vtx_vox).astype(int)    
     
         # get all vertices within vein

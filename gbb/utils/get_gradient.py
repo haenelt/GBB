@@ -13,14 +13,14 @@ from scipy.ndimage.filters import gaussian_filter
 from gbb.utils.line_ras2vox import line_ras2vox
 
 
-def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3, 
+def get_gradient(input_vol, ras2vox_tkr, line_dir=2, sigma=0, kernel_size=3, 
                  write_output=None, path_output="", name_output="gradient"):
     """
     This function computes the second order gradient along one axis 
     (line_dir: 0,1,2) or the sum over all directions (line_dir: 3).
     Inputs:
         *input_vol (str): filename of input nifti.
-        *ras2vox (arr): transformation matrix from ras to voxel space.
+        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
         *line_dir (int): direction of gradient calculation in ras space.
         *sigma (float): gaussian blurring kernel of gradient map (if set > 0).
         *kernel_size (float): kernel size for gradient calculation.
@@ -32,12 +32,12 @@ def get_gradient(input_vol, ras2vox, line_dir=2, sigma=0, kernel_size=3,
         
     created by Daniel Haenelt
     Date created: 30-10-2019
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
 
     # get line direction in voxel space
     if line_dir != 3:
-        line_dir = line_ras2vox(line_dir, ras2vox)
+        line_dir = line_ras2vox(line_dir, ras2vox_tkr)
 
     # load input
     vol = nb.load(input_vol)

@@ -8,7 +8,7 @@ from nibabel.affines import apply_affine
 from gbb.interpolation import linear_interpolation3d
     
 
-def cost_BBR(vtx, vtx_n, arr_vol, ras2vox, Q0=0, M=0.5, h=1, s=1, t2s=True):
+def cost_BBR(vtx, vtx_n, arr_vol, ras2vox_tkr, Q0=0, M=0.5, h=1, s=1, t2s=True):
     """
     This function computes the cost function defined in the original BBR paper 
     (Greve and Fischl, 2009). Vertices should be in freesurfer ras_tkr space. 
@@ -22,7 +22,7 @@ def cost_BBR(vtx, vtx_n, arr_vol, ras2vox, Q0=0, M=0.5, h=1, s=1, t2s=True):
         *vtx (arr): array of vertices.
         *vtx_n (arr): array of unit vertices in normal direction.
         *vol_array (arr): 3D array of image volume.
-        *ras2vox (arr): transformation matrix to voxel space.
+        *ras2vox_tkr (arr): transformation matrix to voxel space.
         *Q0 (float): offset parameter in percent contrast measure.
         *M (float): slope parameter in percent contrast measure.
         *h (float): weight for each vertex in percent contrast measure.
@@ -44,8 +44,8 @@ def cost_BBR(vtx, vtx_n, arr_vol, ras2vox, Q0=0, M=0.5, h=1, s=1, t2s=True):
     wm_pts = vtx - s * vtx_n
     
     # ras2vox transformation
-    gm_pts = apply_affine(ras2vox, gm_pts)
-    wm_pts = apply_affine(ras2vox, wm_pts)
+    gm_pts = apply_affine(ras2vox_tkr, gm_pts)
+    wm_pts = apply_affine(ras2vox_tkr, wm_pts)
     
     # get location of outlier coordinates
     outlier = np.zeros(len(gm_pts), dtype=np.int8())
