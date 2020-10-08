@@ -37,7 +37,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     
     created by Daniel Haenelt
     Date created: 03-10-2020
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
 
     # input and output parameters
@@ -46,8 +46,8 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     io_file["i_pial"] = file_pial
     io_file["i_ref"] = file_ref
     io_file["i_vein"] = file_vein
-    io_file["i_ignore"] = None
-    io_file["i_anchor"] = None
+    io_file["i_ignore"] = file_ignore
+    io_file["i_anchor"] = file_anchor
     io_file["o_output"] = path_output
 
     # load configurations
