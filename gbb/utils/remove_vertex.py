@@ -18,38 +18,43 @@ def remove_vertex(vtx, fac, ind_keep):
         
     created by Daniel Haenelt
     Date created: 22-06-2020
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
 
     # get new vertices
     vtx = vtx[ind_keep,:]
+    
+    # get vertex indices of removed vertices
+    ind_tmp = np.arange(len(vtx))
+    ind_remove = list(set(ind_tmp) - set(ind_keep))
 
     # get new faces
-    fac_keep = np.zeros(len(fac[:,0]))
+    fac_keep = np.zeros(len(fac))
     fac_keep += np.in1d(fac[:,0],ind_keep)
     fac_keep += np.in1d(fac[:,1],ind_keep)
     fac_keep += np.in1d(fac[:,2],ind_keep)
     fac_temp = fac[fac_keep == 3,:]
     fac = fac[fac_keep == 3,:]
-
-    # sort new faces
+    
+    # reindex faces
     c_step = 0
     n_step = [10,20,30,40,50,60,70,80,90,100]
-    for i in range(len(ind_keep)):
-        temp = np.where(ind_keep[i] == fac_temp)
-        fac[temp] = i
-    
+    for i in range(len(ind_remove)):
+        
         # print status
-        counter = np.floor(i / len(ind_keep) * 100).astype(int)
+        counter = np.floor(i / len(ind_remove) * 100).astype(int)
         if counter == n_step[c_step]:
             print("sort faces: "+str(counter)+" %")
             c_step += 1
-    
+        
+        tmp = fac[fac >= ind_remove[i]] - 1
+        fac[fac >= ind_remove[i]] = tmp
+
     # remove singularities (vertices without faces)
-    fac_counter = 0
     fac_old = fac.copy()
     n_singularity = np.zeros(len(vtx))
     c_step = 0
+    fac_counter = 0
     for i in range(len(vtx)):
         row, col = np.where(fac_old == i)
  

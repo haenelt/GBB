@@ -33,7 +33,7 @@ def load_data(io_file, reg_params):
         
     created by Daniel Haenelt
     Date created: 12-05-2020
-    Last modified: 05-10-2020
+    Last modified: 08-10-2020
     """
     
     # initialize dictionaries
@@ -63,7 +63,7 @@ def load_data(io_file, reg_params):
         surf["n_white"] = get_normal(surf["vtx_white"], surf["fac_white"])
         
         # adjacency matrix
-        T["adjm"] = get_adjm(io_file["i_white"])
+        T["adjm"] = get_adjm(surf["vtx_white"], surf["fac_white"])
         
         # basename
         basename["white"] = os.path.basename(io_file["i_white"])
