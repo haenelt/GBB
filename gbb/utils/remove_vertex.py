@@ -55,7 +55,7 @@ def remove_vertex(vtx, fac, ind_keep):
     # get indices which will be cleaned
     ind_vtx = np.arange(len(vtx))
     ind_fac = list(itertools.chain(*fac))
-    ind_fac = list(set(fac))
+    ind_fac = list(set(ind_fac))
     ind_remove = list(set(ind_vtx) - set(ind_fac))
 
     # remove singularities (vertices without faces)
