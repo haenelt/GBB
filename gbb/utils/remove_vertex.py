@@ -57,6 +57,7 @@ def remove_vertex(vtx, fac, ind_keep):
     ind_fac = list(itertools.chain(*fac))
     ind_fac = list(set(ind_fac))
     ind_remove = list(set(ind_vtx) - set(ind_fac))
+    ind_remove = sorted(ind_remove, reverse=True)
 
     # remove singularities (vertices without faces)
     loop_status = 0
