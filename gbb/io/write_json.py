@@ -25,7 +25,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
 
     created by Daniel Haenelt
     Date created: 03-10-2020
-    Last modified: 08-10-2020
+    Last modified: 09-10-2020
     """
        
     # make output folder    
@@ -41,13 +41,17 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
     # filename
     file_out = os.path.join(path_output, prefix+"_info_"+date+".json")
 
+    # sum all parameters in one dictionary
+    dump_params = dict()
+    dump_params["io_file"] = io_file
+    dump_params["io_params"] = io_params
+    dump_params["devein_params"] = devein_params
+    dump_params["anchor_params"] = anchor_params
+    dump_params["reg_params"] = reg_params
+    dump_params["bbr_params"] = bbr_params
+    dump_params["iter_params"] = iter_params
+    dump_params["gbb_params"] = gbb_params
+    
     # json
     with open(file_out, 'w', encoding='utf-8') as f:
-        json.dump(io_file, f, ensure_ascii=False, indent=4)
-        json.dump(io_params, f, ensure_ascii=False, indent=4)
-        json.dump(devein_params, f, ensure_ascii=False, indent=4)
-        json.dump(anchor_params, f, ensure_ascii=False, indent=4)
-        json.dump(reg_params, f, ensure_ascii=False, indent=4)
-        json.dump(iter_params, f, ensure_ascii=False, indent=4)
-        json.dump(bbr_params, f, ensure_ascii=False, indent=4)
-        json.dump(gbb_params, f, ensure_ascii=False, indent=4)
+        json.dump(dump_params, f, ensure_ascii=False, indent=4)
