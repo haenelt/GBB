@@ -6,7 +6,7 @@ import json
 
 def read_json(file_in):
     """
-    This function reads a json file and returns a dictionary.
+    This function reads a json file and returns the content in a dictionary.
     Inputs.
         *file_in (str): filename of json file.
     Outputs:
