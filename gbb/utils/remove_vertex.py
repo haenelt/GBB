@@ -27,6 +27,7 @@ def remove_vertex(vtx, fac, ind_keep):
     # get indices which will be removed
     ind_tmp = np.arange(len(vtx))
     ind_remove = list(set(ind_tmp) - set(ind_keep))
+    ind_remove = sorted(ind_remove, reverse=True)
 
     # get new vertices
     vtx = vtx[ind_keep,:]
