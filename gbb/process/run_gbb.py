@@ -88,8 +88,8 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     cost_array = []
     m_array = []
     n_array = [] 
+    n_iter_step = []
     n_coords = len(vtx)
-    n_iter_step = np.zeros(len(r_size))
     while True:
         
         # get current vertex point
@@ -117,7 +117,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         # get cost function
         if p >= cost_step:
             J = cost_BBR(vtx, vtx_n, arr_ref, ras2vox_tkr, Q0=Q0, M=M, h=h, s=s, t2s=t2s)
-            cost_array = np.append(cost_array, J)
+            cost_array.append(J)
             q += 1
             p = 0
             if len(cost_array) >= cost_sample:
@@ -128,8 +128,8 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
                                                      cost_threshold=cost_threshold[step])
                 
                 # save computed slope and y-axis intercept of liner fit
-                m_array = np.append(m_array, m_fit)
-                n_array = np.append(n_array, n_fit)
+                m_array.append(m_fit)
+                n_array.append(n_fit)
                 
                 # shot plots
                 if show_cost:
@@ -147,17 +147,17 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     
         # check exit
         if exit_crit and step < len(max_iterations) - 1 or j == max_iterations[step]:
-            n_iter_step[step] = j
+            n_iter_step.append(j)
             step += 1
             j = 0
             print("start registration step "+str(step)+" at iteration "+str(i))
         elif exit_crit and step == len(max_iterations) - 1:
-            n_iter_step[step] = j
+            n_iter_step.append(j)
             gbb_converged = True
             print("registration converged!")   
             break
         elif step == len(max_iterations) - 1 and j == max_iterations[-1]:
-            n_iter_step[step] = j
+            n_iter_step.append(j)
             gbb_converged = False
             print("registration did not converge!")
             break

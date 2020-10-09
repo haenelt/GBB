@@ -18,12 +18,12 @@ def get_adjm(vtx, fac):
         
     created by Daniel Haenelt
     Date created: 20-12-2019
-    Last modified: 08-10-2020
+    Last modified: 09-10-2020
     """
 
     # get number of vertices and faces
-    nvtx = len(vtx[:,0])
-    nfac   = len(fac[:,0])
+    nvtx = len(vtx)
+    nfac   = len(fac)
     
     # initialise
     row = []

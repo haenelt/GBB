@@ -4,9 +4,9 @@
 """
 List of parameters used in GBB
 
-Parameters for deveining, anchoring and registration which are read by the main
-module. When the main module is run, all parameters are stored in a json file
-for later checks.
+Parameters for deveining, anchoring, registration and the used cost function 
+which are read by the main module. When the main module is run, all defined 
+parameters are stored in a separate json file for later checks.
 
 created by Daniel Haenelt
 Date created: 03-10-2020
@@ -36,7 +36,7 @@ anchor_params["run"] = False # run anchoring
 anchor_params["n_neighbor"] = 10 # number of neighbors
 anchor_params["n_smooth"] = 0 # final smoothing
 
-# registration parameter
+# registration parameters
 #-------------------------------------------------------------------------------
 
 # NB: If the parameter line_dir is set to 3, the mesh is not shifted in
@@ -45,14 +45,13 @@ anchor_params["n_smooth"] = 0 # final smoothing
 
 # NB: Multiple neighborhood sizes (r_size) and learning rates (l_rate) can be 
 # defined. During processing, the next neighborhood size and/or learning rate 
-# is used if the cost function is below the set threshold (cost_threshold) or 
+# is taken if the cost function is below the set threshold (cost_threshold) or 
 # the maximum number of iterations (max_iter) is reached. To run properly, the 
 # lists r_size, l_rate, max_iter and cost_threshold need to have the same number
 # of elements.
 
 reg_params = dict()
 reg_params["run"] = True # run gbb
-reg_params["t2s"] = True # underlying image contrast (boolean)
 reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
 reg_params["line_length"] = 3 # line length in one direction in mm
 reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
@@ -69,7 +68,7 @@ reg_params["show_cost"] = True # show temporary cost function
 reg_params["show_slope"] = False # show temporary slope function
 reg_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
 
-# bbr parameter (cost function)
+# bbr parameters (cost function)
 #-------------------------------------------------------------------------------
 
 # NB: Cost function parameters are explained in the original BBR publication.
