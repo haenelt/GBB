@@ -13,7 +13,7 @@ The GM/WM boundary surface mesh was computed using FreeSurfer [[1]](#1) based on
 THE GM/CSF boundary surface can be used as additional surface mesh (argument `-p`). The surface resulted from the same segmentation as explained for `lh.white`. If set, the final deformation field will be applied to that surface as well.
 
 #### vein.nii
-Optionally, a vein mask can be set (argument `-v`). This mask is mandatory if `devein_params["run"] = True` in the configuration file `config.py`. It will also be used if `reg_params["run"] = True` but is not mandatory here. The binary mask was computed by thresholding the mean_epi.nii and a corresponding tSNR image.
+Optionally, a vein mask can be set (argument `-v`). This mask is mandatory if `devein_params["run"] = True` in the configuration file `config.py`. It will also be used if `gbb_params["run"] = True` but is not mandatory here. The binary mask was computed by thresholding the mean_epi.nii and a corresponding tSNR image.
 
 #### control_points.dat
 For anchoring, control points have to be set (argument `-a`). The file was generated using the FreeSurfer [[1]](#1) viewer FreeView [[2]](#2).

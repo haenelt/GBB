@@ -50,23 +50,23 @@ anchor_params["n_smooth"] = 0 # final smoothing
 # lists r_size, l_rate, max_iter and cost_threshold need to have the same number
 # of elements.
 
-reg_params = dict()
-reg_params["run"] = True # run gbb
-reg_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
-reg_params["line_length"] = 3 # line length in one direction in mm
-reg_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
-reg_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
-reg_params["max_iter"] = [250000, 500000, 1000000] # maximum iterations
-reg_params["cost_threshold"] = [1e-4, 1e-5, 1e-6] # cost function threshold
-reg_params["gradient_sigma"] = 1 # gaussian blurring used by gradient calculation
-reg_params["gradient_kernel"] = 3 # kernel size used by gradient calculation
-reg_params["gradient_write"] = True # write gradient image
-reg_params["overwrite_control"] = False # do not lock control points
-reg_params["cost_step"] = 1000 # step size between cost array points
-reg_params["cost_sample"] = 10 # sample size for linear fit
-reg_params["show_cost"] = True # show temporary cost function
-reg_params["show_slope"] = False # show temporary slope function
-reg_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
+gbb_params = dict()
+gbb_params["run"] = True # run gbb
+gbb_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
+gbb_params["line_length"] = 3 # line length in one direction in mm
+gbb_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
+gbb_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
+gbb_params["max_iter"] = [250000, 500000, 1000000] # maximum iterations
+gbb_params["cost_threshold"] = [1e-4, 1e-5, 1e-6] # cost function threshold
+gbb_params["gradient_sigma"] = 1 # gaussian blurring used by gradient calculation
+gbb_params["gradient_kernel"] = 3 # kernel size used by gradient calculation
+gbb_params["gradient_write"] = True # write gradient image
+gbb_params["overwrite_control"] = False # do not lock control points
+gbb_params["cost_step"] = 1000 # step size between cost array points
+gbb_params["cost_sample"] = 10 # sample size for linear fit
+gbb_params["show_cost"] = True # show temporary cost function
+gbb_params["show_slope"] = False # show temporary slope function
+gbb_params["intermediate_write"] = 10000 # step size to write intermediate surfaces (if set > 0)
 
 # bbr parameters (cost function)
 #-------------------------------------------------------------------------------

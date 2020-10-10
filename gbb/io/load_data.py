@@ -16,13 +16,13 @@ from gbb.utils.get_gradient import get_gradient
 from gbb.utils.vox2ras import vox2ras
 
 
-def load_data(io_file, reg_params):
+def load_data(io_file, gbb_params):
     """
     This function loads volume arrays, transformation matrices between voxel and 
     ras space, surface data and point sets.
     Inputs:
         *io_file (dict): input and output parameters.
-        *reg_params (dict): registration parameters.
+        *gbb_params (dict): registration parameters.
     Outputs:
         *volume (dict): loaded volume arrays.
         *T (dict): loaded transformation matrices.
@@ -84,10 +84,10 @@ def load_data(io_file, reg_params):
         # get gradient
         volume["gradient"] = get_gradient(io_file["i_ref"], 
                                           T["ras2vox"], 
-                                          reg_params["line_dir"], 
-                                          reg_params["gradient_sigma"], 
-                                          reg_params["gradient_kernel"], 
-                                          reg_params["gradient_write"], 
+                                          gbb_params["line_dir"], 
+                                          gbb_params["gradient_sigma"], 
+                                          gbb_params["gradient_kernel"], 
+                                          gbb_params["gradient_write"], 
                                           io_file["o_output"])
     else:
         sys.exit("error: reference volume not defined!")

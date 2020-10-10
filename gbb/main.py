@@ -53,7 +53,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     io_params = config.io_params
     devein_params = config.devein_params
     anchor_params = config.anchor_params
-    reg_params = config.reg_params
+    gbb_params = config.gbb_params
     bbr_params = config.bbr_params
 
     # load custom configurations
@@ -67,7 +67,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
         io_params = config_custom.io_params
         devein_params = config_custom.devein_params
         anchor_params = config_custom.anchor_params
-        reg_params = config_custom.reg_params
+        gbb_params = config_custom.gbb_params
         bbr_params = config_custom.bbr_params
 
     # make output folder    
@@ -78,7 +78,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
         sys.exit("error: output directory not defined!")
     
     # load input
-    volume, T, surf, point, basename = load_data(io_file, reg_params)
+    volume, T, surf, point, basename = load_data(io_file, gbb_params)
     
     # run deveining
     niter_devein = 0
@@ -107,10 +107,10 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     
     # run gbb
     res_params = None
-    if reg_params["run"]:
+    if gbb_params["run"]:
         
         # do not consider control points in gbb
-        if reg_params["overwrite_control"]:
+        if gbb_params["overwrite_control"]:
             ind_control = []
         
         surf["vtx_white"], res_params = run_gbb(surf["vtx_white"],
@@ -124,18 +124,18 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                 bbr_params["t2s"], 
                                                 T["vox2ras"], 
                                                 T["ras2vox"], 
-                                                reg_params["line_dir"], 
-                                                reg_params["line_length"], 
-                                                reg_params["r_size"], 
-                                                reg_params["l_rate"], 
-                                                reg_params["max_iter"], 
-                                                reg_params["cost_threshold"], 
-                                                reg_params["cost_step"], 
-                                                reg_params["cost_sample"], 
+                                                gbb_params["line_dir"], 
+                                                gbb_params["line_length"], 
+                                                gbb_params["r_size"], 
+                                                gbb_params["l_rate"], 
+                                                gbb_params["max_iter"], 
+                                                gbb_params["cost_threshold"], 
+                                                gbb_params["cost_step"], 
+                                                gbb_params["cost_sample"], 
                                                 io_file["o_output"], 
-                                                reg_params["show_cost"], 
-                                                reg_params["show_slope"], 
-                                                reg_params["intermediate_write"],
+                                                gbb_params["show_cost"], 
+                                                gbb_params["show_slope"], 
+                                                gbb_params["intermediate_write"],
                                                 bbr_params["Q0"],
                                                 bbr_params["M"],
                                                 bbr_params["h"],
@@ -193,7 +193,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                io_params,
                devein_params,
                anchor_params,
-               reg_params,
+               gbb_params,
                bbr_params,
                iter_params,
                res_params,

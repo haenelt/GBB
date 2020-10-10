@@ -7,7 +7,7 @@ import json
 import datetime
 
 
-def write_json(io_file, io_params, devein_params, anchor_params, reg_params, 
+def write_json(io_file, io_params, devein_params, anchor_params, gbb_params, 
                bbr_params, iter_params, res_params, path_output, prefix):
     """
     This function writes a json file to summarize input and output parameters. 
@@ -16,7 +16,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
         *io_params (dict): input and output parameters.
         *devein_params (dict): deveining parameters.
         *anchor_params (dict): anchoring parameters.
-        *reg_params (dict): registration parameters.
+        *gbb_params (dict): registration parameters.
         *bbr_params (dist): cost function parameters.
         *iter_params (dict): deveining and anchoring performance parameters.
         *res_params (dict): performance parameters.
@@ -47,7 +47,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
     dump_params["io_params"] = io_params
     dump_params["devein_params"] = devein_params
     dump_params["anchor_params"] = anchor_params
-    dump_params["reg_params"] = reg_params
+    dump_params["gbb_params"] = gbb_params
     dump_params["bbr_params"] = bbr_params
     dump_params["iter_params"] = iter_params
     dump_params["res_params"] = res_params
