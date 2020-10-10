@@ -13,7 +13,6 @@ from gbb.io.get_filename import get_filename
 from gbb.config import config
 from gbb.io.load_data import load_data
 from gbb.io.write_json import write_json
-from gbb.io.write_shift import write_shift
 from gbb.process.run_devein import run_devein
 from gbb.process.run_anchor import run_anchor
 from gbb.process.run_gbb import run_gbb
@@ -158,15 +157,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                         io_file["o_output"],
                                         basename["white"]+"_deformation",
                                         True)
-    
-    # get shift
-    print("write shift")
-    write_shift(surf["vtx_white_archive"], 
-                surf["vtx_white"],
-                reg_params["line_dir"], 
-                io_file["o_output"], 
-                basename["white"]+"_shift")
-      
+          
     # apply deformation to white and pial surface
     print("apply deformation")
     _, _ = apply_deformation(surf["vtx_white_archive"],
