@@ -10,7 +10,7 @@ parameters are stored in a separate json file for later checks.
 
 created by Daniel Haenelt
 Date created: 03-10-2020
-Last modified: 08-10-2020
+Last modified: 10-10-2020
 """
 
 # io parameters
@@ -53,7 +53,7 @@ anchor_params["n_smooth"] = 0 # final smoothing
 gbb_params = dict()
 gbb_params["run"] = True # run gbb
 gbb_params["line_dir"] = 2 # line axis in ras convention (0,1,2,3)
-gbb_params["line_length"] = 5 # line length in one direction in mm
+gbb_params["line_length"] = 10 # line length in one direction in mm
 gbb_params["r_size"] = [5, 2.5, 1] # neighborhood radius in mm
 gbb_params["l_rate"] = [0.1, 0.1, 0.1] # learning rate
 gbb_params["max_iter"] = [250000, 500000, 1000000] # maximum iterations
