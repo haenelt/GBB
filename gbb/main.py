@@ -5,9 +5,6 @@ import os
 import sys
 import importlib.util
 
-# external inputs
-import numpy as np
-
 # local inputs
 from gbb.io.get_filename import get_filename
 from gbb.config import config
@@ -146,12 +143,6 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                        bbr_params["M"],
                                                        bbr_params["h"],
                                                        bbr_params["s"])
-        
-        # save cost array and slope and y-axis intercept arrays of linear fits
-        np.savez(os.path.join(io_file["o_output"], basename["white"]+"_cost"), 
-                 J=res_params["gbb"]["cost_array"], 
-                 m=res_params["gbb"]["m_array"], 
-                 n=res_params["gbb"]["n_array"])
     
     # write deformation field
     print("write deformation field")
