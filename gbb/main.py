@@ -36,7 +36,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     
     created by Daniel Haenelt
     Date created: 03-10-2020
-    Last modified: 08-10-2020
+    Last modified: 10-10-2020
     """
 
     # input and output parameters
@@ -48,6 +48,12 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     io_file["i_ignore"] = file_ignore
     io_file["i_anchor"] = file_anchor
     io_file["o_output"] = path_output
+
+    # initialize dictionary for performance parameters
+    res_params = dict()
+    res_params["devein"] = dict()
+    res_params["anchor"] = dict()
+    res_params["gbb"] = dict()
 
     # load configurations
     io_params = config.io_params
@@ -81,19 +87,18 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     volume, T, surf, point, basename = load_data(io_file, gbb_params)
     
     # run deveining
-    niter_devein = 0
     if devein_params["run"]:        
-        surf["vtx_white"], niter_devein = run_devein(surf["vtx_white"], 
-                                                     surf["fac_white"], 
-                                                     surf["n_white"],
-                                                     volume["vein"], 
-                                                     volume["ignore"],  
-                                                     T["adjm"], 
-                                                     T["ras2vox"],
-                                                     devein_params["n_neighbor"], 
-                                                     3, # along all directions
-                                                     devein_params["n_smooth"], 
-                                                     devein_params["max_iter"])   
+        surf["vtx_white"], res_params["devein"]["niter"] = run_devein(surf["vtx_white"], 
+                                                                      surf["fac_white"], 
+                                                                      surf["n_white"],
+                                                                      volume["vein"], 
+                                                                      volume["ignore"],  
+                                                                      T["adjm"], 
+                                                                      T["ras2vox"],
+                                                                      devein_params["n_neighbor"], 
+                                                                      3, # along all directions
+                                                                      devein_params["n_smooth"], 
+                                                                      devein_params["max_iter"])   
     
     # run anchoring
     ind_control = []
@@ -104,48 +109,49 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                     point["anchor"],
                                                     anchor_params["n_neighbor"], 
                                                     anchor_params["n_smooth"])
+        
+        res_params["anchor"]["niter"] = len(ind_control)
     
     # run gbb
-    res_params = None
     if gbb_params["run"]:
         
         # do not consider control points in gbb
         if gbb_params["overwrite_control"]:
             ind_control = []
         
-        surf["vtx_white"], res_params = run_gbb(surf["vtx_white"],
-                                                surf["fac_white"], 
-                                                surf["n_white"],
-                                                ind_control, 
-                                                volume["ref"], 
-                                                volume["gradient"], 
-                                                volume["vein"], 
-                                                volume["ignore"], 
-                                                bbr_params["t2s"], 
-                                                T["vox2ras"], 
-                                                T["ras2vox"], 
-                                                gbb_params["line_dir"], 
-                                                gbb_params["line_length"], 
-                                                gbb_params["r_size"], 
-                                                gbb_params["l_rate"], 
-                                                gbb_params["max_iter"], 
-                                                gbb_params["cost_threshold"], 
-                                                gbb_params["cost_step"], 
-                                                gbb_params["cost_sample"], 
-                                                io_file["o_output"], 
-                                                gbb_params["show_cost"], 
-                                                gbb_params["show_slope"], 
-                                                gbb_params["intermediate_write"],
-                                                bbr_params["Q0"],
-                                                bbr_params["M"],
-                                                bbr_params["h"],
-                                                bbr_params["s"])
+        surf["vtx_white"], res_params["gbb"] = run_gbb(surf["vtx_white"],
+                                                       surf["fac_white"], 
+                                                       surf["n_white"],
+                                                       ind_control, 
+                                                       volume["ref"], 
+                                                       volume["gradient"], 
+                                                       volume["vein"], 
+                                                       volume["ignore"], 
+                                                       bbr_params["t2s"], 
+                                                       T["vox2ras"], 
+                                                       T["ras2vox"], 
+                                                       gbb_params["line_dir"], 
+                                                       gbb_params["line_length"], 
+                                                       gbb_params["r_size"], 
+                                                       gbb_params["l_rate"], 
+                                                       gbb_params["max_iter"], 
+                                                       gbb_params["cost_threshold"], 
+                                                       gbb_params["cost_step"], 
+                                                       gbb_params["cost_sample"], 
+                                                       io_file["o_output"], 
+                                                       gbb_params["show_cost"], 
+                                                       gbb_params["show_slope"], 
+                                                       gbb_params["intermediate_write"],
+                                                       bbr_params["Q0"],
+                                                       bbr_params["M"],
+                                                       bbr_params["h"],
+                                                       bbr_params["s"])
         
         # save cost array and slope and y-axis intercept arrays of linear fits
         np.savez(os.path.join(io_file["o_output"], basename["white"]+"_cost"), 
-                 J=res_params["cost_array"], 
-                 m=res_params["m_array"], 
-                 n=res_params["n_array"])
+                 J=res_params["gbb"]["cost_array"], 
+                 m=res_params["gbb"]["m_array"], 
+                 n=res_params["gbb"]["n_array"])
     
     # write deformation field
     print("write deformation field")
@@ -179,11 +185,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                  basename["pial"]+"_refined", 
                                  True)
     
-    # write json
-    iter_params = dict()
-    iter_params["devein"] = niter_devein
-    iter_params["anchor"] = len(ind_control)  
-   
+    # write json   
     if file_config:
         io_params["config_source"] = config_custom.__file__
     else:
@@ -195,7 +197,6 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                anchor_params,
                gbb_params,
                bbr_params,
-               iter_params,
                res_params,
                io_file["o_output"],
                basename["white"])
