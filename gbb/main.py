@@ -106,14 +106,14 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                                                     anchor_params["n_smooth"])
     
     # run gbb
-    gbb_params = None
+    res_params = None
     if reg_params["run"]:
         
         # do not consider control points in gbb
         if reg_params["overwrite_control"]:
             ind_control = []
         
-        surf["vtx_white"], gbb_params = run_gbb(surf["vtx_white"],
+        surf["vtx_white"], res_params = run_gbb(surf["vtx_white"],
                                                 surf["fac_white"], 
                                                 surf["n_white"],
                                                 ind_control, 
@@ -143,9 +143,9 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
         
         # save cost array and slope and y-axis intercept arrays of linear fits
         np.savez(os.path.join(io_file["o_output"], basename["white"]+"_cost"), 
-                 J=gbb_params["cost_array"], 
-                 m=gbb_params["m_array"], 
-                 n=gbb_params["n_array"])
+                 J=res_params["cost_array"], 
+                 m=res_params["m_array"], 
+                 n=res_params["n_array"])
     
     # write deformation field
     print("write deformation field")
@@ -196,6 +196,6 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
                reg_params,
                bbr_params,
                iter_params,
-               gbb_params,
+               res_params,
                io_file["o_output"],
                basename["white"])

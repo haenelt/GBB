@@ -8,7 +8,7 @@ import datetime
 
 
 def write_json(io_file, io_params, devein_params, anchor_params, reg_params, 
-               bbr_params, iter_params, gbb_params, path_output, prefix):
+               bbr_params, iter_params, res_params, path_output, prefix):
     """
     This function writes a json file to summarize input and output parameters. 
     Inputs.
@@ -19,7 +19,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
         *reg_params (dict): registration parameters.
         *bbr_params (dist): cost function parameters.
         *iter_params (dict): deveining and anchoring performance parameters.
-        *gbb_params (dict): gbb performance parameters.
+        *res_params (dict): performance parameters.
         *path_output (str): path where output is saved.
         *name_output (str): prefix of output file.
 
@@ -50,7 +50,7 @@ def write_json(io_file, io_params, devein_params, anchor_params, reg_params,
     dump_params["reg_params"] = reg_params
     dump_params["bbr_params"] = bbr_params
     dump_params["iter_params"] = iter_params
-    dump_params["gbb_params"] = gbb_params
+    dump_params["res_params"] = res_params
     
     # json
     with open(file_out, 'w', encoding='utf-8') as f:
