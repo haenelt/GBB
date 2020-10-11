@@ -32,7 +32,7 @@ def load_data(io_file, gbb_params):
         
     created by Daniel Haenelt
     Date created: 12-05-2020
-    Last modified: 10-10-2020
+    Last modified: 11-10-2020
     """
     
     # initialize dictionaries
@@ -89,7 +89,7 @@ def load_data(io_file, gbb_params):
                                           gbb_params["gradient_kernel"], 
                                           gbb_params["gradient_write"], 
                                           io_file["o_output"],
-                                          basename["white"])
+                                          basename["white"]+"_gradient")
     else:
         sys.exit("error: reference volume not defined!")
     

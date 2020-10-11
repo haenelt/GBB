@@ -40,6 +40,7 @@ setuptools.setup(
     url="https://github.com/haenelt/GBB",
     license='GPL v3',
     packages=setuptools.find_packages(),
+    install_requires=INSTALL_REQUIREMENTS,
     classifiers=CLASSIFIERS,
     python_requires='>=3.6',
     include_package_data=True,
