@@ -1,7 +1,7 @@
-# Byte-compiled
+# compiled bytecode
 *.pyc
 
-# Distribution / packaging
+# packaging
 build/
 dist/
 .eggs/
