@@ -51,4 +51,4 @@ Data is provided for testing purposes and to illustrate the data format which is
 <a id="3">[4]</a> https://surfer.nmr.mgh.harvard.edu/ (accessed 05-10-2020).
 
 ## Contact
-If you have questions, problems or suggestions regarding the GBB package, please feel free to contact [me](<daniel.haenelt@gmail.com>).
+If you have questions, problems or suggestions regarding the GBB package, please feel free to contact [me](mailto:daniel.haenelt@gmail.com).
