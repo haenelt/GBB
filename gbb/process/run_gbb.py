@@ -14,8 +14,8 @@ from gbb.utils.cost_BBR import cost_BBR
 from gbb.utils.update_mesh import update_mesh
 from gbb.utils.check_exit import check_exit
 from gbb.utils.get_ignore import get_ignore
-from gbb.plot.cost_plot import cost_plot
-from gbb.plot.slope_plot import slope_plot
+from gbb.plot.plot_cost import plot_cost
+from gbb.plot.plot_slope import plot_slope
 
 
 def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, 
@@ -96,7 +96,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     -------
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 08-10-2020
+    Last modified: 15-10-2020
 
     """
     
@@ -172,12 +172,12 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
                 # shot plots
                 if show_cost:
                     set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                    cost_plot(q, cost_array, m_fit, n_fit, set_title, save_plot=False, 
+                    plot_cost(q, cost_array, m_fit, n_fit, set_title, save_plot=False, 
                               path_output=False, name_output=False)
                     
                 if show_slope:
                     set_title = "Exit criterion: "+str(exit_crit)+", Step: "+str(step)
-                    slope_plot(q, m_array, set_title, save_plot=False, path_output=False, 
+                    plot_slope(q, m_array, set_title, save_plot=False, path_output=False, 
                                name_output=False)
         else:
             p += 1

@@ -51,7 +51,8 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr,
     arr_vein : ndarray, optional
         3D array with masked veins. The default is None.
     line_dir : int, optional
-        Line direction in ras conventions (0,1,2) or normal direction (3). The default is 2.
+        Line direction in ras conventions (0,1,2) or normal direction (3). The 
+        default is 2.
     line_length : float, optional
         Length of vertex shift in one direction in mm. The default is 3.
     t2s : bool, optional

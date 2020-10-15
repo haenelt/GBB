@@ -8,12 +8,12 @@ import glob
 import numpy as np
 
 # local inputs
-from gbb.plot.cost_plot import cost_plot
+from gbb.plot.plot_cost import plot_cost
 from gbb.plot.get_gif import get_gif
 
 
-def dynamic_cost_plot(file_in, path_output, name_output):
-    """ Dynamic cost plot
+def anim_cost(file_in, path_output, name_output):
+    """ Anim cost
 
     This function creates an animation to illustrate the progression of the cost 
     function with increasing number of iterations.    
@@ -35,7 +35,7 @@ def dynamic_cost_plot(file_in, path_output, name_output):
     -------
     created by Daniel Haenelt
     Date created: 24-02-2020     
-    Last modified: 05-10-2020
+    Last modified: 15-10-2020
     
     """
     
@@ -50,7 +50,7 @@ def dynamic_cost_plot(file_in, path_output, name_output):
     # save single frames
     i = len(J) - len(m)
     while i < len(J):
-        cost_plot(i, 
+        plot_cost(i, 
                   J[:i], 
                   m[i - (len(J) - len(m))], 
                   n[i - (len(J) - len(m))], 

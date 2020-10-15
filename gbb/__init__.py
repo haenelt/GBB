@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# python standard library inputs
-import os
-
 # local inputs
 from .config import *
 from .interpolation import *

@@ -27,7 +27,7 @@ def plot_white2pial(input_white, input_pial, adjm, step_size=100, shape="line"):
     step_size : int, optional
         Subset of vertices. The default is 100.
     shape : str, optional
-        line, triangle, prism The default is "line".
+        line, triangle, prism. The default is "line".
 
     Returns
     -------

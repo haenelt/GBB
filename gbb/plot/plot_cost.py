@@ -9,18 +9,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="", 
-               name_output=""):
-    """ Slope plot
+def plot_cost(x_max, cost_array, m, n, set_title="", save_plot=False, 
+              path_output="", name_output=""):
+    """ Plot cost
 
-    This function plots the slopes from the computed linear fits.    
+    This function plots the cost function array with a corresponding linear fit.    
 
     Parameters
     ----------
     x_max : float
         Maximum x-coordinate.
-    m_array : ndarray
-        Slope array.
+    cost_array : ndarray
+        Array with cost function values J.
+    m : float
+        Slope of linear fit.
+    n : float
+        y-axis intercept of linear fit.
     set_title : str, optional
         Plot title. The default is "".
     save_plot : bool, optional
@@ -38,8 +42,8 @@ def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="",
     -------
     created by Daniel Haenelt
     Date created: 24-02-2020         
-    Last modified: 08-10-2020
-
+    Last modified: 15-10-2020
+    
     """
     
     # make output folder    
@@ -47,15 +51,19 @@ def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="",
         if not os.path.exists(path_output):
             os.makedirs(path_output)
     except TypeError:
-        sys.exit("error: output directory not defined!")
+        sys.exit("error: Output directory not defined!")
+    
+    # compute line
+    line_fit = np.arange(x_max) * m + n
     
     # show plot
     plt.clf()
-    plt.plot(np.arange(x_max), m_array, label="m: "+str("%.10e" % m_array[-1]))
+    plt.plot(np.arange(x_max), cost_array, label="J")
+    plt.plot(np.arange(x_max), line_fit, label="fit (m: "+str("%.10e" % m)+")")
     plt.legend(loc=1)
     plt.xlabel("iteration")
     plt.ylabel("cost function")
-
+    
     # make title
     if set_title:
         plt.title(set_title)   
