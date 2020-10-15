@@ -14,24 +14,39 @@ from gbb.interpolation import nn_interpolation3d
 
 def get_ignore(vtx, arr_ignore, ras2vox_tkr, write_output=False, 
                path_output=""):
-    """
+    """ Get ignore
+    
     This function gets vertex coordinates and vertex indices of all points which 
-    are within a binary mask.
-    Inputs:
-        *vtx (arr): array of vertex points.
-        *arr_ignore (arr): 3D array with binary mask.
-        *ras2vox_tkr (arr): ras to voxel transformation matrix.
-        *write_output (bool): write output file.
-        *path_output (str): path where output is written.
-    Outputs:
-        *vtx_ignore (arr): array of vertex indices within mask.
-        *ind_ignore (arr): array of vertex points within mask.
-        
+    are within a binary mask.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    arr_ignore : ndarray
+        3D array with binary mask.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    write_output : bool, optional
+        Write output file. The default is False.
+    path_output : str, optional
+        Path where output is written. The default is "".
+
+    Returns
+    -------
+    vtx_ignore : ndarray
+        Array of vertex indices within mask.
+    ind_ignore : ndarray
+        Array of vertex points within mask.
+    
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 11-05-2020         
     Last modified: 05-10-2020
+
     """
-    
+       
     # transform vertices to voxel space
     vtx = apply_affine(ras2vox_tkr, vtx)
     

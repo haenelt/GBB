@@ -9,20 +9,31 @@ from nibabel.affines import apply_affine
     
     
 def line_ras2vox(line_dir, ras2vox_tkr):
-    """
+    """ Line ras to vox
+
     This function transforms the line direction from ras coordinates into its 
-    orientation in voxel space.
-    Inputs:
-        *line_dir (int): line direction in ras space (0,1,2).
-        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
-    Outputs:
-        *line_vox (int): line direction in voxel space.
-        
+    orientation in voxel space.    
+
+    Parameters
+    ----------
+    line_dir : int
+        Line direction in ras space (0,1,2).
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+
+    Returns
+    -------
+    line_vox : int
+        Line direction in voxel space.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 28-12-2019
     Last modified: 05-10-2020
+    
     """
-
+    
     # get line direction in ras space
     if line_dir == 0:
         pt_ras = [1,0,0]

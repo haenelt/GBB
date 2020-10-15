@@ -15,26 +15,43 @@ from gbb.utils.line_ras2vox import line_ras2vox
 
 def get_gradient(input_vol, ras2vox_tkr, line_dir=2, sigma=0, kernel_size=3, 
                  write_output=None, path_output="", name_output="gradient"):
-    """
+    """ Get gradient
+    
     This function computes the second order gradient along one axis 
-    (line_dir: 0,1,2) or the sum over all directions (line_dir: 3).
-    Inputs:
-        *input_vol (str): filename of input nifti.
-        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
-        *line_dir (int): direction of gradient calculation in ras space.
-        *sigma (float): gaussian blurring kernel of gradient map (if set > 0).
-        *kernel_size (float): kernel size for gradient calculation.
-        *write_output (bool): write output image.
-        *path_output (str): path where output is written.
-        *name_output (str): basename of output file.
-    Outputs:
-        *res (arr): gradient array.
-        
+    (line_dir: 0,1,2) or the sum over all directions (line_dir: 3).    
+
+    Parameters
+    ----------
+    input_vol : str
+        Filename of input nifti.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    line_dir : int, optional
+        Direction of gradient calculation in ras space. The default is 2.
+    sigma : float, optional
+        Gaussian blurring kernel of gradient map (if set > 0). The default is 0.
+    kernel_size : float, optional
+        Kernel size for gradient calculation. The default is 3.
+    write_output : bool, optional
+        Write output image. The default is None.
+    path_output : str, optional
+        Path where output is written. The default is "".
+    name_output : str, optional
+        Basename of output file. The default is "gradient".
+
+    Returns
+    -------
+    res : ndarray
+        Gradient array.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 30-10-2019
     Last modified: 08-10-2020
+    
     """
-
+    
     # get line direction in voxel space
     if line_dir != 3:
         line_dir = line_ras2vox(line_dir, ras2vox_tkr)

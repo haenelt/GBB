@@ -19,23 +19,41 @@ from gbb.utils.apply_deformation import apply_deformation
 
 def main(file_white, file_ref, path_output, file_pial=None, file_vein=None, 
          file_ignore=None, file_anchor=None, file_config=None):
-    """
-    This function executes the gradient-based boundary (GBB) surface refinement.
-    Inputs:
-        *file_white (str): filename of gm/wm boundary surface mesh.
-        *file_ref (str): filename of reference volume.
-        *path_output (str): path where output is written.
-        *file_pial (str): filename of gm/csf boundary surface mesh (optional).
-        *file_vein (str): filename of vein mask (optional).
-        *file_ignore (str): filename of ignore mask (optional).
-        *file_anchor (str): filename of anchor points (optional).
-        *file_config (str): filename of a custom configuration file (optional).
+    """ Main
     
+    This function executes the gradient-based boundary (GBB) surface refinement.
+
+    Parameters
+    ----------
+    file_white : str
+        Filename of gm/wm boundary surface mesh.
+    file_ref : str
+        Filename of reference volume.
+    path_output : str
+        Path where output is written.
+    file_pial : str, optional
+        Filename of gm/csf boundary surface mesh. The default is None.
+    file_vein : str, optional
+        Filename of vein mask. The default is None.
+    file_ignore : str, optional
+        Filename of ignore mask. The default is None.
+    file_anchor : str, optional
+        Filename of anchor points. The default is None.
+    file_config : str, optional
+        Filename of a custom configuration file. The default is None.
+
+    Returns
+    -------
+    None.
+    
+    Notes
+    -------    
     created by Daniel Haenelt
     Date created: 03-10-2020
     Last modified: 10-10-2020
+    
     """
-
+    
     # input and output parameters
     io_file = dict()
     io_file["i_white"] = file_white

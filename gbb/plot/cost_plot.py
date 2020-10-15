@@ -11,23 +11,41 @@ import matplotlib.pyplot as plt
 
 def cost_plot(x_max, cost_array, m, n, set_title="", save_plot=False, 
               path_output="", name_output=""):
-    """
-    This function plots the cost function array with a corresponding linear fit.
-    Inputs:
-        *x_max (float): maximum x-coordinate.
-        *cost_array (arr): array with cost function values J.
-        *m (float): slope of linear fit.
-        *n (float): y-axis intercept of linear fit.
-        *set_title (str): plot title.
-        *save_plot (bool): write out image file.
-        *path_output (str): path where output is written.
-        *name_output (str): basename of saved plot.
+    """ Cost plot
 
+    This function plots the cost function array with a corresponding linear fit.    
+
+    Parameters
+    ----------
+    x_max : float
+        Maximum x-coordinate.
+    cost_array : ndarray
+        Array with cost function values J.
+    m : float
+        Slope of linear fit.
+    n : float
+        y-axis intercept of linear fit.
+    set_title : str, optional
+        Plot title. The default is "".
+    save_plot : bool, optional
+        Write out image file. The default is False.
+    path_output : str, optional
+        Path where output is written. The default is "".
+    name_output : str, optional
+        Basename of saved plot. The default is "".
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 24-02-2020         
     Last modified: 08-10-2020
+    
     """
-     
+    
     # make output folder    
     try:
         if not os.path.exists(path_output):

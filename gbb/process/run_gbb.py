@@ -22,46 +22,84 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
             arr_ignore, t2s, vox2ras_tkr, ras2vox_tkr, line_dir, line_length, 
             r_size, l_rate, max_iterations, cost_threshold, cost_step=1000, 
             cost_sample=10, path_output = "", show_cost=True, show_slope=False, 
-            write_temp=10000, Q0=0, M=0.5, h=1, s=1):    
-    """
-    This function applies the core function of the gbb method. 
-    Inputs.
-        *vtx (arr): array of vertex points.
-        *fac (arr): array of corresponding faces.
-        *vtx_n (arr): array of vertex normals.
-        *ind_control (arr): array of vertex indices matching control points.
-        *arr_ref (arr): array of reference volume.
-        *arr_gradient (arr): array of gradient image.
-        *arr_vein (arr): array of vein mask.
-        *arr_ignore (arr): array of ignore mask.
-        *t2s (bool): image contrast.
-        *vox2ras_tkr (arr): transformation matrix from voxel space to ras.
-        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
-        *line_dir (int): line axis in ras convention (0,1,2,3).
-        *line_length (float): line length in one direction in mm.
-        *r_size (list): neighborhood radius in mm.
-        *l_rate (list): learning rate.
-        *max_iterations (list): maximum iterations.
-        *cost_threshold (list): cost function threshold.
-        *cost_step (int): step size between cost array points.
-        *cost_sample (int): sample size for linear fit.
-        *path_output (str): path where intermediate folder is created.
-        *show_cost (bool): show temporary cost function.
-        *show_slope (bool): show temporary slope function.
-        *write_temp (int): step size to write intermediate surfaces (if set > 0).
-        *Q0 (float): const function offset parameter.
-        *M (float): cost function slope parameter.
-        *h (float): cost function weight parameter.
-        *s (float): cost function distance parameter.
-    Outputs:
-        *vtx (arr): shifted array of vertex points.
-        *gbb (dict): collection of performance parameters.
-    
+            write_temp=10000, Q0=0, M=0.5, h=1, s=1):
+    """ Run GBB
+
+    This function applies the core function of the gbb method.     
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    fac : ndarray
+        Array of corresponding faces.
+    vtx_n : ndarray
+        Array of vertex normals.
+    ind_control : ndarray
+        Array of vertex indices matching control points.
+    arr_ref : ndarray
+        Array of reference volume.
+    arr_gradient : ndarray
+        Array of gradient image.
+    arr_vein : ndarray
+        Array of vein mask.
+    arr_ignore : ndarray
+        Array of ignore mask.
+    t2s : bool
+        Image contrast.
+    vox2ras_tkr : ndarray
+        Transformation matrix from voxel space to ras.
+    ras2vox_tkr : ndarray
+        Transformation matrix from ras to voxel space.
+    line_dir : int
+        Line axis in ras convention (0,1,2,3).
+    line_length : float
+        Line length in one direction in mm.
+    r_size : list
+        Neighborhood radius in mm.
+    l_rate : list
+        Learning rate.
+    max_iterations : list
+        Maximum iterations.
+    cost_threshold : list
+        Cost function threshold.
+    cost_step : int, optional
+        Step size between cost array points. The default is 1000.
+    cost_sample : int, optional
+        Sample size for linear fit. The default is 10.
+    path_output : str, optional
+        Path where intermediate folder is created. The default is "".
+    show_cost : bool, optional
+        Show temporary cost function. The default is True.
+    show_slope : bool, optional
+        Show temporary slope function. The default is False.
+    write_temp : int, optional
+        Step size to write intermediate surfaces (if set > 0). The default is 
+        10000.
+    Q0 : float, optional
+        Const function offset parameter. The default is 0.
+    M : float, optional
+        Cost function slope parameter. The default is 0.5.
+    h : float, optional
+        Cost function weight parameter. The default is 1.
+    s : float, optional
+        Cost function distance parameter. The default is 1.
+
+    Returns
+    -------
+    vtx : ndarray
+        Shifted array of vertex points.
+    gbb : dict
+        Collection of performance parameters.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 06-02-2020          
     Last modified: 08-10-2020
-    """
 
+    """
+    
     # make intermediate folder
     if write_temp > 0 and path_output:
         tmp = np.random.randint(0, 10, 5)

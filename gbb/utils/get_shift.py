@@ -15,7 +15,8 @@ from gbb.interpolation import linear_interpolation3d
 def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr, 
               arr_vein=None, line_dir=2, line_length=3, t2s=True, 
               show_plot=True):
-    """
+    """ Get shift
+
     This function computes the vertex shift in one direction (line_dir: 0,1,2) 
     or along the surface normal (line_dir: 3) towards the highest GM/WM 
     gradient. First, a line with a defined direction is computed for a chosen 
@@ -29,26 +30,46 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr,
     for WM -> GM. In this case, we expect a transition from positive to negative 
     for the zero crossing in the second order gradient. Optionally, the found 
     shift is only considered if no vein is found in shift direction along the 
-    line. Vertex coordinates are in ras space.
-    Inputs:
-        *vtx (arr): array of vertex points.
-        *fac (arr): array of corresponding faces.
-        *vtx_norm (arr): array of corresponding vertex normals.
-        *ind (int): current vertex index.
-        *arr_grad (arr): 3D array of second order gradient values along one axis.
-        *arr_vein (arr): 3D array with masked veins.
-        *vox2ras (arr): voxel to ras transformation matrix.
-        *ras2vox (arr): ras to voxel transformation matrix.
-        *line_dir (int): line direction in ras conventions (0,1,2) or normal direction (3).
-        *line_length (float): length of vertex shift in one direction in mm.
-        *t2s (bool): wm darker than gm.
-        *show_plot (bool): show line plot in command window.
-    Outputs:
-        *shift_curr (arr): shift of vertex in ras coordinates.
-        
+    line. Vertex coordinates are in ras space.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    fac : ndarray
+        Array of corresponding faces.
+    vtx_norm : ndarray
+        Array of corresponding vertex normals.
+    ind : int
+        Current vertex index.
+    arr_grad : ndarray
+        3D array of second order gradient values along one axis.
+    vox2ras_tkr : ndarray
+        Transformation from voxel to ras space.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    arr_vein : ndarray, optional
+        3D array with masked veins. The default is None.
+    line_dir : int, optional
+        Line direction in ras conventions (0,1,2) or normal direction (3). The default is 2.
+    line_length : float, optional
+        Length of vertex shift in one direction in mm. The default is 3.
+    t2s : bool, optional
+        WM darker than GM. The default is True.
+    show_plot : bool, optional
+        Show line plot in command window. The default is True.
+
+    Returns
+    -------
+    shift_curr : ndarray
+        Shift of vertex in ras coordinates.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 21-12-2019
     Last modified: 05-10-2020
+    
     """
     
     # initialize

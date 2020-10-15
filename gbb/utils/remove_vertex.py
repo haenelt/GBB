@@ -8,22 +8,35 @@ import numpy as np
 
 
 def remove_vertex(vtx, fac, ind_keep):
-    """
+    """ Remove vertex
+    
     This function removes vertices from an array of vertex points and updates 
-    the corresponding face array.
-    Inputs:
-        *vtx (arr): array of vertices.
-        *fac (arr): array of faces.
-        *ind_keep (list): index list of vertices to keep.
-    Outputs:
-        *vtx (arr): remaining vertices.
-        *fac (arr): remaining faces.
-        
+    the corresponding face array.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertices.
+    fac : ndarray
+        Array of faces.
+    ind_keep : list
+        Index list of vertices to keep.
+
+    Returns
+    -------
+    vtx : ndarray
+        Remaining vertices.
+    fac : ndarray
+        Remaining faces.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 22-06-2020
     Last modified: 09-10-2020
-    """
 
+    """
+    
     # get indices which will be removed
     ind_tmp = np.arange(len(vtx))
     ind_remove = list(set(ind_tmp) - set(ind_keep))

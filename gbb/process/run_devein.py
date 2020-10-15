@@ -18,32 +18,53 @@ from gbb.utils.smooth_surface import smooth_surface
 
 def run_devein(vtx, fac, vtx_norm, arr_vein, arr_ignore, adjm, ras2vox_tkr, 
                n_neighbor=20, line_dir=2, smooth_iter=30, max_iterations=1000):
-    """
+    """ Run devein
+
     This function finds vertex points which are located within marked veins and 
     shift these and their neighborhood until the mesh is free of trapped 
     vertices (or the maximum number of iterations is reached). Shifts are 
     computed by averaging vertex coordinates within a neighborhood around a 
     single vertex along one direction or along all axes. All shifts are applied 
     in inward direction. Optionally, the output mesh can be smoothed.    
-    Inputs.
-        *vtx (arr): array of vertex points.
-        *fac (arr): array of corresponding faces.
-        *vtx_norm (arr): array of corresponding vertex normals.
-        *arr_vein (arr): vein mask.
-        *arr_ignore (arr): binary mask where deveining is omitted.
-        *adjm (obj): adjacecy matrix.
-        *ras2vox_tkr (arr): transformation matrix from ras to voxel space.
-        *n_neighbor (int): neighborhood size.
-        *line_dir (int): shift direction in ras conventions (0,1,2,3).
-        *smooth_iter (int): number of smoothing iterations of final mesh.
-        *max_iterations (int): maximum number of deveining iterations.
-    Outputs:
-        *vtx (arr): shifted array of vertex points.
-        *counter (int): number of deveining iterations.
-    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    fac : ndarray
+        Array of corresponding faces.
+    vtx_norm : ndarray
+        Array of corresponding vertex normals.
+    arr_vein : ndarray
+        Vein mask.
+    arr_ignore : ndarray
+        Binary mask where deveining is omitted.
+    adjm : obj
+        Adjacecy matrix.
+    ras2vox_tkr : ndarray
+        Transformation matrix from ras to voxel space.
+    n_neighbor : int, optional
+        Neighborhood size. The default is 20.
+    line_dir : int, optional
+        Shift direction in ras conventions (0,1,2,3). The default is 2.
+    smooth_iter : int, optional
+        Number of smoothing iterations of final mesh. The default is 30.
+    max_iterations : int, optional
+        Maximum number of deveining iterations. The default is 1000.
+
+    Returns
+    -------
+    vtx : ndarray
+        Shifted array of vertex points.
+    counter : int
+        Number of deveining iterations.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 06-02-2020             
-    Last modified: 08-10-2020  
+    Last modified: 08-10-2020 
+
     """
     
     # fix parameters

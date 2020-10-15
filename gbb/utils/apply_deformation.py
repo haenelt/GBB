@@ -15,29 +15,47 @@ from gbb.utils.remove_vertex import remove_vertex
     
 def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr, 
                       path_output="", name_output="", write_output=True):
-    """
+    """ Apply deformation
+
     This function applies the coordinate shift to an array of vertices. The 
     coordinate shift is taken from a deformation field where each voxel 
     corresponds to a shift along one direction in voxel space. Vertices outside 
-    the deformation field are removed from the mesh.
-    Inputs:
-        *vtx (arr): array of vertices.
-        *fac (arr): array of faces.
-        *vox2ras_tkr (arr): voxel to ras space transformation.
-        *ras2vox_tkr (arr): ras to voxel space transformation.
-        *arr_deform (arr): 4D volume array containing shifts in voxel space.
-        *path_output (str): path where output is written.
-        *name_output (str): name of output file.
-        *write_output (bool): write output file.
-    Outputs:
-        *vtx (arr): deformed vertices.
-        *fac (arr): corresponding faces.
-        
+    the deformation field are removed from the mesh.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertices.
+    fac : ndarray
+        Array of faces.
+    arr_deform : ndarray
+        4D volume array containing shifts in voxel space.
+    vox2ras_tkr : ndarray
+        Transformation from voxel to ras space.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    path_output : str, optional
+        Path where output is written. The default is "".
+    name_output : str, optional
+        Name of output file. The default is "".
+    write_output : bool, optional
+        Write output file. The default is True.
+
+    Returns
+    -------
+    vtx : ndarray
+        Deformed vertices.
+    fac : ndarray
+        Corresponding faces.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 28-12-2019
     Last modified: 05-10-2020
-    """
     
+    """
+       
     # get array dimensions
     xdim = np.shape(arr_deform)[0]
     ydim = np.shape(arr_deform)[1]

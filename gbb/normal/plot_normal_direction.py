@@ -10,18 +10,30 @@ from gbb.normal import get_normal
     
 
 def plot_normal_direction(input_surf, axis=2):
-    """
+    """ Plot normal direction
+
     This function plots the direction from the white surface towards the pial 
-    surface based on the white surface vertex normals along one axis.
-    Inputs:
-        *input_surf (str): filename of source mesh (white surface).
-        *axis (int): axis for distance calculation in ras space (0,1,2).
-        
+    surface based on the white surface vertex normals along one axis.    
+
+    Parameters
+    ----------
+    input_surf : str
+        Filename of source mesh (white surface).
+    axis : int, optional
+        Axis for distance calculation in ras space (0,1,2). The default is 2.
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 13-12-2019         
     Last modified: 05-10-2020
-    """
 
+    """
+    
     # fixed parameter
     line_threshold = 0.05 # if direction is along one axis, omit line if length is below threshold
 

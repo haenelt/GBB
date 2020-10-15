@@ -8,17 +8,27 @@ import numpy as np
 
 
 def read_anchor(input_anchor):
-    """
+    """ Read anchor
+
     This function reads a freesurfer point set file and returns the points in a 
-    numpy array.
-    Inputs:
-        *input_anchor (str): filename of the point set textfile.
-    Outputs:
-        *data (arr): numpy array with point coordinates.
-        
+    numpy array.    
+
+    Parameters
+    ----------
+    input_anchor : str
+        Filename of the point set textfile.
+
+    Returns
+    -------
+    data : ndarray
+        Point coordinates.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 11-05-2020
     Last modified: 05-10-2020
+    
     """
     
     with open(input_anchor, "r") as f:

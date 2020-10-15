@@ -9,33 +9,56 @@ from gbb.interpolation import linear_interpolation3d
     
 
 def cost_BBR(vtx, vtx_n, arr_vol, ras2vox_tkr, Q0=0, M=0.5, h=1, s=1, t2s=True):
-    """
+    """ Cost BBR
+
     This function computes the cost function defined in the original BBR paper 
-    (Greve and Fischl, 2009). Vertices should be in freesurfer ras_tkr space. 
-    First, vertex coordinates on both sides normal to the surface are computed. 
-    Based on a tranformation matrix, vertex coordinates are transformed then 
-    into voxel space of the input array. Vertices are excluded with coordinates 
-    exceeding the array limits. GM and WM values are sampled using linear 
-    interpolation. A percent contrast measure and the cost function value are 
-    calculated.
-    Inputs:
-        *vtx (arr): array of vertices.
-        *vtx_n (arr): array of unit vertices in normal direction.
-        *vol_array (arr): 3D array of image volume.
-        *ras2vox_tkr (arr): transformation matrix to voxel space.
-        *Q0 (float): offset parameter in percent contrast measure.
-        *M (float): slope parameter in percent contrast measure.
-        *h (float): weight for each vertex in percent contrast measure.
-        *s (float): distance scaling factor for sampling normal to the surface.
-        *t2s (bool): t2star weighing, i.e., gm > wm intensity.
-    Outputs:
-        *J (float): cost function value.
-        
+    [1]. Vertices should be in freesurfer ras_tkr space. First, vertex 
+    coordinates on both sides normal to the surface are computed. Based on a 
+    tranformation matrix, vertex coordinates are transformed then into voxel 
+    space of the input array. Vertices are excluded with coordinates exceeding 
+    the array limits. GM and WM values are sampled using linear interpolation. A 
+    percent contrast measure and the cost function value are calculated.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertices.
+    vtx_n : ndarray
+        Array of unit vertices in normal direction.
+    arr_vol : ndarray
+        3D array of image volume.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    Q0 : float, optional
+        Offset parameter in percent contrast measure. The default is 0.
+    M : float, optional
+        Slope parameter in percent contrast measure. The default is 0.5.
+    h : float, optional
+        Weight for each vertex in percent contrast measure. The default is 1.
+    s : float, optional
+        Distance scaling factor for sampling normal to the surface. The default 
+        is 1.
+    t2s : bool, optional
+        T2star weighing, i.e., gm > wm intensity. The default is True.
+
+    Returns
+    -------
+    J : float
+        Cost function value.
+
+    References
+    -------
+    .. [1] Greve, DN, Fischl, B, Accurate and robust brain image alignment using 
+    boundary-based registration, Neuroimage 48(1), 63--72 (2009).
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 21-12-2019
     Last modified: 08-10-2020
+    
     """
-
+    
     # maximum voxel coordinates in x-, y-, and z-direction
     vol_max = np.shape(arr_vol)
        

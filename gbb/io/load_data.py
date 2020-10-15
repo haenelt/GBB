@@ -17,22 +17,37 @@ from gbb.utils.vox2ras import vox2ras
 
 
 def load_data(io_file, gbb_params):
-    """
+    """ Load data
+
     This function loads volume arrays, transformation matrices between voxel and 
-    ras space, surface data and point sets.
-    Inputs:
-        *io_file (dict): input and output parameters.
-        *gbb_params (dict): registration parameters.
-    Outputs:
-        *volume (dict): loaded volume arrays.
-        *T (dict): loaded transformation matrices.
-        *surf (dict): loaded surface vertices and faces.
-        *point (dict): loaded point set.
-        *basename (dict): basenames.
-        
+    ras space, surface data and point sets.    
+
+    Parameters
+    ----------
+    io_file : dict
+        Input and output parameters.
+    gbb_params : dict
+        Registration parameters.
+
+    Returns
+    -------
+    volume : dict
+        Loaded volume arrays.
+    T : dict
+        Loaded transformation matrices.
+    surf : dict
+        Loaded surface vertices and faces.
+    point : dict
+        Loaded point set.
+    basename : dict
+        Basenames.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 12-05-2020
     Last modified: 11-10-2020
+
     """
     
     # initialize dictionaries

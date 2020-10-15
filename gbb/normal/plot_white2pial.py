@@ -9,23 +9,38 @@ from gbb.neighbor.nn_2d import nn_2d
     
 
 def plot_white2pial(input_white, input_pial, adjm, step_size=100, shape="line"):
-    """
+    """ Plot white to pial
+
     This function generates lines between corresponding vertices at the white 
     and pial surface to visualize the shift between matched vertices caused by 
     realigning surfaces independently. You can either construct prisms, 
-    triangles or lines.
-    Inputs:
-        *input_white (str): filename of white surface.
-        *input_pial (str): filename of pial surface.
-        *adjm (obj): adjacency matrix.
-        *step_size (int): subset of vertices.
-        *shape (str): line, triangle, prism
-        
+    triangles or lines.    
+
+    Parameters
+    ----------
+    input_white : str
+        Filename of white surface.
+    input_pial : str
+        Filename of pial surface.
+    adjm : obj
+        Adjacency matrix.
+    step_size : int, optional
+        Subset of vertices. The default is 100.
+    shape : str, optional
+        line, triangle, prism The default is "line".
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 07-11-2019     
     Last modified: 05-10-2020
+    
     """
-
+    
     # read geometry
     vtx_white, fac_white, header_white = read_geometry(input_white, read_metadata=True)
     vtx_pial, fac_pial = read_geometry(input_pial)

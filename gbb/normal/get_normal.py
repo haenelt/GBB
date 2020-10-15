@@ -5,22 +5,36 @@ import numpy as np
 
 
 def get_normal(vtx, fac):
-    """
+    """ Get normal
+    
     This function computes the surfaces normals per vertex from an input surface 
-    mesh. The code is taken from https://sites.google.com/site/dlampetest/
-    python/calculating-normals-of-a-triangle-mesh-using-numpy and adapted to my 
-    own purposes.
-    Inputs:
-        *vtx (arr): vertex array.
-        *fac (arr): face array.
-    Outputs:
-        *norm (arr): normal per vertex.
-        
+    mesh. The code is taken from [1] and adapted to my own purposes.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Vertex array.
+    fac : ndarray
+        Face array.
+
+    Returns
+    -------
+    norm : ndarray
+        Normal per vertex.
+    
+    References
+    -------
+    .. [1] https://sites.google.com/site/dlampetest/python/calculating-normals-
+    of-a-triangle-mesh-using-numpy
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 13-12-2019
     Last modified: 05-10-2020
-    """
 
+    """
+    
     def normalize_v3(arr):
         """ Normalize a numpy array of 3 component vectors shape=(n,3) """
         lens = np.sqrt( arr[:,0]**2 + arr[:,1]**2 + arr[:,2]**2 )

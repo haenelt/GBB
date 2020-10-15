@@ -13,28 +13,45 @@ from scipy.ndimage import gaussian_filter
     
 def deformation_field(vtx_old, vtx_new, input_vol, ras2vox_tkr, sigma=1, 
                       path_output="", name_output="", write_output=True):
-    """
+    """ Deformation field
+
     This function computes a deformation field from an array of shifted 
     vertices. Each voxel in the deformation field corresponds to a shift in 
     voxel space along one direction. Optionally, a gaussian filter can be 
-    applied to the final deformation field.
-    Inputs:
-        *vtx_old (arr): original array of vertices.
-        *vtx_new (arr): new array of vertices.
-        *input_vol (str): filename of reference volume.
-        *ras2vox_tkr (arr): ras to voxel space transformation.
-        *sigma (float): sigma for gaussian filtering of deformation field.
-        *path_output (str): path where output is written.
-        *name_output (str): basename of output file without file extension.
-        *write_output (bool): write output file.
-    Outputs:
-        *arr_deform (arr): deformation field.
-        
+    applied to the final deformation field.    
+
+    Parameters
+    ----------
+    vtx_old : ndarray
+        Original array of vertices.
+    vtx_new : ndarray
+        New array of vertices.
+    input_vol : ndarray
+        Filename of reference volume.
+    ras2vox_tkr : ndarray
+        Transformation from ras to voxel space.
+    sigma : float, optional
+        Sigma for gaussian filtering of deformation field. The default is 1.
+    path_output : str, optional
+        Path where output is written. The default is "".
+    name_output : str, optional
+        Basename of output file without file extension. The default is "".
+    write_output : bool, optional
+        Write output file. The default is True.
+
+    Returns
+    -------
+    arr_deform : ndarray
+        Deformation field.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 28-12-2019       
     Last modified: 08-10-2020
-    """
     
+    """
+      
     # load reference volume
     vol = nb.load(input_vol)
     vol.header["dim"][4] = 3

@@ -16,23 +16,40 @@ from gbb.utils.smooth_surface import smooth_surface
 
 
 def run_anchor(vtx, fac, adjm, anchor, n_neighbor=20, smooth_iter=0):
-    """
+    """ Run anchor
+
     This function loads a list of control points and shifts a mesh with its 
     local neighborhood to match these control points. Control points are assumed 
-    to be in ras coordinates. Optionally, the output mesh can be smoothed.    
-    Inputs.
-        *vtx (arr): array of vertex points.
-        *fac (arr): array of corresponding faces.
-        *anchor (list): list of control points.
-        *n_neighbor (int): neighborhood size.
-        *smooth_iter (int): number of smoothing iterations of final mesh.
-    Outputs:
-        *vtx (arr): shifted array of vertex points.
-        *ind_control (arr): indices of closest vertices to control points.
+    to be in ras coordinates. Optionally, the output mesh can be smoothed.       
 
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    fac : ndarray
+        Array of corresponding faces.
+    adjm : obj
+        Adjacency matrix.
+    anchor : list
+        List of control points.
+    n_neighbor : int, optional
+        Neighborhood size. The default is 20.
+    smooth_iter : int, optional
+        Number of smoothing iterations of final mesh. The default is 0.
+
+    Returns
+    -------
+    vtx : ndarray
+        Shifted array of vertex points.
+    ind_control : ndarray
+        Indices of closest vertices to control points.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 12-05-2020 
     Last modified: 05-10-2020  
+
     """
     
     print("start mesh initialization (anchoring)")

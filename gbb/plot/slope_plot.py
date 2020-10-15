@@ -11,21 +11,37 @@ import matplotlib.pyplot as plt
 
 def slope_plot(x_max, m_array, set_title="", save_plot=False, path_output="", 
                name_output=""):
-    """
-    This function plots the slopes from the computed linear fits.
-    Inputs:
-        *x_max (float): maximum x-coordinate.
-        *m_array (arr): slope array.
-        *set_title (str): plot title.
-        *save_plot (bool): write out image file.
-        *path_output (str): path where output is written.
-        *name_output (str): basename of saved plot.
+    """ Slope plot
 
+    This function plots the slopes from the computed linear fits.    
+
+    Parameters
+    ----------
+    x_max : float
+        Maximum x-coordinate.
+    m_array : ndarray
+        Slope array.
+    set_title : str, optional
+        Plot title. The default is "".
+    save_plot : bool, optional
+        Write out image file. The default is False.
+    path_output : str, optional
+        Path where output is written. The default is "".
+    name_output : str, optional
+        Basename of saved plot. The default is "".
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 24-02-2020         
     Last modified: 08-10-2020
-    """
 
+    """
+    
     # make output folder    
     try:
         if not os.path.exists(path_output):

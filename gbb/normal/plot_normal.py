@@ -10,20 +10,36 @@ from gbb.normal import get_normal
     
 
 def plot_normal(vtx, fac, adjm, file_out, step_size=100, shape="line"):
-    """
+    """ Plot normal
+
     This function generates lines to visualize outward directed surface normals 
     of an input surface mesh.
-    Inputs:
-        *vtx (arr): array of vertex points.
-        *fac (arr): corresponding face array.
-        *adjm (obj): adjacency matrix.
-        *file_out (str): filename of output surface mesh.
-        *step_size (int): subset of vertices.
-        *shape (str): line, triangle, prism
-        
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertex points.
+    fac : ndarray
+        Corresponding face array.
+    adjm : obj
+        Adjacency matrix.
+    file_out : str
+        Filename of output surface mesh.
+    step_size : int, optional
+        Subset of vertices. The default is 100.
+    shape : str, optional
+        line, triangle, prism. The default is "line".
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 13-12-2019
     Last modified: 05-10-2020
+    
     """
     
     # get surface normals

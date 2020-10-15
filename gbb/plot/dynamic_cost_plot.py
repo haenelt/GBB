@@ -13,19 +13,32 @@ from gbb.plot.get_gif import get_gif
 
 
 def dynamic_cost_plot(file_in, path_output, name_output):
-    """
+    """ Dynamic cost plot
+
     This function creates an animation to illustrate the progression of the cost 
-    function with increasing number of iterations.
-    Inputs:
-        *file_in (str): filename of the saved compressed numpy variables.
-        *path_output (str): path where output is written.
-        *name_output (str): basename of saved animation.
-        
+    function with increasing number of iterations.    
+
+    Parameters
+    ----------
+    file_in : str
+        Filename of the saved compressed numpy variables.
+    path_output : str
+        Path where output is written.
+    name_output : str
+        Basename of saved animation.
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 24-02-2020     
     Last modified: 05-10-2020
+    
     """
-
+    
     # load numpy variables
     data = np.load(file_in)
     

@@ -10,22 +10,37 @@ import nibabel as nb
 
 
 def write_shift(vtx_old, vtx_new, line_dir, path_output, name_output):
-    """
+    """ Write shift
+
     This function writes an overlay with final vertex shifts. The difference 
     between new and old coordinates is computed. If line_dir is 3, one overlay 
-    for each axis is written. 
-    Inputs:
-        *vtx_old (arr): target array of vertices.
-        *vtx_new (arr): source array of vertices.
-        *line_dir (int): shift direction (0,1,2,3).
-        *path_output (str): path where output is written.
-        *name_output (str): basename of output file without file extension.
-        
+    for each axis is written.     
+
+    Parameters
+    ----------
+    vtx_old : ndarray
+        Target array of vertices.
+    vtx_new : ndarray
+        Source array of vertices.
+    line_dir : int
+        Shift direction (0,1,2,3).
+    path_output : str
+        Path where output is written.
+    name_output : str
+        Basename of output file without file extension.
+
+    Returns
+    -------
+    None.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 22-12-2019         
     Last modified: 05-10-2020
+    
     """
-
+    
     # suffix
     suffix = ["x","y","z"]
     

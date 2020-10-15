@@ -5,22 +5,35 @@ import numpy as np
 
 
 def linear_interpolation3d(x, y, z, arr_c):
-    """
+    """ Linear interpolation 3D
+    
     This function computes the trilinear interpolation for a list of 3D points 
-    with coordinates [x,y,z]. Coordinates are in voxel space.
-    Inputs:
-        *x (list): x-coordinates.
-        *y (list): y-coordinates.
-        *z (list): z-coordinates.
-        *arr_c (arr): 3D array with input values.
-    Outputs:
-        *c (list): interpolated values for [x,y,z].
-        
+    with coordinates [x,y,z]. Coordinates are in voxel space.    
+
+    Parameters
+    ----------
+    x : list
+        x-coordinates.
+    y : list
+        y-coordinates.
+    z : list
+        z-coordinates.
+    arr_c : list
+        3D array with input values.
+
+    Returns
+    -------
+    c : list
+        Interpolated values for [x,y,z].
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 29-10-2019
     Last modified: 05-10-2020
+    
     """
-
+    
     # corner points
     x0 = np.floor(x).astype(int)
     x1 = np.ceil(x).astype(int)

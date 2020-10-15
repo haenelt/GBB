@@ -5,26 +5,40 @@ import numpy as np
 
 
 def update_mesh(vtx, vtx_shift, source_ind, nn_ind, l_rate=0.9):
-    """
+    """ Update mesh
+    
     This function updates the vertices based on a calculated vertex shift within 
     a defined neighboorhood and specified learning rate. If the neighborhood 
     only contains the source vertex, no distance weighting is computed. The 
     learning rate should be a value between 0 and 1. Vertex coordinates are in 
-    ras space.
-    Inputs:
-        *vtx (arr): array of vertices.
-        *vtx_shift (arr): vertex shift in mm.
-        *source_ind (int): source index.
-        *nn_ind (list): neighborhood indices.
-        *l_rate (float): learning rate.
-    Outputs:
-        *vtx_new (arr): updated array of vertices.
-        
+    ras space.    
+
+    Parameters
+    ----------
+    vtx : ndarray
+        Array of vertices.
+    vtx_shift : ndarray
+        Vertex shift in mm.
+    source_ind : int
+        Source index.
+    nn_ind : ndarray
+        Neighborhood indices.
+    l_rate : list, optional
+        Learning rate. The default is 0.9.
+
+    Returns
+    -------
+    vtx_new : ndarray
+        Updated array of vertices.
+
+    Notes
+    -------
     created by Daniel Haenelt
     Date created: 22-12-2019      
     Last modified: 05-10-2020
+
     """
-    
+       
     if set(nn_ind) == set([source_ind]):
         s = [1]
     else:
