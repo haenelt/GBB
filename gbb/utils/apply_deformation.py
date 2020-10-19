@@ -17,7 +17,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
                       path_output="", name_output="", write_output=True):
     """ Apply deformation
 
-    This function applies the coordinate shift to an array of vertices. The 
+    This function applies a coordinate shift to an array of vertices. The 
     coordinate shift is taken from a deformation field where each voxel 
     corresponds to a shift along one direction in voxel space. Vertices outside 
     the deformation field are removed from the mesh.    
@@ -52,7 +52,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
     -------
     created by Daniel Haenelt
     Date created: 28-12-2019
-    Last modified: 05-10-2020
+    Last modified: 19-10-2020
     
     """
        
@@ -75,17 +75,16 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
     
     # remove vertices outside the slab
     if np.any(np.isnan(vtx)):
-        
         ind_keep = np.arange(len(vtx))
-        ind_keep[np.isnan(np.sum(vtx, axis=1))] = -1
-        ind_keep = ind_keep[ind_keep != -1]
+        ind_keep = ind_keep[~np.isnan(np.sum(vtx, axis=1))]
         
-        vtx, fac = remove_vertex(vtx, fac, ind_keep)
+        vtx, fac, _ = remove_vertex(vtx, fac, ind_keep)
     
     # sample shifts from deformation map
     vtx_shift = np.zeros((len(vtx),3))
     for i in range(3):
-        vtx_shift[:,i] = linear_interpolation3d(vtx[:,0], vtx[:,1], vtx[:,2], arr_deform[:,:,:,i])
+        vtx_shift[:,i] = linear_interpolation3d(vtx[:,0], vtx[:,1], vtx[:,2], 
+                                                arr_deform[:,:,:,i])
         vtx_shift[np.isnan(vtx_shift[:,i]),i] = 0
     
     # shift coordinates to new location

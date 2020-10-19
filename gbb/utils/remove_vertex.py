@@ -28,12 +28,14 @@ def remove_vertex(vtx, fac, ind_keep):
         Remaining vertices.
     fac : ndarray
         Remaining faces.
-
+    ind_keep : ndarray
+        Updated index list of vertices to keep after vertex cleaning.
+    
     Notes
     -------
     created by Daniel Haenelt
     Date created: 22-06-2020
-    Last modified: 09-10-2020
+    Last modified: 19-10-2020
 
     """
     
@@ -84,11 +86,12 @@ def remove_vertex(vtx, fac, ind_keep):
             print("clean faces: "+str(counter)+" %")
             loop_status = counter
                    
-        # remove vertex
+        # remove vertex and index
         vtx = np.delete(vtx, ind_remove[i], 0)
+        ind_keep = np.delete(ind_keep, ind_remove[i], 0)    
             
         # sort faces
         tmp = fac[fac >= ind_remove[i]] - 1
         fac[fac >= ind_remove[i]] = tmp
     
-    return vtx, fac
+    return vtx, fac, ind_keep
