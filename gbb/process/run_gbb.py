@@ -96,7 +96,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
     -------
     created by Daniel Haenelt
     Date created: 06-02-2020          
-    Last modified: 15-10-2020
+    Last modified: 21-10-2020
 
     """
     
@@ -180,7 +180,6 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
                     plot_slope(q, m_array, set_title, save_plot=False, path_output=False, 
                                name_output=False)
         else:
-            p += 1
             exit_crit = False
     
         # check exit
@@ -206,6 +205,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         
         i += 1
         j += 1
+        p += 1
     
     # print some information
     print("final number of iterations: "+str(i))
