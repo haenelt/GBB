@@ -47,12 +47,14 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
         Deformed vertices.
     fac : ndarray
         Corresponding faces.
+    ind_keep : ndarray
+        Input vertex indices to keep after cleaning.
 
     Notes
     -------
     created by Daniel Haenelt
     Date created: 28-12-2019
-    Last modified: 19-10-2020
+    Last modified: 23-10-2020
     
     """
        
@@ -78,7 +80,7 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
         ind_keep = np.arange(len(vtx))
         ind_keep = ind_keep[~np.isnan(np.sum(vtx, axis=1))]
         
-        vtx, fac, _ = remove_vertex(vtx, fac, ind_keep)
+        vtx, fac, ind_keep = remove_vertex(vtx, fac, ind_keep)
     
     # sample shifts from deformation map
     vtx_shift = np.zeros((len(vtx),3))
@@ -94,6 +96,8 @@ def apply_deformation(vtx, fac, arr_deform, vox2ras_tkr, ras2vox_tkr,
     vtx = apply_affine(vox2ras_tkr, vtx)
     
     if write_output:
-        write_geometry(os.path.join(path_output,name_output), vtx, fac)
+        file_out = os.path.join(path_output, name_output)
+        write_geometry(file_out, vtx, fac)
+        np.savetxt(file_out+"_ind.txt", ind_keep, fmt="%d")
     
-    return vtx, fac
+    return vtx, fac, ind_keep

@@ -50,7 +50,7 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
     -------    
     created by Daniel Haenelt
     Date created: 03-10-2020
-    Last modified: 10-10-2020
+    Last modified: 23-10-2020
     
     """
     
@@ -175,24 +175,24 @@ def main(file_white, file_ref, path_output, file_pial=None, file_vein=None,
           
     # apply deformation to white and pial surface
     print("apply deformation")
-    _, _ = apply_deformation(surf["vtx_white_archive"],
-                             surf["fac_white"],
-                             arr_deformation,
-                             T["vox2ras"],
-                             T["ras2vox"],
-                             io_file["o_output"],
-                             basename["white"]+"_refined", 
-                             True)
+    _, _, _ = apply_deformation(surf["vtx_white_archive"],
+                                surf["fac_white"],
+                                arr_deformation,
+                                T["vox2ras"],
+                                T["ras2vox"],
+                                io_file["o_output"],
+                                basename["white"]+"_refined", 
+                                True)
     
     if surf["vtx_pial"] is not None:
-        _, _ = apply_deformation(surf["vtx_pial"], 
-                                 surf["fac_pial"], 
-                                 arr_deformation,
-                                 T["vox2ras"],
-                                 T["ras2vox"],
-                                 io_file["o_output"], 
-                                 basename["pial"]+"_refined", 
-                                 True)
+        _, _, _ = apply_deformation(surf["vtx_pial"], 
+                                    surf["fac_pial"], 
+                                    arr_deformation,
+                                    T["vox2ras"],
+                                    T["ras2vox"],
+                                    io_file["o_output"], 
+                                    basename["pial"]+"_refined", 
+                                    True)
     
     # write json   
     if file_config:
