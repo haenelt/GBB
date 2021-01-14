@@ -2,7 +2,8 @@ GBB | Gradient-Based Boundary
 ===
 
 [![Python](https://img.shields.io/badge/Python-3.6%7C3.7%7C3.8-blue)](https://github.com/haenelt/GBB)
-[![License](https://img.shields.io/badge/license-GPL--3.0-orange)](https://github.com/haenelt/GBB)
+[![License](https://img.shields.io/github/license/haenelt/GBB)](https://github.com/haenelt/GBB)
+[![PyPI version](https://badge.fury.io/py/gbb.svg)](https://badge.fury.io/py/gbb)
 
 <p align="center">
   <img src="https://github.com/haenelt/GBB/blob/master/gbb_logo.gif?raw=true" width=75% height=75% alt="Illustration of GBB"/>
