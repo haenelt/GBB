@@ -37,7 +37,8 @@ def vox2ras(file_in):
     """
     
     # get affine vox2ras-tkr and ras2vox-tkr transformation to reference volume
-    transformation = subprocess.check_output(['mri_info', file_in, '--{}'.format("ras2vox-tkr")]).decode()
+    transformation = subprocess.check_output(['mri_info', file_in, '--{}'.format("ras2vox-tkr")],
+                                             stderr=subprocess.DEVNULL).decode()
     
     # ignore if warning is stated in first line
     if transformation[:7] == "WARNING":
