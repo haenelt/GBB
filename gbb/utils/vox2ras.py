@@ -37,7 +37,8 @@ def vox2ras(file_in):
     """
     
     # get affine vox2ras-tkr and ras2vox-tkr transformation to reference volume
-    transformation = subprocess.check_output(['mri_info', file_in, '--{}'.format("ras2vox-tkr")],
+    freesurfer_command = ['mri_info', file_in, '--{}'.format("ras2vox-tkr")]
+    transformation = subprocess.check_output(freesurfer_command, 
                                              stderr=subprocess.DEVNULL).decode()
     
     # ignore if warning is stated in first line
@@ -50,7 +51,8 @@ def vox2ras(file_in):
             else:
                 i += 1
     
-    num_transformation = [[float(x) for x in line.split()] for line in transformation.split('\n') if len(line)>0]
+    num_transformation = [[float(x) for x in line.split()] 
+                          for line in transformation.split('\n') if len(line)>0]
     
     # get final transformation matriced as numpy array
     ras2vox_tkr = np.array(num_transformation)
