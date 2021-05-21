@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # local inputs
-#from .config import *
+from .config import *
 
 
 """

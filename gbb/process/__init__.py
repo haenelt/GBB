@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # local inputs
-#from .run_devein import run_devein
-#from .run_anchor import run_anchor
-#from .run_gbb import run_gbb
+from .run_devein import run_devein
+from .run_anchor import run_anchor
+from .run_gbb import run_gbb
 
 
 """

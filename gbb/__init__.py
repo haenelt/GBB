@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 # local inputs
-#from .config import *
-#from .interpolation import *
-#from .io import *
-#from .neighbor import *
-#from .normal import *
-#from .plot import *
-#from .process import *
-#from .utils import *
+from .config import *
+from .interpolation import *
+from .io import *
+from .neighbor import *
+from .normal import *
+from .plot import *
+from .process import *
+from .utils import *
 
 
 """
