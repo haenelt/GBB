@@ -1,6 +1,9 @@
 # compiled bytecode
 *.pyc
 
+# pycharm project directory
+.idea
+
 # packaging
 build/
 dist/
