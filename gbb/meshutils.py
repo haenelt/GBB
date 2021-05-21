@@ -30,4 +30,5 @@ class Mesh:
     # plot_normal_direction
     # adjm
     # remove vertex
-    # smooth surface
+    # smooth surface (laplacian)
+    # remesh
