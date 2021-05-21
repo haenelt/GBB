@@ -2,11 +2,10 @@
 *.pyc
 
 # pycharm project directory
-*.idea
+.idea
 
 # packaging
 build/
 dist/
 .eggs/
 *.egg-info/
-
