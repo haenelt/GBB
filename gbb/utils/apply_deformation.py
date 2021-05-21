@@ -9,7 +9,7 @@ from nibabel.freesurfer.io import write_geometry
 from nibabel.affines import apply_affine
 
 # local inputs
-from gbb.interpolation.linear_interpolation3d import linear_interpolation3d
+from ..interpolation import linear_interpolation3d
 from gbb.utils.remove_vertex import remove_vertex
     
     

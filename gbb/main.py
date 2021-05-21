@@ -6,8 +6,8 @@ import sys
 import importlib.util
 
 # local inputs
+import config
 from gbb.io.get_filename import get_filename
-from gbb.config import config
 from gbb.io.load_data import load_data
 from gbb.io.write_json import write_json
 from gbb.process.run_devein import run_devein

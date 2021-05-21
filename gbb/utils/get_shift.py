@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from nibabel.affines import apply_affine
 
 # local inputs
-from gbb.interpolation import linear_interpolation3d
+from ..interpolation import linear_interpolation3d
     
     
 def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr, 
