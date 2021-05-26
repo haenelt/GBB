@@ -130,7 +130,3 @@ class Mesh:
     # remesh
     # save_img
     # save
-
-
-
-
