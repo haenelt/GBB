@@ -10,7 +10,7 @@ from numpy.linalg import norm
 from nibabel.freesurfer.io import read_geometry, write_geometry
 
 # local inputs
-from gbb.neighbor.nn_2d import nn_2d
+from gbb.neighbor import nn_2d
 from gbb.utils.update_mesh import update_mesh
 from gbb.utils.smooth_surface import smooth_surface
 

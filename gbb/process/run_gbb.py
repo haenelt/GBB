@@ -8,7 +8,7 @@ import numpy as np
 from nibabel.freesurfer.io import write_geometry
 
 # local inputs
-from gbb.neighbor.nn_3d import nn_3d
+from gbb.neighbor import nn_3d
 from gbb.utils.get_shift import get_shift
 from gbb.utils.cost_BBR import cost_BBR
 from gbb.utils.update_mesh import update_mesh
@@ -143,7 +143,7 @@ def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein,
         
         # update mesh
         if len(vtx_shift):
-            nn_ind, _ = nn_3d(vtx[n_vertex], vtx, r_size[step])
+            nn_ind = nn_3d(vtx[n_vertex], vtx, r_size[step])
             if np.any(np.in1d(nn_ind,ind_control)):
                 counter += 1
                 continue     

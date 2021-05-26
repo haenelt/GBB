@@ -5,7 +5,7 @@ import numpy as np
 from nibabel.freesurfer.io import write_geometry
 
 # local inputs
-from gbb.neighbor.nn_2d import nn_2d
+from gbb.neighbor import nn_2d
 from gbb.normal import get_normal
     
 
