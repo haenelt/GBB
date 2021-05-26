@@ -15,10 +15,10 @@ from numpy.random import normal
 from nibabel.freesurfer.io import write_geometry
 
 # local inputs
-from config import MATRIX_SIZE, VOXEL_RES
+from .config import MATRIX_SIZE, VOXEL_RES
 from gbb.normal import get_normal
 from .neighbor import nn_2d
-from interpolation import linear_interpolation3d
+from .interpolation import linear_interpolation3d
 
 __all__ = ['Mesh']
 
@@ -29,10 +29,10 @@ class Mesh:
         
         self.vtx = vtx
         self.fac = fac
-        self.adjm = self._adjm(self)
+        self.adjm = self._get_adjm()
     
-    def _adjm(self):
-        """ Get adjm
+    def _get_adjm(self):
+        """Get adjm
     
         This function computes a sparse adjacency matrix for a triangular surface
         mesh. The matrix has the size (nvertex,nvertex). Each matrix entry with 
@@ -88,13 +88,57 @@ class Mesh:
     
         return sparse_adjm
     
-    def smooth(self):
-        pass
+    def smooth(self, niter):
+        vtx_copy = self.vtx.copy()
+        adjm_ind = self.adjm.indices
+        adjm_ptr = self.adjm.indptr
+        for i in range(niter):
+            print(i)
+            vtx_copy = [np.mean(vtx_copy[adjm_ind[adjm_ptr[j]:adjm_ptr[j+1]], :], 0) for j in range(len(vtx_copy))]
+            vtx_copy = np.asarray(vtx_copy)
+
+        return vtx_copy
     
-    
+
+
+    def save_img(self, file_out, rotation=(0, 0, 0)):
+        """Save image of mesh to disk.
+
+        Parameters
+        ----------
+        file_out : str
+            Filename of saved image file.
+        rotation : (3,) tuple, optional
+            Apply rotation in (x, y, z) directions to the mesh before saving the
+            image.
+        """
+
+        dir_out = os.path.dirname(file_out)
+        if not os.path.exists(dir_out):
+            os.makedirs(dir_out)
+
+        fac_conv = np.zeros((len(self.fac), 4), dtype=int)
+        fac_conv[:, 0] = 3
+        fac_conv[:, 1:] = self.fac
+
+        polygon = pv.PolyData()
+        polygon.points = self.vtx
+        polygon.faces = fac_conv
+
+        # rotate mesh
+        polygon.rotate_x(rotation[0])
+        polygon.rotate_y(rotation[1])
+        polygon.rotate_z(rotation[2])
+
+        # create plot
+        plotter = pv.Plotter(off_screen=True, window_size=[1024, 1024])
+        plotter.add_mesh(polygon, show_edges=True, color="tan")
+        plotter.show(screenshot=file_out)
+
+
     @property
     def vtx(self):
-        return self._v
+        return self._vtx
     
     @vtx.setter
     def vtx(self, v):
@@ -107,7 +151,7 @@ class Mesh:
 
     @property
     def fac(self):
-        return self._f
+        return self._fac
     
     @fac.setter
     def fac(self, f):
@@ -115,7 +159,7 @@ class Mesh:
         if f.ndim != 2 or np.shape(f)[1] != 3:
             raise ValueError("Vertices have wrong shape!")
         
-        if np.max(f) != len(self.vtx):
+        if np.max(f) != len(self.vtx) - 1:
             raise ValueError("Faces do not match vertex array!")
             
         self._fac = f
@@ -125,8 +169,8 @@ class Mesh:
     # plot_normal
     # plot_normal_direction
     # adjm
-    # remove vertex
     # smooth surface (laplacian)
+    # remove vertex
     # remesh
     # save_img
     # save

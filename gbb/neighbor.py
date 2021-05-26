@@ -31,7 +31,7 @@ def nn_2d(ind, adjm, n_iter):
     """
     
     # get first order neighbours
-    nn = adjm[ind,:].indices
+    nn = adjm[ind, :].indices
 
     i = 0
     while i < n_iter - 1:
