@@ -10,7 +10,7 @@ from nibabel.freesurfer.io import read_geometry
 
 # local inputs
 from gbb.io.read_anchor import read_anchor
-from gbb.normal.get_normal import get_normal
+from gbb.utils.get_normal import get_normal
 from gbb.utils.get_adjm import get_adjm
 from gbb.utils.get_gradient import get_gradient
 from gbb.utils.vox2ras import vox2ras
