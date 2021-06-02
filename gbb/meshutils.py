@@ -3,6 +3,7 @@
 
 # python standard library inputs
 import os
+import itertools
 
 # external inputs
 import numpy as np
@@ -138,7 +139,84 @@ class Mesh:
 
         return self.normal
 
+    def remove_vertex(self, ind_keep):
+        """Remove vertex
 
+        This function removes vertices from an array of vertex points and updates
+        the corresponding face array.
+
+        Parameters
+        ----------
+        ind_keep : list
+            Index list of vertices to keep.
+
+        Returns
+        -------
+        vtx : ndarray
+            Remaining vertices.
+        fac : ndarray
+            Remaining faces.
+        ind_keep : ndarray
+            Updated index list of vertices to keep after vertex cleaning.
+
+        """
+
+        # get indices which will be removed
+        ind_tmp = np.arange(len(self.vtx))
+        ind_remove = list(set(ind_tmp) - set(ind_keep))
+        ind_remove = sorted(ind_remove, reverse=True)
+
+        # get new vertices
+        self.vtx = self.vtx[ind_keep, :]
+
+        # get new faces
+        fac_keep = np.zeros(len(self.fac))
+        fac_keep += np.in1d(self.fac[:, 0], ind_keep)
+        fac_keep += np.in1d(self.fac[:, 1], ind_keep)
+        fac_keep += np.in1d(self.fac[:, 2], ind_keep)
+        self.fac = self.fac[fac_keep == 3, :]
+
+        # reindex faces
+        loop_status = 0
+        loop_length = len(ind_remove)
+        for i in range(loop_length):
+
+            # print status
+            counter = np.floor(i / loop_length * 100)
+            if counter != loop_status:
+                print("sort faces: " + str(counter) + " %")
+                loop_status = counter
+
+            tmp = self.fac[self.fac >= ind_remove[i]] - 1
+            self.fac[self.fac >= ind_remove[i]] = tmp
+
+        # get indices which will be cleaned
+        ind_vtx = np.arange(len(self.vtx))
+        ind_fac = list(itertools.chain(*self.fac))
+        ind_fac = list(set(ind_fac))
+        ind_remove = list(set(ind_vtx) - set(ind_fac))
+        ind_remove = sorted(ind_remove, reverse=True)
+
+        # remove singularities (vertices without faces)
+        loop_status = 0
+        loop_length = len(ind_remove)
+        for i in range(loop_length):
+
+            # print status
+            counter = np.floor(i / loop_length * 100)
+            if counter != loop_status:
+                print("clean faces: " + str(counter) + " %")
+                loop_status = counter
+
+            # remove vertex and index
+            self.vtx = np.delete(self.vtx, ind_remove[i], 0)
+            ind_keep = np.delete(ind_keep, ind_remove[i], 0)
+
+            # sort faces
+            tmp = self.fac[self.fac >= ind_remove[i]] - 1
+            self.fac[self.fac >= ind_remove[i]] = tmp
+
+        return self.vtx, self.fac
 
     def smooth(self, niter):
         vtx_copy = self.vtx.copy()
