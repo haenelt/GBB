@@ -20,6 +20,26 @@ from .interpolation import linear_interpolation3d
 
 __all__ = ['Mesh', 'SphereMesh', 'CubeMesh']
 
+# TODO: inherit this parent class in SphereMesh and CubeMesh?!?
+# TODO: http://graphics.stanford.edu/courses/cs468-12-spring/LectureSlides/13_Remeshing1.pdf
+"""
+Remeshing
+
+- consists of edge collapse, edge split, edge flip, vertex shift
+- we only consider vertex shifts since we want to preserve topology
+- vertex shift -> local "spring" relaxation (uniform Laplacian smoothing)
+- bary-center of one-ring neighbor:
+    c_i = 1 / valence(v_i) \sum_{j\in N(v_i)} p_j
+- keep vertex (approximately) on surface
+    p_i \leftarrow c_i - n_in_i^T(c_i-p_i)
+- at the moment, no edge will be preserved since brain surface is smooth
+- projection derivation
+    p = \frac{a\cdot b}{a\cdot a}
+      = \frac{1}{a\cdot a}a(a\cdot b)
+      = \frac{1}{a^Ta}a(a^Tb)
+      = \frac{1}{a^Ta}(aa^T)b
+"""
+
 
 class Mesh:
     """
@@ -32,6 +52,7 @@ class Mesh:
     # save
     # remove vertex
     # remesh
+
     """
 
     def __init__(self, vtx, fac):
