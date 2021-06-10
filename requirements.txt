@@ -4,3 +4,5 @@ scipy
 matplotlib
 imageio
 opencv-python
+gdown
+pandas

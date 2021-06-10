@@ -46,8 +46,8 @@ def read_anchor(input_anchor):
         for i in range(n_points):
             line = x[i].split()
         
-            data[i,0] = line[0]
-            data[i,1] = line[1]
-            data[i,2] = line[2]
+            data[i, 0] = line[0]
+            data[i, 1] = line[1]
+            data[i, 2] = line[2]
     
     return data
