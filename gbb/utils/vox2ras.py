@@ -5,6 +5,7 @@ import subprocess
 
 # external inputs
 import numpy as np
+import nibabel as nb
 from numpy.linalg import inv
 
 
@@ -58,4 +59,28 @@ def vox2ras(file_in):
     ras2vox_tkr = np.array(num_transformation)
     vox2ras_tkr = inv(np.array(num_transformation))
     
+    return vox2ras_tkr, ras2vox_tkr
+
+
+def vox2ras2(file_in):
+    """
+    https://neurostars.org/t/get-voxel-to-ras-transformation-from-nifti-file/4549/3
+
+    Parameters
+    ----------
+    file_in
+
+    Returns
+    -------
+
+    """
+
+    nii = nb.load(file_in)
+    mgh = nb.MGHImage(nii.dataobj, nii.affine)
+    vox2ras_tkr = mgh.header.get_vox2ras_tkr()
+
+    # get final transformation matriced as numpy array
+    ras2vox_tkr = inv(np.array(vox2ras_tkr))
+
+
     return vox2ras_tkr, ras2vox_tkr

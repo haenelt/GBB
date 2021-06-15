@@ -13,7 +13,7 @@ from .deformation_field import deformation_field
 from .check_exit import check_exit
 from .remove_vertex import remove_vertex
 from .smooth_surface import smooth_surface
-from .vox2ras import vox2ras
+from .vox2ras import vox2ras, vox2ras2
 
 
 """
