@@ -1,37 +1,130 @@
 # -*- coding: utf-8 -*-
+"""I/O functions."""
 
-import nibabel as nb
-import numpy as np
-import pandas as pd
-import csv
+# python standard library inputs
 import os
+import csv
+
+# external inputs
+import numpy as np
+import nibabel as nb
+import pandas as pd
+
+__all__ = ['get_filename', 'load_volume', 'save_volume']
 
 
+def get_filename(file_in):
+    """Get path, basename and file extension for an input file. The loop checks
+    for some given extension names (nii, mgh, mgz). Otherwise it stops after the
+    last found dot in the string.
 
-def load_volume(volume):
+    Parameters
+    ----------
+    file_in : str
+        Filename.
 
-    if isinstance(volume, str):
-        # importing nifti files
-        image = nb.load(volume)
+    Returns
+    -------
+    path_file : str
+        Path of filename.
+    name_file : str
+        Basename of filename.
+    ext_file : str
+        File extension of filename.
+
+    """
+
+    # get path and basename
+    path_file = os.path.dirname(file_in)
+    name_file = os.path.basename(file_in)
+
+    # split basename and file extension
+    ext_file = ""
+    exit_loop = 0
+    ext_key = [".nii", ".mgh", ".mgz"]
+    while exit_loop == 0:
+        name_file, ext_temp = os.path.splitext(name_file)
+        ext_file = ext_temp + ext_file
+
+        if not ext_temp:
+            exit_loop = 1
+
+        if ext_file in ext_key:
+            exit_loop = 1
+
+    return path_file, name_file, ext_file
+
+
+def load_volume(file_in):
+    """Load nifti volume.
+
+    Parameters
+    ----------
+    file_in : str
+        File name of nifti volume.
+
+    Returns
+    -------
+    arr : (N, M, O, ...) np.ndarray
+        Image array.
+    affine : (4, 4) np.ndarray
+        Affine transformation matrix.
+    header : nb.nifti1.Nifti1Header
+        Header information.
+
+    """
+
+    if isinstance(file_in, str):
+        image = nb.load(file_in)
+        arr = image.get_fdata()
+        affine = image.affine
+        header = image.header
     else:
-        raise ValueError('bla')
+        raise ValueError('No valid file name!')
 
-    return image
+    return arr, affine, header
 
 
-def save_volume(filename, volume, dtype='float32', overwrite_file=True):
+def save_volume(file_out, arr, affine=None, header=None):
+    """Save nifti volume.
 
-    if dtype is not None:
-        volume.set_data_dtype(dtype)
-    if os.path.isfile(filename) and overwrite_file is False:
-        print("\nThis file exists and overwrite_file was set to False, "
-              "file not saved.")
+    Parameters
+    ----------
+    file_out : str
+        File name of saved nifti volume.
+    arr : (N, M, O, ...) np.ndarray
+        Image array.
+    affine : (4, 4) np.ndarray, optional
+        Affine transformation matrix.
+    header : nb.nifti1.Nifti1Header, optional
+        Header information
+
+    Returns
+    -------
+    None
+
+    """
+
+    if isinstance(file_out, str):
+
+        # make output folder
+        dir_out = os.path.dirname(file_out)
+        if not os.path.exists(dir_out):
+            os.makedirs(dir_out)
+
+        # use identity matrix if no affine transformation matrix is set
+        if affine is None:
+            affine = np.eye(4)
+
+        # use empty header if no header information is set
+        if header is None:
+            header = nb.Nifti1Header()
+
+        # write to disk
+        image = nb.Nifti1Image(arr, affine, header)
+        image.to_filename(file_out)
     else:
-        try:
-            volume.to_filename(filename)
-            print("\nSaving {0}".format(filename))
-        except AttributeError:
-            print('\nInput volume must be a Nibabel SpatialImage.')
+        raise ValueError('No valid file name!')
 
 
 
@@ -277,53 +370,4 @@ def _write_vtk(filename, vertices, faces, data=None, comment=None):
 
 
 
-def _get_filename(input):
-    """ Get filename
 
-    This function gets path, file name and file extension for an input filename.
-    The loop checks for some given extension names. Otherwise it stops after the
-    last found dot in the string.
-
-    Parameters
-    ----------
-    input : str
-        Filename.
-
-    Returns
-    -------
-    path : str
-        Path of filename.
-    name_file : str
-        Basename of filename.
-    ext_file : str
-        File extension of filename.
-
-    Notes
-    -------
-    created by Daniel Haenelt
-    Date created: 09-12-2019
-    Last modified: 05-10-2020
-
-    """
-
-    # get path of input
-    path = os.path.dirname(input)
-
-    # get basename of input
-    name_file = os.path.basename(input)
-
-    # split basename and file extension
-    ext_file = ""
-    exit_loop = 0
-    ext_key = [".nii", ".mgh", ".mgz"]
-    while exit_loop == 0:
-        name_file, ext_temp = os.path.splitext(name_file)
-        ext_file = ext_temp + ext_file
-
-        if not ext_temp:
-            exit_loop = 1
-
-        if ext_file in ext_key:
-            exit_loop = 1
-
-    return path, name_file, ext_file

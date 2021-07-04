@@ -8,8 +8,8 @@ import glob
 import numpy as np
 
 # local inputs
-from gbb.plot.plot_cost import plot_cost
-from gbb.plot.get_gif import get_gif
+from gbb.plot_old.plot_cost import plot_cost
+from gbb.plot_old.get_gif import get_gif
 
 
 def anim_cost(file_in, path_output, name_output):

@@ -58,7 +58,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr,
     t2s : bool, optional
         WM darker than GM. The default is True.
     show_plot : bool, optional
-        Show line plot in command window. The default is True.
+        Show line plot_old in command window. The default is True.
 
     Returns
     -------
@@ -143,7 +143,7 @@ def get_shift(vtx, fac, vtx_norm, ind, arr_grad, vox2ras_tkr, ras2vox_tkr,
     if arr_vein is not None:
         vein_curr = linear_interpolation3d(line_curr[:,0],line_curr[:,1],line_curr[:,2],arr_vein)
     
-    # show line plot
+    # show line plot_old
     if show_plot:
         plt.clf()
         plt.plot(grad_curr)

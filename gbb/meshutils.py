@@ -397,7 +397,7 @@ class Mesh:
         polygon.rotate_y(rotation[1])
         polygon.rotate_z(rotation[2])
 
-        # create plot
+        # create plot_old
         plotter = pv.Plotter(off_screen=True, window_size=[1024, 1024])
         plotter.add_mesh(polygon, show_edges=True, color="tan")
         plotter.show(screenshot=file_out)
