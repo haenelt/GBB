@@ -53,7 +53,7 @@ def preprocess_epi(file_magn, file_phase, phase_clip=0.25, std_max=0.25,
 
     Returns
     -------
-    None
+    None.
 
     """
 
@@ -266,7 +266,7 @@ def allineate(file_in, file_out, file_matrix):
 
     Returns
     -------
-    None
+    None.
 
     """
 
@@ -309,7 +309,7 @@ def susan_filter(file_in, file_out, sigma=3):
 
     Returns
     -------
-    None
+    None.
 
     """
 
@@ -368,16 +368,16 @@ def _fill_with_gaussian(arr, arr_mask, sigma_gaussian=10.0):
 
     Parameters
     ----------
-    arr : (N,M,O) np.ndarray
+    arr : np.ndarray, shape=(N,M,O)
         Image array.
-    arr_mask : (N,M,O) np.ndarray
+    arr_mask : np.ndarray, shape=(N,M,O)
         Binary mask array.
     sigma_gaussian : float, optional
         Sigma for gaussian filter.
 
     Returns
     -------
-    arr : (N,M,O) np.ndarray
+    arr : np.ndarray, shape=(N,M,O)
         Filtered image array.
 
     """
