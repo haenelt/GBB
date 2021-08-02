@@ -20,6 +20,27 @@ from .interpolation import linear_interpolation3d
 
 __all__ = ['Mesh', 'SphereMesh', 'CubeMesh']
 
+# TODO: inherit this parent class in SphereMesh and CubeMesh?!?
+# TODO: use functools.lru_cache
+# TODO: http://graphics.stanford.edu/courses/cs468-12-spring/LectureSlides/13_Remeshing1.pdf
+"""
+Remeshing
+
+- consists of edge collapse, edge split, edge flip, vertex shift
+- we only consider vertex shifts since we want to preserve topology
+- vertex shift -> local "spring" relaxation (uniform Laplacian smoothing)
+- bary-center of one-ring neighbor:
+    c_i = 1 / valence(v_i) \sum_{j\in N(v_i)} p_j
+- keep vertex (approximately) on surface
+    p_i \leftarrow c_i - n_in_i^T(c_i-p_i)
+- at the moment, no edge will be preserved since brain surface is smooth
+- projection derivation
+    p = \frac{a\cdot b}{a\cdot a}
+      = \frac{1}{a\cdot a}a(a\cdot b)
+      = \frac{1}{a^Ta}a(a^Tb)
+      = \frac{1}{a^Ta}(aa^T)b
+"""
+
 
 class Mesh:
     """
@@ -32,6 +53,7 @@ class Mesh:
     # save
     # remove vertex
     # remesh
+
     """
 
     def __init__(self, vtx, fac):
@@ -91,6 +113,20 @@ class Mesh:
         return sparse_adjm
 
     @property
+    def face_normals(self):
+
+        # indexed view into the vertex array
+        tris = self.vtx[self.fac]
+
+        # calculate the normal for all triangles by taking the cross product of
+        # the vectors v1-v0 and v2-v0 in each triangle
+        n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
+        n = self._normalize_v3(n)
+
+        return n
+
+
+    @property
     def vertex_normals(self):
         """ Get normal
 
@@ -115,18 +151,28 @@ class Mesh:
 
         """
 
-        # indexed view into the vertex array
-        tris = self.vtx[self.fac]
-
-        # calculate the normal for all triangles by taking the cross product of
-        # the vectors v1-v0 and v2-v0 in each triangle
-        n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
+        # face normals
+        n = self.face_normals
 
         # calculate vertex-wise normals and normalize
         normal = self._f2v(len(self.vtx), self.fac, n)
         normal = self._normalize_v3(normal)
 
         return normal
+
+    @property
+    def face_areas(self):
+        # indexed view into the vertex array
+        tris = self.vtx[self.fac]
+
+        # calculate the normal for all triangles by taking the cross product of
+        # the vectors v1-v0 and v2-v0 in each triangle
+
+
+        # compute normal vector (length is face area)
+        n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
+
+        return np.sqrt((n**2).sum(-1)) / 2
 
     def remove_vertex(self, ind_keep):
         """Remove vertex
@@ -212,7 +258,6 @@ class Mesh:
         adjm_ind = self.adjm.indices
         adjm_ptr = self.adjm.indptr
         for i in range(niter):
-            print(i)
             vtx_copy = [
                 np.mean(vtx_copy[adjm_ind[adjm_ptr[j]:adjm_ptr[j + 1]], :], 0)
                 for j, _ in enumerate(vtx_copy)]
@@ -352,7 +397,7 @@ class Mesh:
         polygon.rotate_y(rotation[1])
         polygon.rotate_z(rotation[2])
 
-        # create plot
+        # create plot_old
         plotter = pv.Plotter(off_screen=True, window_size=[1024, 1024])
         plotter.add_mesh(polygon, show_edges=True, color="tan")
         plotter.show(screenshot=file_out)

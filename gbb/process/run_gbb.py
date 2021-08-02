@@ -14,8 +14,8 @@ from gbb.utils.cost_BBR import cost_BBR
 from gbb.utils.update_mesh import update_mesh
 from gbb.utils.check_exit import check_exit
 from gbb.utils.get_ignore import get_ignore
-from gbb.plot.plot_cost import plot_cost
-from gbb.plot.plot_slope import plot_slope
+from gbb.plot_old.plot_cost import plot_cost
+from gbb.plot_old.plot_slope import plot_slope
 
 
 def run_gbb(vtx, fac, vtx_n, ind_control, arr_ref, arr_gradient, arr_vein, 

@@ -6,3 +6,5 @@ imageio
 opencv-python
 gdown
 pandas
+sh
+nighres

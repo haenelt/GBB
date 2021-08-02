@@ -87,10 +87,11 @@ def download_data(dir_out):
         else:
             gdown.download(source, target, quiet=False)
 
-    return dict(control_points=file_targets[0],
-                ignore=file_targets[1],
-                mean_epi_enhanced=file_targets[2],
-                mean_epi=file_targets[3],
-                vein=file_targets[4],
-                pial=file_targets[5],
-                white=file_targets[6])
+    return {'control_points': file_targets[0],
+            'ignore': file_targets[1],
+            'mean_epi_enhanced': file_targets[2],
+            'mean_epi': file_targets[3],
+            'vein': file_targets[4],
+            'pial': file_targets[5],
+            'white': file_targets[6],
+            }

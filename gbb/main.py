@@ -7,9 +7,9 @@ import importlib.util
 
 # local inputs
 import config
-from gbb.io.get_filename import get_filename
-from gbb.io.load_data import load_data
-from gbb.io.write_json import write_json
+from gbb.io_old.get_filename import get_filename
+from gbb.io_old.load_data import load_data
+from gbb.io_old.write_json import write_json
 from gbb.process.run_devein import run_devein
 from gbb.process.run_anchor import run_anchor
 from gbb.process.run_gbb import run_gbb

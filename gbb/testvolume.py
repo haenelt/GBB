@@ -12,6 +12,7 @@ from numpy.random import normal
 
 # local inputs
 from .config import MATRIX_SIZE, VOXEL_RES
+from .io import save_volume
 
 __all__ = ['SphereVolume', 'CubeVolume']
 
@@ -111,16 +112,11 @@ class SphereVolume:
         Parameters
         ----------
         file_out : str
-            Filename of volume array in nifti format.
+            File name of volume array in nifti format.
 
         """
 
-        dir_out = os.path.dirname(file_out)
-        if not os.path.exists(dir_out):
-            os.makedirs(dir_out)
-
-        output = nb.Nifti1Image(self.arr_brain, np.eye(4))
-        nb.save(output, file_out)
+        save_volume(file_out, self.arr_brain)
 
     @property
     def scale(self):

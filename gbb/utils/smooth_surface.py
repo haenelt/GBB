@@ -6,7 +6,7 @@ import sys
 import subprocess
 
 # local inputs
-from gbb.io.get_filename import get_filename
+from gbb.io_old.get_filename import get_filename
 
 
 def smooth_surface(file_in, file_out, n_iter):

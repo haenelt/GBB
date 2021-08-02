@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Default parameters used in GBB."""
 
-# io parameters
+# io_old parameters
 # ------------------------------------------------------------------------------
 
 io_params = dict()
