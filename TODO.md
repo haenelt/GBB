@@ -38,6 +38,7 @@
 - [ ] include code for preprocessing
 - [ ] weight vertices with probablity function based on distance to zero crossing
 - [ ] weight shift direction with normal direction (less in normal direction at later stages)
+- [ ] include preprocessing using old_preprocessing.py
 
 ## Kriegeskorte2019
 - gradient descent: we adjust each weight in the direction that reduces the cost (the error) and by an amount proportional to the derivative of the cost with respect to the weight.
